@@ -6,8 +6,9 @@
 <title>محرك المحاكاة التعليمية العميقة – الإصدار 1.0</title>
 
 <style>
+/* ===== الأساس ===== */
 body {
-  font-family: "Tahoma", Arial, sans-serif;
+  font-family: Tahoma, Arial, sans-serif;
   background-color: #f4f6f8;
   margin: 0;
   padding: 16px;
@@ -16,7 +17,7 @@ body {
 
 .container {
   background: #ffffff;
-  max-width: 820px;
+  max-width: 860px;
   margin: auto;
   padding: 20px;
   border-radius: 10px;
@@ -25,7 +26,7 @@ body {
 
 h1 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 label {
@@ -53,6 +54,14 @@ small {
   color: #666;
 }
 
+/* ===== الأزرار ===== */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
 button {
   padding: 12px;
   font-size: 15px;
@@ -63,16 +72,15 @@ button {
   cursor: pointer;
 }
 
-button.secondary { background-color: #455a64; }
-button:hover { opacity: 0.9; }
-
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
+button.secondary {
+  background-color: #455a64;
 }
 
+button:hover {
+  opacity: 0.9;
+}
+
+/* ===== الإخراج ===== */
 .output textarea {
   height: 520px;
   white-space: pre-wrap;
@@ -80,6 +88,7 @@ button:hover { opacity: 0.9; }
   line-height: 1.7;
 }
 
+/* ===== إرشاد المعلم ===== */
 .teacher-only {
   background: #eef3f8;
   border-right: 4px solid #1976d2;
@@ -87,7 +96,6 @@ button:hover { opacity: 0.9; }
   margin-top: 12px;
 }
 
-/* إخفاء إرشادات المعلم في وضع الطباعة */
 .print-view .teacher-only {
   display: none;
 }
@@ -98,8 +106,10 @@ button:hover { opacity: 0.9; }
   .controls, input, select, label, small { display:none !important; }
   .container { box-shadow:none; max-width:100%; padding:10mm 12mm; }
   .output textarea {
-    border:none; height:auto;
-    font-size:14pt; line-height:1.8;
+    border:none;
+    height:auto;
+    font-size:14pt;
+    line-height:1.8;
   }
 }
 </style>
@@ -141,39 +151,40 @@ button:hover { opacity: 0.9; }
 <small>يُستخدم محتوى الكتاب كمرجع للمحاكاة دون نسخه أو عرضه كاملًا</small>
 
 <div class="controls">
-<button onclick="generateSimulation()">🧠 إنشاء المحاكاة</button>
-<button class="secondary" onclick="showTeacherView()">👩‍🏫 عرض المعلم</button>
-<button class="secondary" onclick="showPrintView()">🧾 عرض الطباعة</button>
-<button onclick="saveSimulation()">💾 حفظ</button>
-<button onclick="searchLibrary()">🔍 بحث</button>
-<button onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+  <button onclick="generateSimulation()">🧠 إنشاء المحاكاة</button>
+  <button class="secondary" onclick="showTeacherView()">👩‍🏫 عرض المعلم</button>
+  <button class="secondary" onclick="showPrintView()">🧾 عرض الطباعة</button>
+  <button onclick="saveSimulation()">💾 حفظ</button>
+  <button onclick="searchLibrary()">🔍 بحث</button>
+  <button onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
 </div>
 
 <div class="output">
 <label>ناتج المحاكاة</label>
-<textarea id="output"></textarea>
+<textarea id="output" placeholder="سيظهر الناتج هنا..."></textarea>
 </div>
 </div>
 
-<!-- ================== المنطق ================== -->
+<!-- ✅ مكتبة قراءة PDF – السطر الصحيح -->
 https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.jsscript>
+
 <script>
 let bookContent = "";
 
-/* قراءة ملف الكتاب */
+/* ===== قراءة ملف الكتاب ===== */
 document.getElementById("bookFile").addEventListener("change", function () {
   const file = this.files[0];
   if (!file) return;
 
-  if (file.name.endsWith(".txt")) {
+  if (file.name.toLowerCase().endsWith(".txt")) {
     const reader = new FileReader();
     reader.onload = e => {
-      bookContent = e.target.result;
+      bookContent = e.target.result || "";
       alert("✅ تم تحميل نص الكتاب");
     };
     reader.readAsText(file, "UTF-8");
 
-  } else if (file.name.endsWith(".pdf")) {
+  } else if (file.name.toLowerCase().endsWith(".pdf")) {
     readPDF(file);
 
   } else {
@@ -181,40 +192,41 @@ document.getElementById("bookFile").addEventListener("change", function () {
   }
 });
 
-/* قراءة PDF محليًا */
 async function readPDF(file) {
   const buffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
   let text = "";
+
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    content.items.forEach(item => text += item.str + " ");
+    content.items.forEach(item => text += (item.str || "") + " ");
   }
+
   bookContent = text;
   alert("✅ تم تحميل كتاب PDF");
 }
 
-/* توليد المحاكاة */
+/* ===== توليد المحاكاة ===== */
 function generateSimulation() {
-  const subject = subjectInput();
-  const grade = gradeInput();
-  const lesson = lessonInput();
-  const level = levelSelect.value;
-  const type = typeSelect.value;
-  const goal = deepGoal.value || "بناء فهم أعمق ومستقر للمفهوم";
+  const subject = document.getElementById("subject").value || "غير محددة";
+  const grade = document.getElementById("grade").value || "غير محدد";
+  const lesson = document.getElementById("lesson").value || "غير محدد";
+  const level = document.getElementById("level").value;
+  const type = document.getElementById("type").value;
+  const goal = document.getElementById("deepGoal").value || "بناء فهم أعمق ومستقر للمفهوم";
 
   const reference = bookContent
-    ? bookContent.slice(0, 600)
+    ? bookContent.slice(0, 700)
     : "لم يتم تحميل كتاب – الاعتماد على خبرة المعلم.";
 
   const levelMap = {
     "ضعاف": "تبسيط الموقف، تمثيل حسي، سؤال واحد في كل مرة.",
-    "عادي": "نقاش جماعي، احتمال أكثر من تفسير.",
-    "موهوبين": "إضافة شرط جديد يختبر التفسير الأول."
+    "عادي": "نقاش جماعي وإتاحة أكثر من تفسير محتمل.",
+    "موهوبين": "إضافة شرط جديد أو متغير يتحدى التفسير الأول."
   };
 
-  output.value = `
+  document.getElementById("output").value = `
 محاكاة تعليمية ${type}
 
 المادة: ${subject}
@@ -223,28 +235,28 @@ function generateSimulation() {
 مستوى الطلبة: ${level}
 
 ١) الافتراض الحدسي:
-ينطلق الطلبة من فهم أولي بسيط.
+ينطلق الطلبة من فهم أولي بسيط للمفهوم.
 
 سؤال:
 لماذا يبدو هذا الفهم صحيحًا في البداية؟
 
 ٢) موقف واقعي كاشف:
-موقف يجعل هذا الفهم غير كافٍ.
+موقف يجعل هذا الفهم غير كافٍ لحلّه.
 
 سؤال:
-هل تفسيرك يحل المشكلة بالكامل؟
+هل تفسيرك يحل المشكلة بالكامل؟ لماذا؟
 
 ٣) التكييف حسب المستوى:
 ${levelMap[level]}
 
-٤) لحظة التحول المفاهيمي:
-التركيز على جوهر الفكرة لا شكلها.
+٤) لحظة التحوّل المفاهيمي:
+التركيز على جوهر الفكرة لا على شكلها الظاهري.
 
 ٥) التطبيق:
 نشاط قصير لتثبيت الفهم.
 
 ٦) نقل التعلّم:
-ربط المفهوم بسياق جديد.
+ربط المفهوم بسياق جديد خارج الدرس.
 
 الهدف العميق:
 ${goal}
@@ -254,25 +266,15 @@ ${goal}
 ${reference}
 --------------------------------
 
-<div class="teacher-only">
-بوصلة دور المعلم:
-🟢 دع الطلبة يبررون.
-🟡 استخدم صمتًا تربويًا.
-🔴 لا تُسمِّ القاعدة مبكرًا.
-
-نقطة القرار الواحدة:
-قرار واحد فقط للحصة.
-
-اختبار الصمت:
-صمت ٢٠ ثانية.
-
-مؤشر النجاح:
-اختلاف التبريرات دون طلب الإجابة.
-</div>
+[إرشاد المعلم]
+- بوصلة الدور: دع الطلبة يبررون – استخدم الصمت – لا تسمِّ مبكرًا.
+- قرار واحد فقط للحصة.
+- اختبار الصمت: ٢٠ ثانية.
+- مؤشر النجاح: اختلاف التبريرات دون طلب الإجابة.
 `.trim();
 }
 
-/* عرض */
+/* ===== عرض ===== */
 function showTeacherView() {
   document.body.classList.remove("print-view");
 }
@@ -280,16 +282,12 @@ function showPrintView() {
   document.body.classList.add("print-view");
 }
 
-/* مدخلات */
-function subjectInput(){ return subject.value || "غير محددة"; }
-function gradeInput(){ return grade.value || "غير محدد"; }
-function lessonInput(){ return lesson.value || "غير محدد"; }
-
-/* حفظ وبحث */
+/* ===== حفظ وبحث ===== */
 function saveSimulation() {
-  if (!output.value) return alert("لا يوجد محتوى للحفظ");
+  const text = document.getElementById("output").value;
+  if (!text) return alert("لا يوجد محتوى");
   const lib = JSON.parse(localStorage.getItem("simulations") || "[]");
-  lib.push({ time:new Date().toLocaleString(), text:output.value });
+  lib.push({ time:new Date().toLocaleString(), text });
   localStorage.setItem("simulations", JSON.stringify(lib));
   alert("✅ تم الحفظ");
 }
@@ -301,8 +299,8 @@ function searchLibrary() {
   const res = lib.filter(x => x.text.includes(q));
   if (!res.length) return alert("لا نتائج");
   const list = res.map((e,i)=>`${i+1}) ${e.time}`).join("\n");
-  const idx = prompt(list+"\nاختر رقم:");
-  if (res[idx-1]) output.value = res[idx-1].text;
+  const idx = prompt("النتائج:\n"+list+"\nاختر رقم:");
+  if (res[idx-1]) document.getElementById("output").value = res[idx-1].text;
 }
 </script>
 
