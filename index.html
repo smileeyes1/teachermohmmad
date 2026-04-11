@@ -8,7 +8,6 @@
 <style>
 :root{
   --main:#1565c0;
-  --accent:#ffb300;
   --bg:#eef2f6;
   --card:#ffffff;
   --ink:#333;
@@ -148,7 +147,7 @@ button:active{opacity:.٨٥}
   <input type="file" id="bookFile" accept=".pdf,image/*" onchange="showFile()">
   <div id="fileName" class="file-name">لم يتم رفع ملف بعد</div>
   <div class="hint">
-    الغرض تنظيمي: استدعاء بصري للكتاب أثناء التحضير.
+    الغرض تنظيمي فقط: استدعاء الكتاب بصريًا أثناء التحضير.
   </div>
 </div>
 
@@ -179,20 +178,29 @@ button:active{opacity:.٨٥}
 
 <script>
 function showFile(){
-  const f=document.getElementById("bookFile").files[0];
+  const f = document.getElementById("bookFile").files[0];
   document.getElementById("fileName").textContent =
     f ? "📘 تم رفع الملف: " + f.name : "لم يتم رفع ملف بعد";
 }
 
 function build(){
-  const subject  = subject.value;
-  const grade    = grade.value;
-  const lesson   = lesson.value || "—";
-  const question = document.getElementById("question").value.trim();
-  const concept  = document.getElementById("concept").value.trim();
-  const duration = duration.value;
-  const file     = bookFile.files[0];
-  const out      = document.getElementById("output");
+
+  const subjectEl  = document.getElementById("subject");
+  const gradeEl    = document.getElementById("grade");
+  const lessonEl   = document.getElementById("lesson");
+  const questionEl = document.getElementById("question");
+  const conceptEl  = document.getElementById("concept");
+  const durationEl = document.getElementById("duration");
+  const bookFileEl = document.getElementById("bookFile");
+  const out        = document.getElementById("output");
+
+  const subject  = subjectEl.value;
+  const grade    = gradeEl.value;
+  const lesson   = lessonEl.value || "—";
+  const question = questionEl.value.trim();
+  const concept  = conceptEl.value.trim();
+  const duration = durationEl.value;
+  const file     = bookFileEl.files[0];
 
   if(!question || !concept){
     alert("سؤال الحصة والفكرة المقفولة عنصران إلزاميان");
@@ -218,16 +226,17 @@ function build(){
 «${concept}»
 
 بنية التنفيذ السيادي:
-١) أطرح السؤال فقط.
+١) أطرح السؤال فقط دون شرح.
 ٢) مثال واحد من الكتاب.
 ٣) صمت مقصود للتفكير.
-٤) تلميذ ينطق الفكرة.
+٤) تلميذ واحد ينطق الفكرة.
 ٥) تثبيت قصير ثم إغلاق.
 
 مبدأ الحصة:
 الصمت أداة.
 التفكير جوهر.
-النطق دليل الفهم.`;
+النطق دليل الفهم.
+`;
 }
 </script>
 
