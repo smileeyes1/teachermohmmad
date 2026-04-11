@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>محاكاة حصة صفية جاهزة للتنفيذ</title>
+<title>المحرك السيادي للحصة الصفية — نسخة موحّدة</title>
 
 <style>
 body{
@@ -15,54 +15,64 @@ body{
 }
 .container{
   background:#fff;
-  max-width:900px;
+  max-width:٩٢٠px;
   margin:auto;
-  padding:20px;
-  border-radius:10px;
-  box-shadow:0 4px 8px rgba(0,0,0,.1);
+  padding:٢٠px;
+  border-radius:١٠px;
+  box-shadow:٠ ٤px ٨px rgba(٠,٠,٠,.١);
 }
-h1{text-align:center;margin-bottom:12px;}
-label{font-weight:bold;margin-top:10px;display:block;}
+h1{text-align:center;margin-bottom:١٢px;}
+label{font-weight:bold;margin-top:١٠px;display:block;}
 input,select,textarea{
-  width:100%;
-  padding:10px;
-  margin-top:6px;
-  border-radius:6px;
-  border:1px solid #ccc;
-  font-size:15px;
+  width:١٠٠%;
+  padding:١٠px;
+  margin-top:٦px;
+  border-radius:٦px;
+  border:١px solid #ccc;
+  font-size:١٥px;
   direction:rtl;
 }
 textarea{resize:vertical;}
 .actions{
   display:flex;
   flex-wrap:wrap;
-  gap:8px;
-  margin:16px 0;
+  gap:٨px;
+  margin:١٦px ٠;
 }
 button{
-  padding:12px;
-  font-size:15px;
+  padding:١٢px;
+  font-size:١٥px;
   border:none;
-  border-radius:6px;
-  background:#1976d2;
+  border-radius:٦px;
+  background:#١٩٧٦d٢;
   color:#fff;
   cursor:pointer;
 }
-button.alt{background:#009688;}
-button.warn{background:#ffa000;}
-button.danger{background:#d32f2f;}
-button:hover{opacity:.9;}
+button.alt{background:#٠٠٩٦٨٨;}
+button.warn{background:#ffa٠٠٠;}
+button.danger{background:#d٣٢f٢f;}
+button.dark{background:#٤٢٤٢٤٢;}
 .output textarea{
-  height:600px;
+  height:٦٠٠px;
   white-space:pre-wrap;
-  font-size:14.5px;
-  line-height:1.8;
+  font-size:١٤.٥px;
+  line-height:١.٨;
 }
-small{color:#555;}
+.badge{
+  font-size:١٤px;
+  padding:٤px ٨px;
+  border-radius:٦px;
+  display:inline-block;
+  margin-top:٨px;
+}
+.green{background:#e٨f٥e٩;color:#١b٥e٢٠;}
+.yellow{background:#fff٣e٠;color:#٧f٦٠٠٠;}
+.red{background:#fde٠dc;color:#b٧١c١c;}
+small{color:#٥٥٥;}
 @media print{
-  .actions,label,input,select,small{display:none}
+  .actions,label,input,select,small,.badge{display:none}
   .container{box-shadow:none}
-  textarea{border:none;height:auto;font-size:14pt}
+  textarea{border:none;height:auto;font-size:١٤pt}
 }
 </style>
 </head>
@@ -70,136 +80,168 @@ small{color:#555;}
 <body>
 
 <div class="container">
-<h1>محاكاة حصة صفية حقيقية</h1>
+<h1>المحرّك السيادي للحصة الصفية</h1>
 
 <label>المادة</label>
-<input id="subject" placeholder="رياضيات / علوم / لغة عربية">
+<input id="subject">
 
 <label>الصف</label>
-<input id="grade" placeholder="الثاني / الخامس">
+<input id="grade">
 
 <label>الدرس</label>
-<input id="lesson" placeholder="المقارنة بين عددين">
+<input id="lesson">
+
+<label>سؤال الحصة الواحد (إلزامي)</label>
+<input id="coreQuestion" placeholder="— سؤال واحد فقط يُدار حوله كل شيء —">
+
+<label>المفهوم المقفول</label>
+<input id="lockedConcept" placeholder="المفهوم الذي لا يُتجاوز حتى ينضج">
 
 <label>مدة الحصة</label>
 <select id="duration">
-  <option value="40">٤٠ دقيقة</option>
-  <option value="45">٤٥ دقيقة</option>
+  <option value="٤٠">٤٠ دقيقة</option>
+  <option value="٤٥">٤٥ دقيقة</option>
 </select>
 
 <label>طريقة التنفيذ</label>
 <select id="delivery">
-  <option value="face">وجاهي داخل الصف</option>
-  <option value="teams">عبر Teams</option>
+  <option value="face">وجاهي</option>
+  <option value="teams">عن بُعد</option>
 </select>
 
 <label>رفع ملف الكتاب (TXT أو PDF)</label>
 <input type="file" id="bookFile" accept=".txt,.pdf">
-<small>يُستخدم نص الكتاب كمرجع داخل المحاكاة</small>
+<small>يُستخدم كنص مرجعي فقط</small>
 
 <div class="actions">
-  <button onclick="build()">🧠 إنشاء المحاكاة</button>
-  <button class="alt" onclick="path('good')">🟢 الطلاب متفاعلون</button>
-  <button class="warn" onclick="path('mixed')">🟡 الطلاب مختلفون</button>
-  <button class="danger" onclick="path('weak')">🔴 الطلاب متعثرون</button>
+  <button onclick="build()">🧠 إنشاء الحصة</button>
+  <button class="alt" onclick="path('good')">🟢 تفاعل مرتفع</button>
+  <button class="warn" onclick="path('mixed')">🟡 تفاعل متباين</button>
+  <button class="danger" onclick="path('weak')">🔴 تعثّر</button>
+  <button class="dark" onclick="silentCheck()">⏱️ فحص الصمت</button>
   <button onclick="window.print()">🖨️ طباعة</button>
 </div>
 
+<div id="gauge" class="badge green">🟢 توازن</div>
+
 <div class="output">
-<textarea id="out"></textarea>
+<textarea id="out" placeholder="ستظهر الحصة هنا..."></textarea>
 </div>
 </div>
 
-https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.jsscript>
+https://cdnjs.cloudflare.com/ajax/libs/pdf.js/٣.١١.١٧٤/pdf.min.jsscript>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/٣.١١.١٧٤/pdf.worker.min.js";
+</script>
 
 <script>
-let bookText="";
+const subject = document.getElementById("subject");
+const grade = document.getElementById("grade");
+const lesson = document.getElementById("lesson");
+const duration = document.getElementById("duration");
+const delivery = document.getElementById("delivery");
+const coreQuestion = document.getElementById("coreQuestion");
+const lockedConcept = document.getElementById("lockedConcept");
+const out = document.getElementById("out");
+const gauge = document.getElementById("gauge");
+const bookFile = document.getElementById("bookFile");
 
-/* قراءة ملف الكتاب */
-document.getElementById("bookFile").addEventListener("change",function(e){
-  const f=e.target.files[0];
-  if(!f)return;
+let bookText = "";
+let built = false;
+let talkRatio = ٠.٥;   // تقدير صامت
+let diversity = ٠.٥;   // تنوّع إجابات تقديري
+let remaining = ٤٠;
+
+bookFile.addEventListener("change", async e => {
+  const f = e.target.files[٠];
+  if(!f) return;
   if(f.name.endsWith(".txt")){
-    const r=new FileReader();
-    r.onload=x=>{bookText=x.target.result||"";alert("تم تحميل الكتاب");};
-    r.readAsText(f,"UTF-8");
-  }else if(f.name.endsWith(".pdf")){
-    readPDF(f);
+    const r = new FileReader();
+    r.onload = x => bookText = x.target.result || "";
+    r.readAsText(f,"UTF-٨");
+  } else {
+    const buf = await f.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({data:buf}).promise;
+    let t="";
+    for(let i=١;i<=pdf.numPages;i++){
+      const p = await pdf.getPage(i);
+      const c = await p.getTextContent();
+      c.items.forEach(it=>t+=it.str+" ");
+    }
+    bookText = t;
   }
 });
 
-async function readPDF(file){
-  const buf=await file.arrayBuffer();
-  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
-  let t="";
-  for(let i=1;i<=pdf.numPages;i++){
-    const p=await pdf.getPage(i);
-    const c=await p.getTextContent();
-    c.items.forEach(it=>t+=it.str+" ");
-  }
-  bookText=t;
-  alert("تم تحميل كتاب PDF");
-}
-
-/* إنشاء المحاكاة */
 function build(){
-  const s=subject.value||"غير محددة";
-  const g=grade.value||"غير محدد";
-  const l=lesson.value||"غير محدد";
-  const d=duration.value;
-  const mode=delivery.value;
-
+  if(!coreQuestion.value || !lockedConcept.value) return;
+  built = true;
+  remaining = Number(duration.value);
   out.value =
-`محاكاة حصة صفية جاهزة للتنفيذ
+`حصة صفية سيادية — جاهزة للتنفيذ
 
-المادة: ${s}
-الصف: ${g}
-الدرس: ${l}
-مدة الحصة: ${d} دقيقة
-طريقة التنفيذ: ${mode=="face"?"وجاهي":"Teams"}
+المادة: ${subject.value||"—"}
+الصف: ${grade.value||"—"}
+الدرس: ${lesson.value||"—"}
+المدة: ${duration.value} دقيقة
+النمط: ${delivery.value==="face"?"وجاهي":"عن بُعد"}
 
-1) بداية الحصة (5 دقائق)
-- اكتب مثالًا من الدرس.
-- اسأل: أي نتيجة أدق؟ ولماذا؟
-- لا تشرح. لا تصحح.
+السؤال الواحد:
+«${coreQuestion.value}»
 
-2) أثناء إجابات الطلاب
-- استمع فقط.
-- راقب من يبرّر ومن يخمّن.
+المفهوم المقفول:
+«${lockedConcept.value}»
 
-3) قرار الحصة
-- اطلب قرارًا واحدًا فقط مع سبب واحد.
+قواعد الحصة:
+— لا خروج عن السؤال الواحد.
+— لا انتقال قبل نضج المفهوم المقفول.
+— القاعدة لا تُذكر إلا إن نطق بها طالب.
+— الصمت أداة، لا فراغ.
 
-4) متى أذكر القاعدة؟
-- عندما ينطق بها طالب بوضوح.
-- لا تطِل الشرح.
+بنية التنفيذ:
+١) إثارة بسؤال فقط.
+٢) أمثلة تخدم المفهوم المقفول حصراً.
+٣) مراقبة دليل نضج واحد.
+٤) فتح القفل دقيقتين ثم إغلاقه.
 
-5) تطبيق (7 دقائق)
-- مثال جديد.
-- طالب يجيب وآخر يبرّر.
-
-6) نهاية الحصة
-- سؤال أخير.
-- صمت 20 ثانية.
-
-ملاحظة للمعلم:
-التفكير أهم من الإجابة.
-
-مرجع من الكتاب:
-${bookText?bookText.slice(0,500):"لم يتم رفع كتاب"}
+مرجع الكتاب:
+${bookText?bookText.slice(٠,٥٠٠):"—"}
 `;
+  updateGauge();
 }
 
-/* مسارات حسب الواقع */
 function path(t){
-  if(t=="good"){
-    out.value+="\n\n🟢 الطلاب متفاعلون:\n- أعط مثالًا أصعب قليلًا.\n- لا تذكر القاعدة سريعًا.";
+  if(!built) return;
+  if(t==="good"){
+    diversity = ٠.٨;
+    out.value += "\n\n🟢 مسار تفاعل مرتفع:\n— مثال أعمق.\n— امتنع عن القاعدة.";
   }
-  if(t=="mixed"){
-    out.value+="\n\n🟡 الطلاب مختلفون:\n- اطلب تفكيك المثال خطوة خطوة.\n- اسأل: ما أول شيء ننظر إليه؟";
+  if(t==="mixed"){
+    diversity = ٠.٥;
+    out.value += "\n\n🟡 مسار متباين:\n— تفكيك خطوة واحدة.\n— سؤال: لماذا؟";
   }
-  if(t=="weak"){
-    out.value+="\n\n🔴 الطلاب متعثرون:\n- لا تقل خطأ.\n- استخدم تمثيلًا حسيًا.\n- بسّط السؤال.";
+  if(t==="weak"){
+    diversity = ٠.٢;
+    out.value += "\n\n🔴 مسار تعثّر:\n— مثال واحد فقط.\n— تمثيل حسي.\n— صمت.";
+  }
+  updateGauge();
+}
+
+function silentCheck(){
+  talkRatio = Math.max(٠, talkRatio - ٠.١);
+  updateGauge();
+}
+
+function updateGauge(){
+  if(talkRatio < ٠.٤ && diversity > ٠.٦){
+    gauge.textContent = "🟢 توازن";
+    gauge.className = "badge green";
+  } else if(talkRatio < ٠.٧){
+    gauge.textContent = "🟡 قابل للتحسين";
+    gauge.className = "badge yellow";
+  } else {
+    gauge.textContent = "🔴 اختلال";
+    gauge.className = "badge red";
   }
 }
 </script>
