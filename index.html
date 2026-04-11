@@ -3,26 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>محرك المحاكاة التعليمية العميقة</title>
+<title>محرك المحاكاة التعليمية العميقة – الإصدار 1.0</title>
 
 <style>
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Tahoma", Arial, sans-serif;
   background-color: #f4f6f8;
   margin: 0;
   padding: 16px;
+  direction: rtl;
 }
 
 .container {
   background: #ffffff;
-  max-width: 680px;
+  max-width: 760px;
   margin: auto;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-h2 {
+h1 {
   text-align: center;
   margin-bottom: 20px;
 }
@@ -39,7 +40,9 @@ input, textarea, select {
   margin-top: 6px;
   border-radius: 6px;
   border: 1px solid #ccc;
-  font-size: 16px;
+  font-size: 15px;
+  direction: rtl;
+  text-align: right;
 }
 
 textarea {
@@ -47,25 +50,84 @@ textarea {
 }
 
 button {
-  margin-top: 20px;
-  width: 100%;
-  padding: 14px;
-  font-size: 18px;
+  margin-top: 10px;
+  padding: 12px;
+  font-size: 16px;
   background-color: #1976d2;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
 }
 
+button.secondary {
+  background-color: #455a64;
+}
+
+button.danger {
+  background-color: #8e0000;
+}
+
 button:hover {
-  background-color: #125aa0;
+  opacity: 0.9;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
 }
 
 .output textarea {
-  height: 500px;
+  height: 520px;
   white-space: pre-wrap;
-  font-family: Tahoma, Arial, sans-serif;
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+
+.teacher-only {
+  background: #eef3f8;
+  border-right: 4px solid #1976d2;
+  padding: 10px;
+  margin-top: 12px;
+}
+
+.print-view .teacher-only {
+  display: none;
+}
+
+/* ===== الطباعة العربية ===== */
+@media print {
+  body {
+    background: #fff;
+    margin: 0;
+  }
+
+  .controls,
+  input,
+  select,
+  label {
+    display: none !important;
+  }
+
+  .container {
+    box-shadow: none;
+    max-width: 100%;
+    padding: 10mm 12mm;
+  }
+
+  .output textarea {
+    border: none;
+    height: auto;
+    font-size: 14pt;
+    line-height: 1.8;
+  }
+
+  h1 {
+    font-size: 20pt;
+    margin-bottom: 10mm;
+  }
 }
 </style>
 </head>
@@ -73,22 +135,22 @@ button:hover {
 <body>
 
 <div class="container">
-<h2>إنشاء محاكاة تعليمية عميقة</h2>
+<h1>محرك المحاكاة التعليمية العميقة</h1>
 
 <label>المادة</label>
-<input id="subject" placeholder="رياضيات، علوم، لغة عربية...">
+<input id="subject" placeholder="رياضيات / علوم / لغة عربية">
 
 <label>الصف</label>
-<input id="grade" placeholder="الثاني، الرابع، السابع...">
+<input id="grade" placeholder="الصف الثاني – الخامس – الثامن">
 
-<label>الدرس أو المفهوم</label>
-<input id="lesson" placeholder="المقارنة بين عددين، الجملة الاسمية...">
+<label>الدرس / المفهوم</label>
+<input id="lesson" placeholder="المقارنة بين عددين – الجملة الاسمية">
 
 <label>مستوى الطلبة</label>
 <select id="level">
-  <option value="ضعاف">طلاب ضعاف</option>
-  <option value="عادي" selected>صف عادي</option>
-  <option value="موهوبين">طلاب موهوبين</option>
+  <option>ضعاف</option>
+  <option selected>عادي</option>
+  <option>موهوبين</option>
 </select>
 
 <label>نوع المحاكاة</label>
@@ -99,42 +161,36 @@ button:hover {
 </select>
 
 <label>الهدف العميق (اختياري)</label>
-<textarea id="deepGoal" placeholder="ما الذي تريد أن يتغير في طريقة تفكير الطالب؟"></textarea>
+<textarea id="deepGoal" placeholder="ما الذي تريد أن يتغير في تفكير الطالب؟"></textarea>
 
-<button onclick="generateSimulation()">إنشاء المحاكاة</button>
+<div class="controls">
+<button onclick="generateSimulation()">🧠 إنشاء المحاكاة</button>
+<button class="secondary" onclick="showTeacherView()">👩‍🏫 عرض المعلم</button>
+<button class="secondary" onclick="showPrintView()">🧾 عرض الطباعة</button>
+<button onclick="saveSimulation()">💾 حفظ</button>
+<button onclick="searchLibrary()">🔍 بحث</button>
+<button onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+</div>
 
 <div class="output">
 <label>ناتج المحاكاة</label>
-<textarea id="output" placeholder="سيتم توليد المحاكاة هنا..."></textarea>
+<textarea id="output"></textarea>
 </div>
 </div>
 
 <script>
 function generateSimulation() {
-
   const subject = subjectInput();
   const grade = gradeInput();
   const lesson = lessonInput();
   const level = document.getElementById("level").value;
   const type = document.getElementById("type").value;
-  const goal = document.getElementById("deepGoal").value || "بناء فهم أعمق وأكثر وعيًا للمفهوم";
+  const goal = document.getElementById("deepGoal").value || "بناء فهم أعمق ومستقر للمفهوم";
 
-  const levelAdaptation = {
-    "ضعاف": `
-- تبسيط الموقف
-- استخدام تمثيل بصري أو حسي
-- سؤال واحد في كل مرة
-سؤال موجّه: ماذا يحدث لو غيّرنا جزءًا واحدًا فقط؟
-`,
-    "عادي": `
-- طرح الموقف كاملًا
-- مناقشة جماعية
-سؤال موجّه: هل يمكن أن يكون هناك تفسير آخر؟
-`,
-    "موهوبين": `
-- إضافة شرط جديد أو متغير
-سؤال موجّه: هل يبقى تفسيرك صحيحًا بعد هذا التغيير؟
-`
+  const levelMap = {
+    "ضعاف": "تبسيط الموقف واستخدام تمثيل حسي مع سؤال واحد فقط.",
+    "عادي": "مناقشة جماعية وطرح أكثر من تفسير محتمل.",
+    "موهوبين": "إضافة شرط جديد أو متغير يتحدى التفسير الأول."
   };
 
   const simulation = `
@@ -146,75 +202,108 @@ function generateSimulation() {
 مستوى الطلبة: ${level}
 
 ١) الافتراض الحدسي:
-غالبًا ما يعتقد الطلبة فهمًا أوليًا بسيطًا للمفهوم.
+ينطلق الطلبة من فهم أولي بسيط للمفهوم.
 
 سؤال:
-لماذا يبدو هذا الفهم منطقيًا لك في البداية؟
+لماذا يبدو هذا الفهم صحيحًا في البداية؟
 
 ٢) موقف واقعي كاشف:
-يقدّم المعلم موقفًا من الحياة اليومية
-يجعل هذا الفهم غير كافٍ للإجابة بدقة.
+يُعرض موقف يجعل هذا الفهم غير كافٍ لحلّه.
 
 سؤال:
-هل ما فكرتَ فيه يحل الموقف بالكامل؟ لماذا؟
+هل تفسيرك يحل المشكلة بالكامل؟ لماذا؟
 
-٣) التكييف حسب المستوى:
-${levelAdaptation[level]}
+٣) تكييف حسب المستوى:
+${levelMap[level]}
 
-٤) الاحتكاك المعرفي:
-تظهر تفسيرات متعددة ومتعارضة.
-
-سؤال:
-ما الشيء المشترك الذي تحتاجه كل هذه الإجابات؟
-
-٥) لحظة التحول المفاهيمي:
-يكتشف الطلبة أن جوهر المفهوم، لا شكله الظاهر، هو الأساس.
+٤) لحظة التحوّل المفاهيمي:
+يبدأ الطلبة بتعديل التفكير للوصول إلى جوهر الفكرة.
 
 سؤال:
-لو تجاهلنا المظهر الخارجي، ما الذي يجب أن نركّز عليه؟
+ما الشيء الذي يجب التركيز عليه بدل الشكل الظاهري؟
 
-٦) تسمية المفهوم:
-يقدّم المعلم المصطلح أو القاعدة بوصفها اسمًا لما تم اكتشافه، لا بداية له.
-
-٧) التطبيق:
-نشاط قصير لتطبيق الفهم الجديد.
+٥) التطبيق:
+نشاط قصير لتثبيت الفهم.
 
 سؤال:
 ما الذي جعلك تختار هذا الحل؟
 
-٨) نقل التعلّم:
-ربط المفهوم بسياق جديد خارج الدرس.
+٦) نقل التعلّم:
+ربط المفهوم بسياق جديد.
 
 سؤال:
-أين يمكن أن نحتاج هذا النوع من التفكير في حياتنا؟
-
-٩) التقويم العميق:
-ليس اختبارًا بل قرارًا مبرّرًا.
-
-سؤال:
-كيف ستفكر في موقف مشابه لاحقًا بشكل مختلف؟
+أين يمكن استخدام هذا التفكير خارج الدرس؟
 
 الهدف العميق:
 ${goal}
 
-إرشاد للمعلم:
-إذا أجاب الطالب بسرعة دون تفكير،
-فالسؤال يحتاج إعادة صياغة، لا شرح.
+--------------------
+
+<div class="teacher-only">
+بوصلة دور المعلم:
+🟢 اترك الطلبة يبرّرون.
+🟡 انتظر صمتًا تربويًا بعد السؤال.
+🔴 لا تُسمِّ القاعدة مبكرًا.
+
+نقطة القرار الواحدة:
+قرار واحد فقط للحصة يُبرَّر جماعيًا.
+
+اختبار الصمت:
+صمت ٢٠ ثانية بعد السؤال الحاسم.
+
+مؤشّر النجاح:
+اختلاف التبريرات دون طلب الإجابة.
+</div>
 `;
 
-  document.getElementById("output").value = simulation.trim();
+  output.value = simulation.trim();
 }
 
+/* ===== العرض ===== */
+function showTeacherView() {
+  document.body.classList.remove("print-view");
+}
+function showPrintView() {
+  document.body.classList.add("print-view");
+}
+
+/* ===== المدخلات ===== */
 function subjectInput() {
-  return document.getElementById("subject").value || "غير محددة";
+  return subject.value || "غير محددة";
 }
-
 function gradeInput() {
-  return document.getElementById("grade").value || "غير محدد";
+  return grade.value || "غير محدد";
+}
+function lessonInput() {
+  return lesson.value || "غير محدد";
 }
 
-function lessonInput() {
-  return document.getElementById("lesson").value || "غير محدد";
+/* ===== الحفظ والبحث ===== */
+function saveSimulation() {
+  if (!output.value) return alert("لا يوجد محتوى");
+  const lib = JSON.parse(localStorage.getItem("simulations") || "[]");
+  lib.push({
+    time: new Date().toLocaleString(),
+    subject: subject.value,
+    grade: grade.value,
+    lesson: lesson.value,
+    text: output.value
+  });
+  localStorage.setItem("simulations", JSON.stringify(lib));
+  alert("تم الحفظ ✅");
+}
+
+function searchLibrary() {
+  const q = prompt("اكتب كلمة للبحث:");
+  if (!q) return;
+  const lib = JSON.parse(localStorage.getItem("simulations") || "[]");
+  const results = lib.filter(x =>
+    (x.text + x.subject + x.lesson).includes(q)
+  );
+  if (!results.length) return alert("لا نتائج");
+  const list = results.map((e,i)=>`${i+1}) ${e.subject} | ${e.lesson}`).join("\n");
+  const idx = prompt("النتائج:\n"+list+"\n\nاختر رقم:");
+  if (results[idx-1]) output.value = results[idx-1].text;
 }
 </script>
 
