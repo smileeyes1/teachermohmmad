@@ -1,213 +1,234 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>مشروع محاكاة تعليمية – بضغطة زر</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشروع المحاكاة الصفّية التربوية – نسخة متكاملة</title>
 
 <style>
 body{
   font-family: Tahoma, Arial, sans-serif;
-  background:#f4f6f8; margin:0; padding:16px; direction:rtl;
+  background:#f4f6f8;
+  margin:0; padding:16px; direction:rtl;
 }
 .container{
   background:#fff; max-width:900px; margin:auto; padding:20px;
   border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,.1);
 }
-h1{ text-align:center; margin-bottom:12px; }
+h1,h2{ text-align:center; margin-bottom:12px; }
 label{ font-weight:bold; display:block; margin-top:10px; }
 input, textarea, select{
-  width:100%; padding:10px; margin-top:6px; border-radius:6px;
-  border:1px solid #ccc; font-size:15px; direction:rtl; text-align:right;
+  width:100%; padding:10px; margin-top:6px;
+  border-radius:6px; border:1px solid #ccc;
+  font-size:15px; direction:rtl; text-align:right;
 }
 textarea{ resize:vertical; }
-small{ color:#666; }
 
 .actions{
-  display:flex; flex-wrap:wrap; gap:8px; margin-top:16px;
+  display:flex; flex-wrap:wrap; gap:8px; margin:16px 0;
 }
 button{
   padding:12px; font-size:15px; border:none; border-radius:6px;
   cursor:pointer; background:#1976d2; color:#fff;
 }
 button.secondary{ background:#455a64; }
+button.alt{ background:#009688; }
 button:hover{ opacity:.9; }
 
 .output textarea{
-  height:520px; white-space:pre-wrap; font-size:14.5px; line-height:1.7;
+  height:520px; white-space:pre-wrap;
+  font-size:14.5px; line-height:1.7;
 }
 
-/* إرشاد المعلم */
 .teacher-only{
   background:#eef3f8; border-right:4px solid #1976d2;
   padding:10px; margin-top:12px;
 }
+
+/* وضع الطباعة */
 .print-view .teacher-only{ display:none; }
 
-/* الطباعة العربية */
 @media print{
   body{ background:#fff; margin:0; }
-  .actions, input, select, label, small{ display:none !important; }
+  .actions, input, select, label{ display:none !important; }
   .container{ box-shadow:none; max-width:100%; padding:10mm 12mm; }
-  .output textarea{ border:none; height:auto; font-size:14pt; line-height:1.8; }
+  .output textarea{
+    border:none; height:auto; font-size:14pt; line-height:1.8;
+  }
 }
 </style>
 </head>
 
 <body>
+
 <div class="container">
-  <h1>محرك محاكاة تعليمية (ضغطة زر)</h1>
+<h1>مشروع المحاكاة الصفّية التربوية</h1>
 
-  <label>المادة</label>
-  <input id="subject" placeholder="رياضيات – علوم – لغة عربية" />
+<label>المادة</label>
+<input id="subject" placeholder="رياضيات – علوم – لغة عربية">
 
-  <label>الصف</label>
-  <input id="grade" placeholder="الثاني – الخامس" />
+<label>الصف</label>
+<input id="grade" placeholder="الثاني – الخامس">
 
-  <label>الدرس / المفهوم</label>
-  <input id="lesson" placeholder="المقارنة بين عددين – الجملة الاسمية" />
+<label>الدرس / المفهوم</label>
+<input id="lesson" placeholder="المقارنة بين عددين – الجملة الاسمية">
 
-  <label>مستوى الطلبة</label>
-  <select id="level">
-    <option>ضعاف</option>
-    <option selected>عادي</option>
-    <option>موهوبين</option>
-  </select>
+<label>مستوى الطلبة</label>
+<select id="level">
+  <option>ضعاف</option>
+  <option selected>عادي</option>
+  <option>موهوبين</option>
+</select>
 
-  <label>رفع ملف الكتاب (TXT أو PDF)</label>
-  <input type="file" id="bookFile" accept=".txt,.pdf" />
-  <small>يُستخدم كمصدر مرجعي لبناء المحاكاة</small>
+<label>نوع المخرج</label>
+<select id="mode">
+  <option value="engine">محاكاة تعليمية تقليدية</option>
+  <option value="classroom">محاكاة حصة صفية واقعية متعدّدة الخيارات</option>
+</select>
 
-  <div class="actions">
-    <button onclick="build()">🧠 إنشاء المحاكاة</button>
-    <button class="secondary" onclick="teacherView()">👩‍🏫 عرض المعلم</button>
-    <button class="secondary" onclick="printView()">🧾 عرض الطباعة</button>
-    <button onclick="save()">💾 حفظ</button>
-    <button onclick="search()">🔍 بحث</button>
-    <button onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
-  </div>
-
-  <div class="output">
-    <label>ناتج المحاكاة</label>
-    <textarea id="out" placeholder="سيظهر الناتج هنا…"></textarea>
-  </div>
+<div class="actions">
+  <button onclick="build()">🧠 إنشاء المحاكاة</button>
+  <button class="secondary" onclick="teacherView()">👩‍🏫 عرض المعلم</button>
+  <button class="secondary" onclick="printView()">🧾 عرض الطباعة</button>
+  <button onclick="save()">💾 حفظ</button>
+  <button onclick="search()">🔍 بحث</button>
+  <button onclick="window.print()">🖨️ طباعة</button>
 </div>
 
-<!-- ✅ مكتبة PDF.js الصحيحة -->
-https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.jsscript>
+<div class="output">
+<label>ناتج المحاكاة</label>
+<textarea id="out"></textarea>
+</div>
+</div>
 
 <script>
-let bookText="";
-
-/* قراءة الملف */
-document.getElementById("bookFile").addEventListener("change", e=>{
-  const f=e.target.files[0]; if(!f) return;
-  if(f.name.toLowerCase().endsWith(".txt")){
-    const r=new FileReader();
-    r.onload=x=>{ bookText=x.target.result||""; alert("✅ تم تحميل الكتاب (TXT)"); };
-    r.readAsText(f,"UTF-8");
-  }else if(f.name.toLowerCase().endsWith(".pdf")){
-    readPDF(f);
-  }else alert("❌ نوع غير مدعوم");
-});
-
-async function readPDF(file){
-  const buf=await file.arrayBuffer();
-  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
-  let t="";
-  for(let i=1;i<=pdf.numPages;i++){
-    const p=await pdf.getPage(i);
-    const c=await p.getTextContent();
-    c.items.forEach(it=> t+=(it.str||"")+" ");
-  }
-  bookText=t; alert("✅ تم تحميل الكتاب (PDF)");
-}
-
-/* البناء بضغطة زر */
 function build(){
-  const subject=val("subject","غير محددة");
-  const grade=val("grade","غير محدد");
-  const lesson=val("lesson","غير محدد");
-  const level=document.getElementById("level").value;
+  const subject = val("subject","غير محددة");
+  const grade   = val("grade","غير محدد");
+  const lesson  = val("lesson","غير محدد");
+  const level   = document.getElementById("level").value;
+  const mode    = document.getElementById("mode").value;
 
-  const levelGuide={
-    "ضعاف":"تبسيط + تمثيل حسي + سؤال واحد فقط.",
-    "عادي":"نقاش جماعي + أكثر من تفسير محتمل.",
-    "موهوبين":"إضافة شرط/متغيّر يتحدى الفهم الأول."
-  };
+  let text="";
 
-  const ref = bookText ? bookText.slice(0,700) : "لا يوجد كتاب مرفوع.";
-
-  document.getElementById("out").value = `
-محاكاة تعليمية (بضغطة زر)
+  if(mode==="engine"){
+    text = `
+محاكاة تعليمية (بنية تربوية)
 
 المادة: ${subject}
 الصف: ${grade}
 الدرس: ${lesson}
 المستوى: ${level}
 
-1) الافتراض الحدسي:
-ينطلق الطلبة من فهم أولي بسيط.
+١) افتراض حدسي:
+ينطلق الطلبة من فهم أولي بسيط للمفهوم.
 
 سؤال:
-لماذا يبدو هذا الفهم صحيحًا في البداية؟
+لماذا يبدو هذا الفهم صحيحًا؟
 
-2) موقف كاشف:
-موقف يجعل الفهم الأولي غير كافٍ.
+٢) موقف كاشف:
+يظهر أن هذا الفهم غير كافٍ.
 
-سؤال:
-هل تفسيرك يحل المشكلة بالكامل؟ ولماذا؟
+٣) تكييف حسب المستوى:
+${level==="ضعاف"?"تبسيط وتمثيل حسي":level==="عادي"?"نقاش جماعي":"إضافة شرط جديد"}
 
-3) تكييف حسب المستوى:
-${levelGuide[level]}
+٤) التحول المفاهيمي:
+التركيز على جوهر الفكرة.
 
-4) لحظة التحوّل:
-التركيز على جوهر الفكرة لا شكلها.
+٥) التطبيق ونقل التعلّم.
 
-5) تطبيق:
-نشاط قصير لتثبيت الفهم.
-
-6) نقل التعلّم:
-ربط الفكرة بسياق جديد.
-
---------------------------------
-مرجع من الكتاب:
-${ref}
---------------------------------
-
-[إرشاد المعلم]
-- بوصلة الدور: دع التبرير يظهر – استخدم الصمت – لا تُسمِّ مبكرًا.
-- قرار واحد فقط للحصة.
-- اختبار الصمت: 20 ثانية بعد السؤال الحاسم.
-- مؤشر النجاح: اختلاف التبريرات دون طلب الإجابة.
+<div class="teacher-only">
+— بوصلة الدور:
+اترك التبرير – استخدم الصمت – لا تسمِّ مبكرًا.
+</div>
 `.trim();
+  }
+
+  if(mode==="classroom"){
+    text = `
+محاكاة حصة صفية واقعية متعدّدة الخيارات
+
+المادة: ${subject}
+الصف: ${grade}
+الدرس: ${lesson}
+زمن الحصة: ٤٠ دقيقة
+
+المرحلة الأولى: فتح الحصة
+— اكتب مثالًا مناسبًا على اللوح.
+— اسأل: «أي النتيجة أدق؟ ولماذا؟»
+
+ثم راقب ردود الطلبة.
+
+🔀 مسارات القرار:
+
+(أ) إن أجاب أغلب الطلبة بإجابة صحيحة مع تعليل:
+— لا تثبّت النتيجة.
+— اسأل: «هل هذا صحيح دائمًا؟»
+— قدّم مثالًا مشابهاً أعقد قليلاً.
+
+(ب) إن اختلف الطلبة في التعليل:
+— لا تصحّح.
+— اطلب تفكيك المثال.
+— اسأل: «ما الخانة الأهم؟»
+
+(ج) إن غلب الخطأ:
+— لا تقل (خطأ).
+— استخدم تمثيلًا حسيًا.
+— اسأل: «أي قيمة أكبر فعليًا؟»
+
+نقطة القرار الواحدة:
+اجعل الصف يتفق على قرار واحد فقط مع تبرير.
+
+اختبار الصمت:
+بعد القرار، صمت ٢٠ ثانية.
+
+مؤشّر النجاح:
+اختلاف التبريرات دون طلب الإجابة.
+
+<div class="teacher-only">
+إرشاد المعلم:
+🟢 دع الحيرة تعمل
+🟡 انتظر قبل التدخل
+🔴 لا تختصر الطريق
+</div>
+`.trim();
+  }
+
+  document.getElementById("out").value = text;
 }
 
-/* العرض */
-function teacherView(){ document.body.classList.remove("print-view"); }
-function printView(){ document.body.classList.add("print-view"); }
+function val(id,def){
+  return document.getElementById(id).value || def;
+}
 
-/* أدوات */
-function val(id,def){ return document.getElementById(id).value || def; }
+function teacherView(){
+  document.body.classList.remove("print-view");
+}
 
-/* حفظ وبحث محلي */
+function printView(){
+  document.body.classList.add("print-view");
+}
+
 function save(){
-  const t=document.getElementById("out").value;
-  if(!t) return alert("لا يوجد محتوى");
-  const L=JSON.parse(localStorage.getItem("sims")||"[]");
+  const t = out.value;
+  if(!t) return alert("لا محتوى");
+  const L = JSON.parse(localStorage.getItem("sims")||"[]");
   L.push({time:new Date().toLocaleString(), text:t});
   localStorage.setItem("sims",JSON.stringify(L));
   alert("✅ تم الحفظ");
 }
+
 function search(){
-  const q=prompt("ابحث بكلمة:"); if(!q) return;
-  const L=JSON.parse(localStorage.getItem("sims")||"[]");
-  const R=L.filter(x=>x.text.includes(q));
+  const q = prompt("كلمة البحث:");
+  if(!q) return;
+  const L = JSON.parse(localStorage.getItem("sims")||"[]");
+  const R = L.filter(x=>x.text.includes(q));
   if(!R.length) return alert("لا نتائج");
-  const list=R.map((e,i)=>`${i+1}) ${e.time}`).join("\n");
-  const k=prompt(list+"\nاختر رقم:");
-  if(R[k-1]) document.getElementById("out").value=R[k-1].text;
+  const list = R.map((e,i)=>`${i+1}) ${e.time}`).join("\n");
+  const k = prompt(list+"\nاختر رقم:");
+  if(R[k-1]) out.value = R[k-1].text;
 }
 </script>
+
 </body>
 </html>
