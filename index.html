@@ -133,7 +133,7 @@ small{color:#555;}
 </div>
 
 <!-- pdf.js -->
-https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.jsscript>
+https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js</script>
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc =
 "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -165,10 +165,10 @@ bookFile.addEventListener("change", async e => {
 
   if(f.name.endsWith(".txt")){
     const r = new FileReader();
-    r.onload = x => {
-      bookText = x.target.result || "";
+    r.onload = () => {
+      bookText = (r.result || "").trim();
       keywords = extractKeywords(bookText);
-      alert("تم تحميل الكتاب وتحديد نطاق الدرس");
+      alert("تم تحميل الكتاب النصي وتحديد النطاق");
     };
     r.readAsText(f,"UTF-8");
   }else{
@@ -178,18 +178,20 @@ bookFile.addEventListener("change", async e => {
     for(let i=1;i<=pdf.numPages;i++){
       const p = await pdf.getPage(i);
       const c = await p.getTextContent();
-      c.items.forEach(it=>t+=it.str+" ");
+      c.items.forEach(it=>t += it.str + " ");
     }
-    bookText = t;
+    bookText = t.trim();
     keywords = extractKeywords(bookText);
-    alert("تم تحميل كتاب PDF وتحديد نطاق الدرس");
+    alert("تم تحميل كتاب PDF وتحديد النطاق");
   }
 });
 
 /* استخراج كلمات النطاق */
 function extractKeywords(text){
-  if(!text) return [];
-  const words = text.split(/\s+/).filter(w=>w.length>3);
+  const words = text
+    .replace(/[^\u0600-\u06FF\s]/g,"")
+    .split(/\s+/)
+    .filter(w=>w.length>3);
   const freq = {};
   words.forEach(w=>freq[w]=(freq[w]||0)+1);
   return Object.entries(freq)
@@ -216,8 +218,8 @@ function build(){
   }
 
   built = true;
-  out.value =
-`محاكاة حصة صفية سيادية — مرتبطة بالكتاب
+  out.value = `
+محاكاة حصة صفية سيادية — مرتبطة بالكتاب
 
 المادة: ${subject.value||"—"}
 الصف: ${grade.value||"—"}
@@ -225,7 +227,7 @@ function build(){
 المدة: ${duration.value} دقيقة
 النمط: ${delivery.value==="face"?"وجاهي":"عن بُعد"}
 
-الهدف السلوكي للحصة:
+الهدف السلوكي:
 «${goal.value}»
 
 سؤال الحصة الواحد:
@@ -234,52 +236,40 @@ function build(){
 المفهوم المقفول:
 «${lockedConcept.value}»
 
-نطاق الدرس المستخلص من الكتاب:
-${keywords.length?keywords.join("، "):"—"}
+نطاق الدرس:
+${keywords.length ? keywords.join("، ") : "—"}
 
 قواعد ضابطة:
-— كل مثال يجب أن يخدم السؤال الواحد.
-— لا انتقال معرفي قبل نضج المفهوم المقفول.
-— القاعدة لا تُذكر إلا إذا نطق بها طالب.
-— الصمت المقصود أداة تفكير.
+— كل مثال يخدم السؤال الواحد.
+— لا انتقال قبل نضج المفهوم.
+— القاعدة لا تُلقَّن.
+— الصمت أداة تفكير.
 
-بنية التنفيذ:
-١) إثارة بسؤال فقط.
-٢) أمثلة من نطاق الكتاب حصراً.
-٣) انتظار دليل نضج واحد.
-٤) فتح القفل دقيقتين ثم الإغلاق.
-
-مرجع الكتاب:
-${bookText?bookText.slice(0,500):"—"}
+بنية الحصة:
+١) إثارة بسؤال.
+٢) أمثلة من الكتاب.
+٣) انتظار دليل نضج.
+٤) فتح القفل ثم الإغلاق.
 `;
   updateGauge();
 }
 
-/* مسارات التفاعل */
+/* مسارات */
 function path(t){
   if(!built) return;
-  if(t==="good"){
-    diversity=0.8;
-    out.value+="\n\n🟢 مسار تفاعل مرتفع:\n— مثال أعمق من نفس النطاق.\n— امتنع عن القاعدة.";
-  }
-  if(t==="mixed"){
-    diversity=0.5;
-    out.value+="\n\n🟡 مسار متباين:\n— تفكيك خطوة واحدة.\n— سؤال: لماذا؟";
-  }
-  if(t==="weak"){
-    diversity=0.2;
-    out.value+="\n\n🔴 مسار تعثّر:\n— مثال واحد فقط.\n— تمثيل حسي.\n— صمت.";
-  }
+  if(t==="good"){diversity=0.8; out.value+="\n\n🟢 تفاعل مرتفع";}
+  if(t==="mixed"){diversity=0.5; out.value+="\n\n🟡 تفاعل متباين";}
+  if(t==="weak"){diversity=0.2; out.value+="\n\n🔴 تعثّر";}
   updateGauge();
 }
 
-/* فحص الصمت */
+/* الصمت */
 function silentCheck(){
   talkRatio=Math.max(0,talkRatio-0.1);
   updateGauge();
 }
 
-/* تحديث المؤشر */
+/* المؤشر */
 function updateGauge(){
   if(talkRatio<0.4 && diversity>0.6){
     gauge.textContent="🟢 توازن الحصة";
