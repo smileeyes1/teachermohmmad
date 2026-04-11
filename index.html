@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>نظام دعم المعلّم المتقدّم — درس واحد، ثلاث أدوات</title>
+<title>نظام دعم المعلّم — اختيار الدرس بحرية</title>
 
 <style>
 :root{
@@ -14,6 +14,7 @@
   --ink:#222;
   --muted:#6b7280;
   --ok:#2e7d32;
+  --alt:#455a64;
 }
 
 *{box-sizing:border-box}
@@ -32,55 +33,41 @@ body{
   padding:20px;
 }
 
-.header{
+.header,.card{
   background:var(--card);
   padding:20px;
   border-radius:14px;
-  text-align:center;
   box-shadow:0 4px 14px rgba(0,0,0,.08);
   margin-bottom:20px;
 }
 
-.card{
-  background:var(--card);
-  padding:20px;
-  border-radius:14px;
-  box-shadow:0 4px 12px rgba(0,0,0,.06);
-  margin-bottom:20px;
+.header{
+  text-align:center;
 }
 
 h2{
   margin:0 0 12px 0;
-  font-size:18px;
-}
-
-input[type="file"]{
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:1px dashed #ccc;
 }
 
 .buttons{
   display:flex;
   flex-wrap:wrap;
   gap:10px;
-  margin-top:10px;
+  justify-content:center;
 }
 
 button{
-  flex:1;
-  min-width:150px;
-  padding:12px;
+  padding:12px 16px;
   border-radius:12px;
   border:none;
   cursor:pointer;
   background:var(--main);
   color:#fff;
   font-size:15px;
+  min-width:180px;
 }
 
-button.alt{background:#455a64}
+button.alt{background:var(--alt)}
 button.ok{background:var(--ok)}
 
 #output{
@@ -89,17 +76,21 @@ button.ok{background:var(--ok)}
   padding:18px;
   border-radius:14px;
   white-space:pre-wrap;
-  font-size:15px;
+  text-align:right;
 }
 
-.footer{
-  text-align:center;
-  font-size:13px;
-  color:var(--muted);
+.note{
+  background:#fef9e7;
+  padding:12px;
+  border-radius:12px;
+  font-size:14px;
+  color:#7f6000;
+  margin-top:12px;
 }
 
 @media(max-width:600px){
   .buttons{flex-direction:column}
+  button{min-width:100%}
 }
 </style>
 </head>
@@ -109,93 +100,106 @@ button.ok{background:var(--ok)}
 <div class="app">
 
 <div class="header">
-  <h1>دعم المعلّم المتقدّم</h1>
-  <p>درس واحد — اختيار واحد — تنفيذ مهني هادئ</p>
+  <h1>نظام دعم المعلّم المتقدّم</h1>
+  <p>اختر الدرس الذي تريد — ثم اختر نوع الدعم</p>
 </div>
 
 <!-- اعتماد الكتاب -->
 <div class="card">
   <h2>اعتماد الكتاب</h2>
-  <input type="file" accept=".pdf,image/*" onchange="activateLesson(this)">
+  <input type="file" accept=".pdf,image/*" onchange="activateLessons()">
+  <div class="note">
+    ✔ الكتاب مرجع وحيد  
+    ✔ لا كتابة مطوّلة  
+    ✔ جميع المخرجات ستتكيّف مع الدرس المختار
+  </div>
 </div>
 
 <!-- اختيار الدرس -->
 <div class="card" id="lessonBox" style="display:none">
   <h2>اختر اسم الدرس</h2>
   <div class="buttons">
-    <button onclick="selectLesson()">الجمع حتى ٥</button>
+    <button onclick="selectLesson('الجمع حتى ٥')">الجمع حتى ٥</button>
+    <button onclick="selectLesson('الطرح حتى ٥')">الطرح حتى ٥</button>
+    <button onclick="selectLesson('مقارنة الأعداد')">مقارنة الأعداد</button>
+    <button onclick="selectLesson('أنماط بسيطة')">أنماط بسيطة</button>
+    <button onclick="selectLesson('العدّ التصاعدي')">العدّ التصاعدي</button>
   </div>
 </div>
 
-<!-- ما الذي تريده لهذا الدرس -->
-<div class="card" id="actionsBox" style="display:none">
-  <h2>ماذا تريد لهذا الدرس؟</h2>
+<!-- نوع الدعم -->
+<div class="card" id="actionBox" style="display:none">
+  <h2 id="lessonTitle"></h2>
   <div class="buttons">
     <button onclick="showPrep()">📘 تحضير الدرس</button>
-    <button onclick="showSim()">🧪 محاكاة الدرس</button>
+    <button onclick="showSim()">🧪 محاكاة واقعية</button>
     <button onclick="showObs()">📋 قوائم رصد</button>
+    <button class="alt" onclick="reset()">🔄 اختيار درس آخر</button>
   </div>
 </div>
 
+<!-- الإخراج -->
 <div id="output"></div>
-
-<div class="footer">
-  نظام مساند — بلا كتابة — بلا تحليل — بلا محاسبة
-</div>
 
 </div>
 
 <script>
-// تفعيل الكتاب
-function activateLesson(input){
-  if(input.files.length>0){
-    document.getElementById("lessonBox").style.display="block";
-  }
+let currentLesson="";
+
+function activateLessons(){
+  document.getElementById("lessonBox").style.display="block";
 }
 
-function selectLesson(){
-  document.getElementById("actionsBox").style.display="block";
-}
-
-// تحضير خاص بالدرس
-function showPrep(){
-  show(`
-تحضير درس: الجمع حتى ٥
-
-• نقطة الدخول: تمثيل مجموعتين بصريًا
-• الإجراء الصفّي: محاولة طالب واحد
-• لحظة التوقّف: عند أول نطق صحيح للمجموع
-  `);
-}
-
-// محاكاة واقعية خاصة بالدرس
-function showSim(){
-  show(`
-محاكاة هذا الدرس:
-
-1) اعرض مجموعتين لا تتجاوزان ٥
-2) اسمح بمحاولة واحدة
-3) صمت
-4) توقّف عند الفهم
-  `);
-}
-
-// قوائم رصد مرتبطة بالدرس
-function showObs(){
-  show(`
-قوائم رصد — الجمع حتى ٥:
-
-☐ حاول العد
-☐ استخدم التمثيل البصري
-☐ نطق الناتج
-☐ احتاج دعم
-  `);
+function selectLesson(name){
+  currentLesson=name;
+  document.getElementById("lessonTitle").textContent =
+    "الدعم المطلوب لدرس: " + name;
+  document.getElementById("actionBox").style.display="block";
 }
 
 function show(text){
   const o=document.getElementById("output");
   o.style.display="block";
   o.textContent=text;
+}
+
+function showPrep(){
+  show(
+`تحضير مختصر لدرس: ${currentLesson}
+
+• بداية الدرس من مثال الكتاب الأول
+• مشاركة طالب واحد
+• تثبيت الفكرة
+• توقّف عند أول فهم`
+  );
+}
+
+function showSim(){
+  show(
+`محاكاة صفّية واقعية لدرس: ${currentLesson}
+
+١) اعرض المثال الأساسي في الكتاب
+٢) صمت
+٣) محاولة تلميذ واحد
+٤) انتهِ`
+  );
+}
+
+function showObs(){
+  show(
+`قوائم رصد — ${currentLesson}
+
+☐ حاول
+☐ شارك
+☐ نطق الإجابة
+☐ احتاج دعم`
+  );
+}
+
+function reset(){
+  currentLesson="";
+  document.getElementById("actionBox").style.display="none";
+  document.getElementById("output").style.display="none";
 }
 </script>
 
