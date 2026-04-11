@@ -3,25 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>النظام التربوي الحكيم — نسخة آمنة بدون إنترنت</title>
+
+<title>أداة مُسانِدة للمعلّم — اعتماد الكتاب والتنفيذ الصامت</title>
 
 <style>
-/* =============================
-   هوية بصرية هادئة – Offline
-============================= */
 :root{
-  --primary:#0d47a1;
-  --primary-soft:#e3f2fd;
-  --background:#f6f8fb;
-  --surface:#ffffff;
-  --text:#1f2937;
+  --main:#1a5fb4;
+  --bg:#f3f5f8;
+  --card:#ffffff;
+  --soft:#eef2f6;
+  --ink:#222;
   --muted:#6b7280;
-  --success:#2e7d32;
-  --warning:#f9a825;
-  --danger:#c62828;
-  --border:#e5e7eb;
-  --radius:14px;
-  --shadow:0 6px 20px rgba(0,0,0,.08);
+  --ok:#2e7d32;
+  --alt:#455a64;
 }
 
 *{box-sizing:border-box}
@@ -29,192 +23,113 @@
 body{
   margin:0;
   font-family:Tahoma, Arial, sans-serif;
-  background:var(--background);
-  color:var(--text);
-  line-height:1.8;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.9;
 }
 
-/* =============================
-   الحاوية
-============================= */
 .app{
-  max-width:1200px;
-  margin:auto;
+  max-width:920px;
+  margin:24px auto;
   padding:16px;
 }
 
-/* =============================
-   الرأس
-============================= */
 .header{
-  background:var(--surface);
-  border-radius:var(--radius);
-  padding:18px;
-  box-shadow:var(--shadow);
+  background:var(--card);
+  padding:24px;
+  border-radius:18px;
   text-align:center;
+  box-shadow:0 6px 22px rgba(0,0,0,.06);
+  margin-bottom:22px;
 }
 
 .header h1{
   margin:0;
-  color:var(--primary);
-  font-size:1.4rem;
+  font-size:22px;
+  color:var(--main);
 }
 
 .header p{
-  margin:6px 0 0;
-  font-size:.9rem;
+  margin-top:8px;
+  font-size:14px;
   color:var(--muted);
 }
 
-/* =============================
-   الإرشاد اللحظي
-============================= */
-.guide{
-  position:sticky;
-  top:0;
-  margin:16px 0;
-  padding:12px;
-  background:var(--primary);
-  color:#fff;
-  border-radius:12px;
-  text-align:center;
-  font-size:.9rem;
-  box-shadow:var(--shadow);
-  z-index:10;
-}
-
-/* =============================
-   الشبكة
-============================= */
-.main{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
-}
-
-/* =============================
-   البطاقات
-============================= */
 .card{
-  background:var(--surface);
-  border-radius:var(--radius);
-  padding:16px;
-  box-shadow:var(--shadow);
+  background:var(--card);
+  padding:24px;
+  border-radius:18px;
+  box-shadow:0 4px 18px rgba(0,0,0,.06);
+  margin-bottom:20px;
 }
 
-.card h2{
-  margin-top:0;
-  font-size:1.05rem;
-  color:var(--primary);
+h2{
+  margin:0 0 14px 0;
+  font-size:18px;
 }
 
-label{
-  display:block;
-  margin-top:10px;
-  font-weight:bold;
-  font-size:.9rem;
-}
-
-input, textarea, button{
+input[type="file"]{
   width:100%;
-  margin-top:6px;
-  padding:10px;
-  font-size:.95rem;
-  border-radius:10px;
-  border:1px solid var(--border);
-  font-family:inherit;
+  padding:14px;
+  font-size:14px;
+  border-radius:14px;
+  border:1px dashed #ccc;
+  background:#fafafa;
 }
 
-input:focus, textarea:focus{
-  outline:none;
-  border-color:var(--primary);
-}
-
-textarea{resize:vertical}
-
-/* =============================
-   الملاحظات
-============================= */
 .note{
-  margin-top:10px;
-  padding:10px;
-  background:var(--primary-soft);
-  border-radius:10px;
-  font-size:.85rem;
-  color:#0b3c88;
+  margin-top:14px;
+  background:#fef9e7;
+  color:#7f6000;
+  padding:14px;
+  border-radius:14px;
+  font-size:14px;
 }
 
-/* =============================
-   الأزرار
-============================= */
-.actions{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
+.buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
   margin-top:14px;
 }
 
 button{
-  cursor:pointer;
+  flex:1;
+  min-width:160px;
+  padding:14px 16px;
+  border-radius:16px;
   border:none;
-  background:var(--primary);
+  cursor:pointer;
+  font-size:15px;
+  background:var(--main);
   color:#fff;
 }
 
-button.secondary{background:#455a64}
-button.success{background:var(--success)}
-button.warning{background:var(--warning); color:#000}
+button.alt{background:var(--alt)}
+button.ok{background:var(--ok)}
 
-button:hover{opacity:.9}
-
-/* =============================
-   الإخراج
-============================= */
-.output{margin-top:16px}
-
-#output{
-  height:420px;
-  white-space:pre-wrap;
-  background:#fafafa;
+#whisper, #output, #end{
+  display:none;
+  border-radius:18px;
+  padding:22px;
+  font-size:16px;
+  margin-bottom:20px;
 }
 
-/* =============================
-   وضع التنفيذ
-============================= */
-.run{
-  margin-top:16px;
-  background:var(--surface);
-  padding:16px;
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
+#whisper{background:var(--soft)}
+#end{background:#e8f5e9;color:var(--ok)}
+#output{background:#fafafa;white-space:pre-wrap}
+
+.footer{
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+  margin-top:22px;
 }
 
-.log{
-  margin-top:10px;
-  padding:10px;
-  background:#fafafa;
-  border-radius:10px;
-  min-height:120px;
-  font-size:.9rem;
-}
-
-/* =============================
-   التجاوب
-============================= */
-@media (max-width:900px){
-  .main{grid-template-columns:1fr}
-  .actions{grid-template-columns:1fr 1fr}
-}
-@media (max-width:500px){
-  .actions{grid-template-columns:1fr}
-}
-
-/* =============================
-   الطباعة الآمنة
-============================= */
 @media print{
-  .header,.guide,.actions,.run,input,button,textarea:not(#output){display:none}
-  #output{border:none;height:auto;font-size:14pt}
+  button,.buttons,input{display:none}
+  body{background:#fff}
 }
 </style>
 </head>
@@ -223,111 +138,170 @@ button:hover{opacity:.9}
 
 <div class="app">
 
-  <div class="header">
-    <h1>النظام التربوي الحكيم</h1>
-    <p>نظام حصص واقعية — يعمل بدون إنترنت ومحمي بالتصميم</p>
+<!-- العنوان -->
+<div class="header">
+  <h1>أداة مُسانِدة للمعلّم</h1>
+  <p>الكتاب هو المرجع — الاختيار فقط — الإرشاد يهمس ثم ينسحب</p>
+</div>
+
+<!-- اعتماد الكتاب -->
+<div class="card" id="step0">
+  <h2>اعتماد الكتاب (المنهاج)</h2>
+  <input type="file" accept=".pdf,image/*" onchange="acceptBook(this)">
+  <div class="note" id="bookNote">❗ لم يتم اعتماد كتاب بعد.</div>
+  <div class="note">
+    ✔ لا كتابة<br>
+    ✔ لا شرح<br>
+    ✔ لا تحليل<br>
+    ✔ العمل يتم حصريًا بما في الكتاب
   </div>
+</div>
 
-  <div class="guide" id="guide">
-    الإرشاد اللحظي: ابدأ بسؤال واحد واترك الصمت يعمل.
+<!-- اختيار الصف -->
+<div class="card" id="step1" style="display:none">
+  <h2>أين أنت الآن؟</h2>
+  <div class="buttons">
+    <button onclick="next(1)">الصف الأوّل</button>
+    <button onclick="next(1)">الصف الثاني</button>
+    <button onclick="next(1)">الصف الثالث</button>
   </div>
+</div>
 
-  <div class="main">
-
-    <div class="card">
-      <h2>اعتماد المنهاج</h2>
-      <label>المادة</label>
-      <input id="subject">
-      <label>الصف</label>
-      <input id="grade">
-      <div class="note">
-        🔒 لا يتم إرسال أو حفظ أي بيانات خارج هذا الجهاز.
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>جَوهر الحصّة</h2>
-      <label>سؤال الحصّة</label>
-      <input id="question">
-      <label>الفكرة المقفولة</label>
-      <input id="concept">
-      <div class="note">
-        ✅ نطق الفكرة = اكتمال الحصّة + توقّف فوري.
-      </div>
-    </div>
-
+<!-- نوع الدرس -->
+<div class="card" id="step2" style="display:none">
+  <h2>نوع الدرس (كما في الكتاب)</h2>
+  <div class="buttons">
+    <button onclick="next(2)">قراءة</button>
+    <button onclick="next(2)">لغة</button>
+    <button onclick="next(2)">حساب</button>
+    <button onclick="next(2)">نشاط</button>
+    <button onclick="next(2)">مراجعة</button>
   </div>
+</div>
 
-  <div class="actions">
-    <button onclick="prep()">تحضير</button>
-    <button class="secondary" onclick="simulate()">محاكاة</button>
-    <button class="warning" onclick="window.print()">طباعة</button>
+<!-- اللحظة الصفّية -->
+<div class="card" id="step3" style="display:none">
+  <h2>أي وصف أقرب لما يحدث الآن؟</h2>
+  <div class="buttons">
+    <button onclick="whisper('🧭 اعتمد مثال الكتاب فقط. انتظر محاولة واحدة ولا تُضف شرحًا.')">
+      التلاميذ يحاولون لكن مترددون
+    </button>
+    <button onclick="whisper('🧭 توقّف عن الإضافة. ما في الكتاب كافٍ.')">
+      الشرح بدأ يطول
+    </button>
+    <button class="ok" onclick="finish()">
+      أشعر أنهم فهموا
+    </button>
   </div>
+</div>
 
-  <div class="output">
-    <textarea id="output" readonly></textarea>
-  </div>
+<!-- الإرشاد -->
+<div id="whisper"></div>
 
-  <div class="run">
-    <h3>وضع التنفيذ</h3>
-    <div class="actions">
-      <button onclick="act('طرح السؤال')">اطرح السؤال</button>
-      <button class="secondary" onclick="act('صمت')">صمت</button>
-      <button class="success" onclick="closeLesson()">نُطقت الفكرة</button>
-    </div>
-    <div class="log" id="log"></div>
+<!-- أزرار الطلبات -->
+<div class="card" id="actions" style="display:none">
+  <h2>طلبات سريعة (اختياريّة)</h2>
+  <div class="buttons">
+    <button onclick="prep()">📘 تحضير</button>
+    <button onclick="simulate()">🧪 محاكاة</button>
+    <button onclick="plan()">🗺️ خطة</button>
+    <button class="alt" onclick="window.print()">🖨️ طباعة</button>
   </div>
+</div>
+
+<!-- الإخراج -->
+<div id="output"></div>
+
+<!-- الإغلاق -->
+<div id="end">
+  ✅ التعلّم حدث اعتمادًا على الكتاب.<br>
+  يمكنك التوقّف الآن دون شعور بالتقصير.
+</div>
+
+<!-- إعادة -->
+<div class="buttons" id="resetBar" style="display:none">
+  <button class="alt" onclick="resetAll()">بدء حصّة جديدة</button>
+</div>
+
+<div class="footer">
+  أداة تُخفّف العبء عن المعلّم — بلا كتابة — بلا قرارات إضافية — بلا محاسبة
+</div>
 
 </div>
 
 <script>
-/* ====== دعم لحظي بدون إنترنت ====== */
-const guide = m => document.getElementById("guide").textContent =
-  "الإرشاد اللحظي: " + m;
+function acceptBook(input){
+  if(input.files.length>0){
+    document.getElementById("bookNote").textContent =
+      "✅ تم اعتماد الكتاب: " + input.files[0].name;
+    document.getElementById("step1").style.display="block";
+  }
+}
 
-const output = document.getElementById("output");
-const logBox = document.getElementById("log");
+function next(step){
+  document.getElementById("step"+step).style.display="none";
+  document.getElementById("step"+(step+1)).style.display="block";
+}
+
+function whisper(text){
+  const w=document.getElementById("whisper");
+  w.style.display="block";
+  w.textContent=text;
+  document.getElementById("actions").style.display="block";
+}
 
 function prep(){
-  guide("فكرة واحدة تكفي. لا تنتقل قبل النطق.");
-  output.value =
-`تحضير حصّة واقعية (وضع آمن)
-
-المادة: ${subject.value}
-الصف: ${grade.value}
-
-سؤال الحصّة:
-${question.value}
-
-الفكرة المقفولة:
-${concept.value}
-
-إجراءات:
-- سؤال
-- صمت
-- نطق
-- توقّف`;
+  show(
+`تحضير حصّة (من الكتاب فقط):
+- افتح الصفحة المحددة
+- اعرض المثال الأول
+- اترك محاولة واحدة
+- توقّف عند أول فهم`
+  );
 }
 
 function simulate(){
-  guide("هذه محاكاة واقعية لا مثالية.");
-  output.value +=
-`\n\nمحاكاة:
-سؤال
-صمت
-تردّد
-نطق:
-${concept.value}
-إغلاق`;
+  show(
+`محاكاة حصّة واقعية:
+- فتح الكتاب
+- طرح مثال
+- صمت
+- محاولة تلميذ
+- إغلاق عند الفهم`
+  );
 }
 
-function act(t){
-  logBox.textContent += "\n• " + t;
+function plan(){
+  show(
+`خطة خفيفة:
+- حصّة واحدة = فكرة واحدة
+- لا شرح زائد
+- التوقيت أهم من الكمية`
+  );
 }
 
-function closeLesson(){
-  guide("توقّف الآن. التعلّم حدث.");
-  logBox.textContent += "\n• انتهت الحصّة";
+function show(text){
+  const o=document.getElementById("output");
+  o.style.display="block";
+  o.textContent=text;
+}
+
+function finish(){
+  document.getElementById("whisper").style.display="none";
+  document.getElementById("end").style.display="block";
+  document.getElementById("resetBar").style.display="flex";
+}
+
+function resetAll(){
+  ["step0","step1","step2","step3"].forEach((id,i)=>{
+    document.getElementById(id).style.display = (i===0)?"block":"none";
+  });
+  document.getElementById("bookNote").textContent="❗ لم يتم اعتماد كتاب بعد.";
+  document.getElementById("whisper").style.display="none";
+  document.getElementById("output").style.display="none";
+  document.getElementById("end").style.display="none";
+  document.getElementById("actions").style.display="none";
+  document.getElementById("resetBar").style.display="none";
 }
 </script>
 
