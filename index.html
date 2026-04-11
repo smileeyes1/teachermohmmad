@@ -3,20 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>التحضير السيادي للحصّة</title>
-
-<meta name="description" content="نظام تحضير سيادي للحصص الصفية — سؤال واحد، فكرة واحدة، صمت واعٍ.">
+<title>النظام السيادي للحصّة الصفّية</title>
 
 <style>
 :root{
-  --main:#2c7be5;
-  --dark:#1a4fa0;
+  --main:#1565c0;
   --bg:#f4f6f8;
   --card:#ffffff;
   --ink:#222;
   --soft:#f0f3f7;
-  --danger:#c0392b;
-  --success:#1b5e20;
+  --hint:#fff8e1;
+  --gray:#455a64;
 }
 
 *{box-sizing:border-box}
@@ -29,42 +26,44 @@ body{
 }
 
 .container{
-  max-width:760px;
-  margin:20px auto;
+  max-width:860px;
+  margin:16px auto;
   background:var(--card);
-  padding:20px;
+  padding:16px;
   border-radius:12px;
   box-shadow:0 4px 10px rgba(0,0,0,.08);
 }
 
 h1{
-  margin-top:0;
   text-align:center;
-  color:var(--dark);
+  margin:0 0 8px 0;
+  color:var(--main);
   font-size:22px;
 }
 
 .sub{
   text-align:center;
   font-size:14px;
-  color:#555;
-  margin-bottom:16px;
+  margin-bottom:14px;
+  color:#444;
 }
 
 label{
   display:block;
-  margin-top:14px;
+  margin-top:12px;
   font-weight:bold;
+  font-size:15px;
 }
 
-input, textarea{
+input, textarea, button{
   width:100%;
   padding:10px;
   margin-top:6px;
+  font-size:15px;
   border-radius:8px;
   border:1px solid #ccc;
-  font-size:15px;
   direction:rtl;
+  font-family:inherit;
 }
 
 textarea{
@@ -73,58 +72,59 @@ textarea{
 
 .hint{
   margin-top:6px;
-  background:var(--soft);
-  padding:8px 10px;
+  background:var(--hint);
+  padding:8px;
   border-radius:8px;
-  font-size:13px;
-  color:#555;
+  font-size:13.5px;
+  color:#7f6000;
 }
 
-.file-box{
-  margin-top:10px;
-  background:var(--soft);
-  padding:10px;
-  border-radius:8px;
-  font-size:14px;
+.section{
+  margin-top:18px;
+  padding-top:12px;
+  border-top:1px dashed #ccc;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:14px;
 }
 
 button{
-  margin-top:18px;
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
   background:var(--main);
   color:#fff;
-  font-size:16px;
+  border:none;
   cursor:pointer;
 }
 
-button:hover{background:var(--dark)}
+button.secondary{background:var(--gray)}
 
-#error{
-  margin-top:10px;
-  font-weight:bold;
-  color:var(--danger);
+button:active{opacity:.88}
+
+.output{
+  margin-top:18px;
 }
 
 #output{
-  margin-top:20px;
-  height:280px;
-  background:#fafafa;
+  height:460px;
   white-space:pre-wrap;
   line-height:1.8;
+  background:#fafafa;
 }
 
-.footer{
-  margin-top:12px;
-  text-align:center;
-  font-size:13px;
-  color:#777;
+@media (max-width:600px){
+  .actions{
+    grid-template-columns:1fr;
+  }
+  #output{
+    height:420px;
+  }
 }
 
 @media print{
-  label,input,button,.hint,#error,.file-box,.footer,.sub{display:none}
+  input,button,textarea:not(#output),.hint,.actions,.sub{display:none}
   #output{
     border:none;
     height:auto;
@@ -138,131 +138,144 @@ button:hover{background:var(--dark)}
 <body>
 
 <div class="container">
-<h1>التحضير السيادي للحصّة</h1>
+
+<h1>النظام السيادي للحصّة الصفّية</h1>
 <div class="sub">
-إعداد: <b>محمد وجيه</b> — مدرسة <b>عاطوف المختلطة</b>
+سؤال واحد • فكرة واحدة • صمت واعٍ • الكتاب هو المنهاج
 </div>
 
+<!-- معلومات المنهاج -->
 <label>المادة</label>
-<input id="subject" placeholder="مثال: اللغة العربية">
+<input id="subject" placeholder="اللغة العربية / الرياضيات">
 
 <label>الصف</label>
-<input id="grade" placeholder="مثال: الصف الأول">
+<input id="grade" placeholder="الصف الأول">
 
-<label>عنوان الدرس</label>
-<input id="lesson" placeholder="كما ورد في الكتاب">
+<label>عنوان الدرس (من الكتاب)</label>
+<input id="lesson">
 
-<label>مدة الحصة (بالدقائق)</label>
-<input id="duration" inputmode="numeric" placeholder="٤٠">
-
-<label>سؤال الحصة الواحد 🔒</label>
-<input id="question" placeholder="سؤال واحد ثابت">
+<label>صفحة الكتاب المعتمدة</label>
+<input id="bookPage" placeholder="مثال: صفحة 12">
 <div class="hint">
-يُطرح من الدقيقة الأولى حتى الإغلاق. لا يُغيَّر.
+يُستخدم مثال واحد فقط من صفحة واحدة.
 </div>
+
+<!-- جوهر الحصّة -->
+<div class="section">
+<label>سؤال الحصّة الواحد 🔒</label>
+<input id="question" placeholder="لماذا؟ كيف؟ أين؟">
 
 <label>الفكرة المقفولة 🔒</label>
 <input id="concept" placeholder="جملة قصيرة ينطقها تلميذ">
-<div class="hint">
-إن لم تُنطق بصوت تلميذ → لم يحدث تعلّم.
 </div>
 
-<label>ملف الكتاب (اختياري)</label>
-<input type="file" id="bookFile" accept=".pdf,image/*">
-<div id="fileInfo" class="file-box">لم يتم إرفاق ملف</div>
-
-<div id="error"></div>
-
-<button onclick="build()">✅ توليد التحضير السيادي</button>
-
-<textarea id="output" readonly placeholder="سيظهر التحضير هنا..."></textarea>
-
-<div class="footer">
-الصمت أداة • التفكير هدف • النطق دليل الفهم
+<!-- أسماء التلاميذ -->
+<div class="section">
+<label>أسماء التلاميذ (اختياري)</label>
+<textarea id="students" placeholder="محمد&#10;ليان&#10;أحمد"></textarea>
 </div>
+
+<!-- أزرار التشغيل -->
+<div class="section actions">
+  <button onclick="build()">✅ توليد التحضير</button>
+  <button class="secondary" onclick="simulate()">🎭 محاكاة حصة</button>
+  <button class="secondary" onclick="drawCard()">🎴 بطاقة صفية</button>
+  <button class="secondary" onclick="window.print()">🖨️ طباعة</button>
+</div>
+
+<!-- المخرج -->
+<div class="output">
+<textarea id="output" readonly placeholder="سيظهر التحضير والمحاكاة هنا..."></textarea>
+</div>
+
 </div>
 
 <script>
 "use strict";
-
 const $ = id => document.getElementById(id);
-const output = $("output");
-const errorBox = $("error");
-const fileBox = $("fileInfo");
-const fileInput = $("bookFile");
+const out = $("output");
 
-function sanitize(t){
-  return t.replace(/[<>]/g,"").trim();
+/* أدوات */
+function safe(v){return v.trim();}
+function requireCore(){
+  if(!safe($("question").value) || !safe($("concept").value)){
+    alert("⚠️ سؤال الحصة والفكرة المقفولة إلزاميان");
+    return false;
+  }
+  return true;
 }
 
-/* ملف */
-fileInput.addEventListener("change",()=>{
-  errorBox.textContent="";
-  fileBox.textContent="لم يتم إرفاق ملف";
-  const f=fileInput.files[0];
-  if(!f)return;
-
-  const ok = f.type==="application/pdf" || f.type.startsWith("image/");
-  if(!ok){
-    fileInput.value="";
-    errorBox.textContent="❌ نوع الملف غير مدعوم (PDF أو صورة فقط)";
-    return;
-  }
-
-  const size=(f.size/1024/1024).toFixed(2);
-  fileBox.textContent=`📘 ${sanitize(f.name)} — ${size} MB`;
-});
-
-/* بناء */
+/* توليد التحضير */
 function build(){
-  errorBox.textContent="";
+  if(!requireCore()) return;
 
-  const question=sanitize($("question").value);
-  const concept=sanitize($("concept").value);
+  out.value=
+`تحضير حصّة صفّية سيادية
 
-  if(!question || !concept){
-    errorBox.textContent="❌ سؤال الحصة والفكرة المقفولة عنصران إلزاميان";
-    return;
-  }
+المادة: ${safe($("subject").value) || "—"}
+الصف: ${safe($("grade").value) || "—"}
+الدرس: ${safe($("lesson").value) || "—"}
 
-  const subject=sanitize($("subject").value)||"—";
-  const grade=sanitize($("grade").value)||"—";
-  const lesson=sanitize($("lesson").value)||"—";
-  const duration=sanitize($("duration").value)||"—";
-  const file=fileInput.files[0];
-
-  output.value=`
-تحضير حصة صفّية سيادية
-
-المدرسة: عاطوف المختلطة
-المعلّم: محمد وجيه
-
-المادة: ${subject}
-الصف: ${grade}
-الدرس: ${lesson}
-المدة: ${duration} دقيقة
-
-ملف الكتاب:
-${file ? sanitize(file.name) : "غير مرفق"}
+المنهاج المعتمد:
+الكتاب المدرسي — ${safe($("bookPage").value) || "—"}
 
 سؤال الحصة الواحد:
-«${question}»
+«${safe($("question").value)}»
 
 الفكرة المقفولة:
-«${concept}»
+«${safe($("concept").value)}»
 
 بنية التنفيذ:
-١) طرح السؤال فقط.
-٢) مثال واحد من الكتاب.
-٣) صمت مقصود للتفكير.
-٤) نطق تلميذ واحد.
-٥) تثبيت ثم إغلاق.
+1) طرح السؤال فقط
+2) مثال واحد من نفس الصفحة
+3) صمت مقصود
+4) نطق تلميذ واحد
+5) إغلاق الحصة فور النطق
 
-مبدأ الحصة:
-الصمت أداة.
-التفكير غاية.
-النطق دليل.
-`.trim();
+مبدأ العمل:
+الصمت أداة
+التفكير هدف
+النطق دليل`;
+}
+
+/* محاكاة واقعية */
+function simulate(){
+  if(!requireCore()) return;
+
+  out.value +=
+`\n\n——— محاكاة تنفيذ واقعية ———
+
+الدقيقة الأولى:
+المعلم يقول:
+«${safe($("question").value)}»
+ثم يصمت.
+
+الدقائق التالية:
+التلاميذ ينظرون إلى مثال الكتاب.
+لا شرح.
+
+إعادة توجيه واحدة:
+«ارجع للسؤال.»
+
+اللحظة الحاسمة:
+عندما ينطق تلميذ:
+«${safe($("concept").value)}»
+
+القرار:
+نعم.
+✅ أُغلقت الحصة فورًا.
+
+——— نهاية المحاكاة ———`;
+}
+
+/* بطاقات صفية */
+function drawCard(){
+  const cards=[
+    "🟦 بطاقة صمت: لا كلام — نفكّر فقط.",
+    "🟨 بطاقة عودة: ارجع للسؤال.",
+    "🟩 بطاقة نطق: تلميذ واحد ينطق الفكرة."
+  ];
+  out.value += "\n\n" + cards[Math.floor(Math.random()*cards.length)];
 }
 </script>
 
