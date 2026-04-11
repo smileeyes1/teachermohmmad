@@ -2,19 +2,18 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>محاكاة حصة صفية سيادية — النسخة النهائية</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تحضير حصة بسيطة — سؤال واحد وفكرة واحدة</title>
 
 <style>
-/* ===== الأساس العام ===== */
 body{
   font-family: Tahoma, Arial, sans-serif;
   background:#f2f4f7;
   margin:0;
-  padding:12px;
+  padding:١٢px;
 }
 .container{
-  max-width:٨٤٠px;
+  max-width:٨٠٠px;
   margin:auto;
   background:#ffffff;
   padding:١٦px;
@@ -27,7 +26,7 @@ h1{
   margin-bottom:١٤px;
 }
 
-/* ===== المدخلات ===== */
+/* الحقول */
 label{
   display:block;
   font-weight:bold;
@@ -35,7 +34,7 @@ label{
   font-size:١٥px;
 }
 input, select, textarea, button{
-  width:١٠٠٪;
+  width:١٠٠%;
   padding:١٤px;
   margin-top:٦px;
   font-size:١٥px;
@@ -44,61 +43,41 @@ input, select, textarea, button{
   direction:rtl;
 }
 textarea{
+  height:٥٤٠px;
   resize:vertical;
   white-space:pre-wrap;
   line-height:١.٩;
 }
 
-/* ===== الأزرار ===== */
-.actions{
-  display:grid;
-  grid-template-columns:١fr ١fr;
-  gap:١٠px;
-  margin:١٨px ٠;
+/* تلميحات */
+.hint{
+  background:#f8f9fa;
+  border:١px solid #e0e0e0;
+  border-radius:٨px;
+  padding:٨px ١٠px;
+  margin-top:٦px;
+  font-size:١٣.٥px;
+  color:#444;
 }
+
+/* أزرار */
 button{
-  border:none;
+  margin-top:١٦px;
   background:#1976d2;
   color:#ffffff;
+  border:none;
+  font-size:١٦px;
 }
-button.alt{background:#009688;}
-button.warn{background:#f9a825; color:#000;}
-button.dark{background:#455a64;}
-button.danger{background:#d32f2f;}
-button:active{opacity:.85}
+button:active{opacity:.٨٥}
 
-/* ===== المؤشر ===== */
-.badge{
-  text-align:center;
-  padding:٨px;
-  border-radius:٨px;
-  font-size:١٥px;
-  margin-bottom:١٠px;
-}
-.green{background:#e8f5e9;color:#1b5e20;}
-.yellow{background:#fff8e1;color:#7f6000;}
-.red{background:#fde0dc;color:#b71c1c;}
-
-/* ===== الإخراج ===== */
-.output textarea{
-  height:٥٨٠px;
-  font-size:١٤.٥px;
-}
-
-/* ===== الطباعة ===== */
+/* طباعة */
 @media print{
-  label,input,select,small,.actions,.badge{display:none}
+  label,input,select,button,.hint{display:none}
   textarea{
     border:none;
     height:auto;
     font-size:١٤pt;
   }
-}
-small{
-  display:block;
-  font-size:١٣px;
-  color:#555;
-  margin-top:٤px;
 }
 </style>
 </head>
@@ -106,7 +85,7 @@ small{
 <body>
 
 <div class="container">
-<h1>محاكاة حصة صفية سيادية</h1>
+<h1>تحضير حصة صفّية بسيطة</h1>
 
 <label>المادة</label>
 <input id="subject" placeholder="اللغة العربية / الرياضيات">
@@ -117,130 +96,77 @@ small{
 <label>عنوان الدرس</label>
 <input id="lesson" placeholder="مثال: التنوين / الطرح ضمن ١٠">
 
-<label>الهدف السلوكي (قابل للرصد)</label>
-<input id="goal" placeholder="أن يختار / يحدد / يعلل مع سبب واحد">
+<label>سؤال الحصّة</label>
+<input id="question" placeholder="اكتب سؤالًا واحدًا فقط">
+<div class="hint">
+هذا سؤال نردّده طول الحصّة، ولا نغيّره.<br>
+مثال: «لماذا نطقنا هذا الصوت؟» أو «كيف عرفت العملية؟»
+</div>
 
-<label>سؤال الحصة الواحد</label>
-<input id="coreQuestion" placeholder="سؤال واحد فقط تُدار حوله الحصة">
+<label>فكرة الحصّة</label>
+<input id="concept" placeholder="جملة قصيرة وبسيطة">
+<div class="hint">
+هذه الجملة نريد من <b>تلميذ</b> أن يقولها قبل نهاية الحصّة.<br>
+مثال: «كل صوت له علامة» أو «لكل مسألة عملية واحدة».
+</div>
 
-<label>المفهوم المقفول</label>
-<input id="lockedConcept" placeholder="مفهوم لا يُغادر قبل أن ينطقه طالب">
-
-<label>مدة الحصة</label>
+<label>مدة الحصّة</label>
 <select id="duration">
   <option value="٤٠">٤٠ دقيقة</option>
   <option value="٤٥">٤٥ دقيقة</option>
 </select>
 
-<label>نمط التنفيذ</label>
-<select id="delivery">
-  <option value="face">وجاهي</option>
-  <option value="teams">عن بُعد</option>
-</select>
+<button onclick="build()">✅ حضّر الحصّة</button>
 
-<div class="actions">
-  <button onclick="build()">🧠 إنشاء المحاكاة</button>
-  <button class="alt" onclick="path('good')">🟢 تفاعل مرتفع</button>
-  <button class="warn" onclick="path('mixed')">🟡 تفاعل متباين</button>
-  <button class="danger" onclick="path('weak')">🔴 تعثّر</button>
-  <button class="dark" onclick="silentCheck()">⏱️ فحص الصمت</button>
-  <button onclick="window.print()">🖨️ طباعة</button>
-</div>
-
-<div id="gauge" class="badge green">🟢 توازن الحصة</div>
-
-<div class="output">
-<textarea id="out" placeholder="ستظهر محاكاة الحصة السيادية هنا..."></textarea>
-</div>
+<textarea id="output" placeholder="ستظهر الحصّة الجاهزة هنا..."></textarea>
 </div>
 
 <script>
-/* ===== العناصر ===== */
-const el=id=>document.getElementById(id);
-const subject=el("subject"),
-      grade=el("grade"),
-      lesson=el("lesson"),
-      goal=el("goal"),
-      coreQuestion=el("coreQuestion"),
-      lockedConcept=el("lockedConcept"),
-      duration=el("duration"),
-      delivery=el("delivery"),
-      out=el("out"),
-      gauge=el("gauge");
-
-let built=false;
-let talkRatio=0.٥;
-let diversity=0.٥;
-
-/* ===== إنشاء المحاكاة ===== */
 function build(){
-  if(!goal.value || !coreQuestion.value || !lockedConcept.value){
-    alert("الهدف، سؤال الحصة، والمفهوم المقفول عناصر إلزامية");
+
+  const subject  = document.getElementById("subject").value || "—";
+  const grade    = document.getElementById("grade").value || "—";
+  const lesson   = document.getElementById("lesson").value || "—";
+  const question = document.getElementById("question").value;
+  const concept  = document.getElementById("concept").value;
+  const duration = document.getElementById("duration").value;
+  const out      = document.getElementById("output");
+
+  if(!question || !concept){
+    alert("اكتب سؤال الحصّة وفكرتها أولًا");
     return;
   }
-  built=true;
 
   out.value =
-`محاكاة حصة صفية سيادية
+`تحضير حصة صفّية
 
-المادة: ${subject.value||"—"}
-الصف: ${grade.value||"—"}
-الدرس: ${lesson.value||"—"}
-المدة: ${duration.value} دقيقة
-النمط: ${delivery.value==="face"?"وجاهي":"عن بُعد"}
+المادة: ${subject}
+الصف: ${grade}
+الدرس: ${lesson}
+المدة: ${duration} دقيقة
 
-الهدف السلوكي:
-«${goal.value}»
+سؤال الحصّة:
+«${question}»
 
-سؤال الحصة الواحد:
-«${coreQuestion.value}»
+فكرة الحصّة:
+«${concept}»
 
-المفهوم المقفول:
-«${lockedConcept.value}»
+كيف أُنفّذ؟
+١) أطرح السؤال فقط.
+٢) أعطي مثالًا واحدًا.
+٣) أسكت قليلًا (تفكير).
+٤) تلميذ واحد يجيب.
+٥) أطلب من تلميذ قول فكرة الحصّة.
 
-بنية التنفيذ السيادي:
-١) طرح السؤال فقط — بلا شرح.
-٢) مثال واحد من الكتاب.
-٣) صمت مقصود (تفكير).
-٤) طالب واحد ينطق بالمفهوم.
-٥) تثبيت سريع دون إطالة.
+قرار الحصّة:
+لا شرح طويل.
+لا أسئلة كثيرة.
+فكرة واحدة تكفي.
 
-قرار الحصة:
-اطلب قرارًا واحدًا مع سبب واحد فقط.
-
-ملاحظة سيادية للمعلم:
-التفكير أهم من الإجابة.
-الصمت أداة تعليم.
-لا تسبق التلميذ.
+تذكير للمعلم:
+التلميذ يفكّر.
+وأنا أُدير الصمت.
 `;
-  updateGauge();
-}
-
-/* ===== مسارات التفاعل ===== */
-function path(t){
-  if(!built) return;
-  diversity = {good:٠.٨, mixed:٠.٥, weak:٠.٢}[t];
-  updateGauge();
-}
-
-/* ===== فحص الصمت ===== */
-function silentCheck(){
-  talkRatio = Math.max(٠, talkRatio - ٠.١);
-  updateGauge();
-}
-
-/* ===== المؤشر ===== */
-function updateGauge(){
-  if(talkRatio<٠.٤ && diversity>٠.٦){
-    gauge.textContent="🟢 توازن الحصة";
-    gauge.className="badge green";
-  }else if(talkRatio<٠.٧){
-    gauge.textContent="🟡 قابل للتحسين";
-    gauge.className="badge yellow";
-  }else{
-    gauge.textContent="🔴 اختلال";
-    gauge.className="badge red";
-  }
 }
 </script>
 
