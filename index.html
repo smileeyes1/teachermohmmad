@@ -19,7 +19,7 @@ body{
   color:var(--ink);
 }
 .container{
-  max-width:850px;
+  max-width:900px;
   margin:auto;
   background:var(--card);
   padding:20px;
@@ -56,7 +56,7 @@ input,select,textarea,button{
   direction:rtl;
 }
 textarea{
-  height:540px;
+  height:520px;
   resize:vertical;
   white-space:pre-wrap;
   line-height:1.9;
@@ -141,43 +141,65 @@ button:active{opacity:.85}
   <option>اللغة العربية</option>
   <option>الرياضيات</option>
 </select>
+<div class="hint">
+اكتب اسم المادة فقط. لا تفكّر بمحتوى المادة — ستدرّس فكرة واحدة.
+</div>
 
 <label>الصف</label>
 <select id="grade">
   <option>الصف الأول</option>
   <option>الصف الثاني</option>
 </select>
+<div class="hint">
+اسأل نفسك: هل يستطيع تلميذ هذا الصف نطق الجملة لاحقًا؟
+</div>
 
 <label>عنوان الدرس</label>
-<input id="lesson" placeholder="كما ورد في الكتاب">
+<input id="lesson" placeholder="كما ورد حرفيًا في الكتاب">
+<div class="hint">
+العنوان مرجعي للإشراف فقط — لا تُدرّس العنوان.
+</div>
 
 <label>رفع ملف الكتاب (PDF أو صورة)</label>
 <div class="file-box">
   <input type="file" id="bookFile" accept=".pdf,image/*">
   <div id="fileName" class="file-name">لم يتم رفع ملف بعد</div>
-  <div class="hint">الغرض تنظيمي فقط — لا شرح ولا تحليل محتوى</div>
+  <div class="hint">
+الغرض استدعاء بصري فقط — لا شرح ولا تحليل.
+  </div>
 </div>
 
 <div id="err" class="error"></div>
 
 <label>سؤال الحصة الواحد 🔒</label>
-<input id="question" placeholder="سؤال ثابت من البداية للنهاية">
+<input id="question" placeholder="لماذا؟ كيف؟ أين؟">
+<div class="hint">
+سؤال واحد فقط يدور حوله الدرس كاملًا. لا تغيّره.
+</div>
 
 <label>الفكرة المقفولة 🔒</label>
-<input id="concept" placeholder="جملة قصيرة سينطقها تلميذ">
+<input id="concept" placeholder="جملة قصيرة ينطقها تلميذ">
+<div class="hint">
+إن لم تُنطق من تلميذ → لم يحدث تعلّم.
+</div>
 
 <label>مدة الحصة</label>
 <select id="duration">
   <option value="40">٤٠ دقيقة</option>
   <option value="45">٤٥ دقيقة</option>
 </select>
+<div class="hint">
+الزمن ليس أداة إغلاق. الفكرة هي أداة الإغلاق.
+</div>
 
 <div class="actions">
   <button onclick="build()">✅ توليد الحصة</button>
   <button class="secondary" onclick="window.print()">🖨️ طباعة</button>
 </div>
 
-<div class="badge">🛡️ التلميذ يفكّر — المعلّم يُدير الصمت</div>
+<div class="badge">
+🛡️ التلميذ يفكّر — المعلّم يُدير الصمت
+</div>
 
 <textarea id="output" placeholder="ستظهر الحصة الجاهزة هنا..."></textarea>
 
@@ -211,21 +233,7 @@ fileInput.addEventListener("change", () => {
     return;
   }
 
-  fileNameBox.innerHTML =
-    `📘 <b>${f.name}</b><br>الحجم: ${sizeMB} MB`;
-
-  if (f.type.startsWith("image/")) {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = document.createElement("img");
-      img.src = e.target.result;
-      img.style.maxWidth = "100%";
-      img.style.marginTop = "10px";
-      img.style.borderRadius = "10px";
-      fileNameBox.appendChild(img);
-    };
-    reader.readAsDataURL(f);
-  }
+  fileNameBox.innerHTML = `📘 <b>${f.name}</b><br>الحجم: ${sizeMB} MB`;
 });
 
 function showError(msg){
@@ -269,12 +277,12 @@ ${file ? file.name : "غير مرفق"}
 الفكرة المقفولة:
 «${concept}»
 
-بنية التنفيذ:
-١) سؤال واحد فقط.
-٢) مثال واحد.
-٣) صمت مقصود.
-٤) نطق تلميذ.
-٥) إغلاق الحصة.
+بنية التنفيذ السيادي:
+١) طرح السؤال فقط — دون شرح.
+٢) مثال واحد من الكتاب.
+٣) صمت مقصود للتفكير.
+٤) تلميذ واحد ينطق الفكرة.
+٥) إغلاق الحصة فورًا.
 
 مبدأ الحصة:
 الصمت أداة.
