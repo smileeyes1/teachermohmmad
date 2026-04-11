@@ -6,105 +6,134 @@
 
 <title>التحضير السيادي للحصة</title>
 
-<meta name="description" content="نظام تحضير سيادي للحصص الصفية، يحمي التفكير، ويعزّز التعلّم العميق.">
-
 <style>
 :root{
-  --main:#2c7be5;
-  --dark:#1a4fa0;
-  --bg:#f4f6f8;
-  --text:#222;
+  --main:#3b82f6;
+  --main-soft:#e8f0fe;
+  --accent:#22c55e;
+  --bg:#f7f8fa;
+  --card:#ffffff;
+  --text:#1f2933;
+  --muted:#6b7280;
   --danger:#c0392b;
-  --soft:#f0f3f7;
+  --radius:١٤px;
+  --transition:٠.٣s ease;
 }
 
 *{box-sizing:border-box}
 
 body{
-  margin:0;
-  background:var(--bg);
+  margin:٠;
   font-family:"Tahoma",Arial,sans-serif;
+  background:var(--bg);
   color:var(--text);
+  line-height:١.٦;
 }
 
 .container{
-  max-width:٧٢٠px;
-  margin:٢٠px auto;
-  background:#fff;
-  padding:٢٠px;
-  border-radius:١٢px;
-  box-shadow:٠ ٤px ١٠px rgba(٠,٠,٠,٠.٠٨);
+  max-width:٧٤٠px;
+  margin:٣٠px auto;
+  background:var(--card);
+  padding:٢٤px;
+  border-radius:var(--radius);
+  box-shadow:٠ ١٠px ٢٥px rgba(٠,٠,٠,٠.٠٦);
 }
 
 h1{
-  margin-top:٠;
   text-align:center;
-  color:#٢c٣e٥٠;
+  margin-top:٠;
+  margin-bottom:٢٠px;
+  color:#١f٢٩٣٣;
+}
+
+.section-note{
+  background:var(--main-soft);
+  padding:١٢px ١٤px;
+  border-radius:١٠px;
+  color:#١e٣a٨a;
+  font-size:١٤px;
+  margin-bottom:٢٠px;
 }
 
 label{
   display:block;
-  margin-top:١٥px;
+  margin-top:١٦px;
+  margin-bottom:٦px;
   font-weight:bold;
 }
 
 input,textarea{
   width:١٠٠٪;
-  padding:١٠px;
-  margin-top:٥px;
-  border-radius:٨px;
-  border:١px solid #ccc;
+  padding:١١px ١٢px;
+  border-radius:١٠px;
+  border:١px solid #d1d5db;
   font-size:١٥px;
+  transition:var(--transition);
 }
 
-textarea{resize:vertical}
+input:focus,textarea:focus{
+  outline:none;
+  border-color:var(--main);
+  box-shadow:٠ ٠ ٠ ٣px rgba(٥٩,١٣٠,٢٤٦,٠.١٥);
+}
+
+textarea{
+  resize:vertical;
+  min-height:١٢٠px;
+}
+
+.file-box{
+  margin-top:١٠px;
+  background:#f3f4f6;
+  padding:١٠px;
+  border-radius:١٠px;
+  font-size:١٤px;
+  color:var(--muted);
+}
 
 button{
-  margin-top:٢٠px;
+  margin-top:٢٤px;
   width:١٠٠٪;
   background:var(--main);
   color:#fff;
   border:none;
-  padding:١٢px;
-  border-radius:١٠px;
+  padding:١٤px;
+  border-radius:١٢px;
   font-size:١٦px;
   cursor:pointer;
+  transition:var(--transition);
 }
 
-button:hover{background:var(--dark)}
-
-.file-box{
-  margin-top:١٠px;
-  background:var(--soft);
-  padding:١٠px;
-  border-radius:٨px;
-  font-size:١٤px;
+button:hover{
+  background:#٢٥٦٣eb;
 }
 
 #err{
-  margin-top:١٠px;
+  margin-top:١٢px;
   color:var(--danger);
   font-weight:bold;
 }
 
 #output{
-  margin-top:٢٠px;
-  height:٢٨٠px;
+  margin-top:٢٤px;
+  background:#f9fafb;
   font-family:"Courier New",monospace;
-  background:#fafafa;
-}
-
-small{
-  color:#٦٦٦;
-  display:block;
-  margin-top:٥px;
+  border:١px dashed #d1d5db;
 }
 
 .footer-note{
-  margin-top:١٠px;
+  margin-top:١٦px;
   text-align:center;
-  font-size:١٢px;
-  color:#٨٨٨;
+  font-size:١٣px;
+  color:var(--muted);
+}
+
+/* موبايل */
+@media (max-width:٦٠٠px){
+  .container{
+    margin:١٢px;
+    padding:١٨px;
+  }
 }
 </style>
 </head>
@@ -114,126 +143,82 @@ small{
 <div class="container">
 <h1>التحضير السيادي للحصة</h1>
 
+<div class="section-note">
+هذا النموذج مصمَّم ليكون هادئًا، بسيطًا، ويخدم التفكير قبل أي شيء.
+</div>
+
 <label>المادة</label>
-<input id="subject" placeholder="مثال: اللغة العربية">
+<input id="subject">
 
 <label>الصف</label>
-<input id="grade" placeholder="مثال: الأول">
+<input id="grade">
 
 <label>اسم الدرس</label>
 <input id="lesson">
 
 <label>مدة الحصة (بالدقائق)</label>
-<input id="duration" inputmode="numeric">
+<input id="duration">
 
 <label>سؤال الحصة الواحد *</label>
-<input id="question" placeholder="سؤال يفتح التفكير…">
+<input id="question">
 
 <label>الفكرة المقفولة *</label>
-<input id="concept" placeholder="خلاصة واحدة لا تُكسر">
+<input id="concept">
 
-<label>ملف الكتاب (PDF أو صورة)</label>
+<label>ملف الكتاب (اختياري)</label>
 <input type="file" id="bookFile" accept=".pdf,image/*">
-<small>📎 الملف اختياري – لا يتم رفعه للإنترنت</small>
-
 <div id="fileName" class="file-box">لم يتم إرفاق ملف</div>
 
 <div id="err"></div>
 
-<button onclick="build()">بناء التحضير السيادي</button>
+<button onclick="build()">بناء التحضير بهدوء</button>
 
 <textarea id="output" readonly placeholder="سيظهر التحضير هنا…"></textarea>
 
 <div class="footer-note">
-هذا التحضير يحمي الصمت، ويُقدّس التفكير، ويمنح الطفل أمان النطق.
+الهدوء يحمي العقل — والعقل هو أداة التعلّم.
 </div>
-
 </div>
 
 <script>
 "use strict";
 
-/* عناصر */
-const $ = id => document.getElementById(id);
-const fileInput = $("bookFile");
-const errBox = $("err");
-const fileBox = $("fileName");
-const output = $("output");
+const $=id=>document.getElementById(id);
+const safe=t=>t.replace(/[<>]/g,"");
 
-/* تعقيم نصي */
-function safe(text){
-  return text.replace(/[<>]/g,"");
-}
-
-/* خطأ */
-function error(msg){
-  errBox.textContent = msg;
-}
-
-/* ملف */
-fileInput.addEventListener("change",()=>{
-  fileBox.textContent="لم يتم إرفاق ملف";
-  errBox.textContent="";
-  const f=fileInput.files[٠];
-  if(!f)return;
-
-  const valid=f.type==="application/pdf"||f.type.startsWith("image/");
-  if(!valid){
-    fileInput.value="";
-    return error("❌ نوع الملف غير مدعوم");
-  }
-
-  const size=(f.size/١٠٢٤/١٠٢٤).toFixed(٢);
-  fileBox.innerHTML=`📘 ${safe(f.name)} — ${size} MB`;
+$("bookFile").addEventListener("change",()=>{
+  const f=$("bookFile").files[٠];
+  $("fileName").textContent=f?`📘 ${f.name}`:"لم يتم إرفاق ملف";
 });
 
-/* بناء */
 function build(){
-  errBox.textContent="";
+  $("err").textContent="";
+  const q=safe($("question").value.trim());
+  const c=safe($("concept").value.trim());
+  if(!q||!c){
+    $("err").textContent="❌ السؤال والفكرة المقفولة مطلوبان";
+    return;
+  }
+  $("output").value=`
+تحضير حصة سيادية
 
-  const question=safe($("question").value.trim());
-  const concept=safe($("concept").value.trim());
+المادة: ${safe($("subject").value)||"—"}
+الصف: ${safe($("grade").value)||"—"}
+الدرس: ${safe($("lesson").value)||"—"}
+المدة: ${safe($("duration").value)||"—"} دقيقة
 
-  if(!question||!concept)
-    return error("❌ السؤال والفكرة المقفولة إلزاميان");
-
-  const subject=safe($("subject").value)||"—";
-  const grade=safe($("grade").value)||"—";
-  const lesson=safe($("lesson").value)||"—";
-  const duration=safe($("duration").value)||"—";
-  const file=fileInput.files[٠];
-
-  output.value=`
-تحضير حصة صفّية سيادية
-
-المدرسة: عاطوف المختلطة
-المعلّم: محمد وجيه
-
-المادة: ${subject}
-الصف: ${grade}
-الدرس: ${lesson}
-المدة: ${duration} دقيقة
-
-ملف الكتاب:
-${file ? `${safe(file.name)}` : "غير مرفق"}
-
-سؤال الحصة الواحد:
-«${question}»
+سؤال الحصة:
+«${q}»
 
 الفكرة المقفولة:
-«${concept}»
+«${c}»
 
 بنية التنفيذ:
 ١) سؤال واحد
 ٢) مثال واحد
 ٣) صمت مقصود
 ٤) نطق طفل واحد
-٥) تثبيت ثم إغلاق
-
-مبدأ الحصة:
-الصمت أداة
-التفكير غاية
-النطق دليل
+٥) تثبيت وإغلاق
 `.trim();
 }
 </script>
