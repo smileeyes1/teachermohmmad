@@ -6,112 +6,112 @@
 
 <style>
 :root{
-  --main:#١٥٦٥c٠;
-  --bg:#f٠f٣f٧;
+  --main:#1565c0;
+  --bg:#f0f3f7;
   --card:#ffffff;
-  --ink:#٣٣٣;
+  --ink:#333;
 }
 body{
-  margin:٠;
-  padding:١٢px;
+  margin:0;
+  padding:12px;
   font-family:Tahoma, Arial, sans-serif;
   background:var(--bg);
   color:var(--ink);
 }
 .container{
-  max-width:٨٥٠px;
+  max-width:850px;
   margin:auto;
   background:var(--card);
-  padding:٢٠px;
-  border-radius:١٦px;
-  box-shadow:٠ ٦px ١٦px rgba(٠,٠,٠,.١٢);
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 6px 16px rgba(0,0,0,.12);
 }
 header{
   text-align:center;
-  margin-bottom:٢٠px;
+  margin-bottom:20px;
 }
-header h١{
-  margin:٠;
-  font-size:٢٢px;
+header h1{
+  margin:0;
+  font-size:22px;
   color:var(--main);
 }
 header .sub{
-  margin-top:٦px;
-  font-size:١٤.٥px;
-  color:#٤٤٤;
+  margin-top:6px;
+  font-size:14.5px;
+  color:#444;
 }
 label{
   display:block;
-  margin-top:١٤px;
+  margin-top:14px;
   font-weight:bold;
-  font-size:١٥px;
+  font-size:15px;
 }
 input,select,textarea,button{
-  width:١٠٠%;
-  margin-top:٦px;
-  padding:١٤px;
-  font-size:١٥px;
-  border-radius:١٠px;
-  border:١px solid #ccc;
+  width:100%;
+  margin-top:6px;
+  padding:14px;
+  font-size:15px;
+  border-radius:10px;
+  border:1px solid #ccc;
   direction:rtl;
 }
 textarea{
-  height:٥٤٠px;
+  height:540px;
   resize:vertical;
   white-space:pre-wrap;
-  line-height:١.٩;
+  line-height:1.9;
 }
 .hint{
-  margin-top:٦px;
-  padding:٨px ١٠px;
-  background:#f٩fafa;
-  border:١px dashed #ccc;
-  border-radius:٨px;
-  font-size:١٣.٥px;
-  color:#٥٥٥;
+  margin-top:6px;
+  padding:8px 10px;
+  background:#f9fafa;
+  border:1px dashed #ccc;
+  border-radius:8px;
+  font-size:13.5px;
+  color:#555;
 }
 .file-box{
-  margin-top:١٢px;
-  background:#f١f٥ff;
-  border:١px solid #c٣d٣ff;
-  border-radius:١٠px;
-  padding:١٢px;
+  margin-top:12px;
+  background:#f1f5ff;
+  border:1px solid #c3d3ff;
+  border-radius:10px;
+  padding:12px;
 }
 .file-name{
-  margin-top:٨px;
-  font-size:١٤px;
-  color:#٠d٤٧a١;
+  margin-top:8px;
+  font-size:14px;
+  color:#0d47a1;
 }
 .actions{
   display:flex;
-  gap:١٠px;
-  margin-top:٢٠px;
+  gap:10px;
+  margin-top:20px;
 }
 button{
-  flex:١;
+  flex:1;
   background:var(--main);
   color:#fff;
   border:none;
-  font-size:١٦px;
+  font-size:16px;
   cursor:pointer;
 }
 button.secondary{
-  background:#٤٥٥a٦٤;
+  background:#455a64;
 }
-button:active{opacity:.٨٥}
+button:active{opacity:.85}
 .badge{
-  margin-top:١٦px;
-  padding:١٠px;
+  margin-top:16px;
+  padding:10px;
   text-align:center;
-  font-size:١٤.٥px;
-  border-radius:١٠px;
-  background:#e٨f٥e٩;
-  color:#١b٥e٢٠;
+  font-size:14.5px;
+  border-radius:10px;
+  background:#e8f5e9;
+  color:#1b5e20;
 }
 .error{
-  margin-top:١٠px;
+  margin-top:10px;
   font-weight:bold;
-  color:#b٧١c١c;
+  color:#b71c1c;
 }
 
 @media print{
@@ -119,7 +119,7 @@ button:active{opacity:.٨٥}
   textarea{
     border:none;
     height:auto;
-    font-size:١٤pt;
+    font-size:14pt;
   }
 }
 </style>
@@ -130,7 +130,7 @@ button:active{opacity:.٨٥}
 <div class="container">
 
 <header>
-  <h١>النظام السيادي لتحضير الحصة</h١>
+  <h1>النظام السيادي لتحضير الحصة</h1>
   <div class="sub">
     إعداد: <b>محمد وجيه</b> — مدرسة <b>عاطوف المختلطة</b>
   </div>
@@ -155,23 +155,21 @@ button:active{opacity:.٨٥}
 <div class="file-box">
   <input type="file" id="bookFile" accept=".pdf,image/*">
   <div id="fileName" class="file-name">لم يتم رفع ملف بعد</div>
-  <div class="hint">
-    الغرض تنظيمي فقط — لا شرح، لا تحليل محتوى
-  </div>
+  <div class="hint">الغرض تنظيمي فقط — لا شرح ولا تحليل محتوى</div>
 </div>
 
 <div id="err" class="error"></div>
 
 <label>سؤال الحصة الواحد 🔒</label>
-<input id="question" placeholder="سؤال واحد ثابت من البداية للنهاية">
+<input id="question" placeholder="سؤال ثابت من البداية للنهاية">
 
 <label>الفكرة المقفولة 🔒</label>
 <input id="concept" placeholder="جملة قصيرة سينطقها تلميذ">
 
 <label>مدة الحصة</label>
 <select id="duration">
-  <option value="٤٠">٤٠ دقيقة</option>
-  <option value="٤٥">٤٥ دقيقة</option>
+  <option value="40">٤٠ دقيقة</option>
+  <option value="45">٤٥ دقيقة</option>
 </select>
 
 <div class="actions">
@@ -179,78 +177,75 @@ button:active{opacity:.٨٥}
   <button class="secondary" onclick="window.print()">🖨️ طباعة</button>
 </div>
 
-<div class="badge">
-🛡️ التلميذ يفكّر — المعلّم يُدير الصمت
-</div>
+<div class="badge">🛡️ التلميذ يفكّر — المعلّم يُدير الصمت</div>
 
 <textarea id="output" placeholder="ستظهر الحصة الجاهزة هنا..."></textarea>
 
 </div>
 
 <script>
-const MAX_SIZE_MB = ٥;
+const MAX_SIZE_MB = 5;
 
-const fileInput   = document.getElementById("bookFile");
+const fileInput = document.getElementById("bookFile");
 const fileNameBox = document.getElementById("fileName");
-const errBox      = document.getElementById("err");
+const errBox = document.getElementById("err");
 
-fileInput.addEventListener("change", function(){
-  const f = this.files[٠];
+fileInput.addEventListener("change", () => {
+  const f = fileInput.files[0];
   errBox.textContent = "";
   fileNameBox.textContent = "لم يتم رفع ملف بعد";
 
-  if(!f) return;
+  if (!f) return;
 
   const allowed = f.type === "application/pdf" || f.type.startsWith("image/");
-  if(!allowed){
-    this.value="";
-    error("❌ نوع الملف غير مدعوم — PDF أو صورة فقط");
+  if (!allowed) {
+    fileInput.value = "";
+    showError("❌ نوع الملف غير مدعوم (PDF أو صورة فقط)");
     return;
   }
 
-  const sizeMB = (f.size/(١٠٢٤*١٠٢٤)).toFixed(٢);
-  if(sizeMB > MAX_SIZE_MB){
-    this.value="";
-    error("❌ حجم الملف أكبر من المسموح (٥ MB)");
+  const sizeMB = (f.size / (1024 * 1024)).toFixed(2);
+  if (sizeMB > MAX_SIZE_MB) {
+    fileInput.value = "";
+    showError("❌ حجم الملف أكبر من المسموح (٥ MB)");
     return;
   }
 
   fileNameBox.innerHTML =
-    `📘 <b>${f.name}</b><br>
-     النوع: ${f.type}<br>
-     الحجم: ${sizeMB} MB`;
+    `📘 <b>${f.name}</b><br>الحجم: ${sizeMB} MB`;
 
-  if(f.type.startsWith("image/")){
-    const reader=new FileReader();
-    reader.onload=e=>{
-      const img=document.createElement("img");
-      img.src=e.target.result;
-      img.style.maxWidth="١٠٠%";
-      img.style.marginTop="١٠px";
-      img.style.borderRadius="١٠px";
+  if (f.type.startsWith("image/")) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.createElement("img");
+      img.src = e.target.result;
+      img.style.maxWidth = "100%";
+      img.style.marginTop = "10px";
+      img.style.borderRadius = "10px";
       fileNameBox.appendChild(img);
     };
     reader.readAsDataURL(f);
   }
 });
 
-function error(msg){
+function showError(msg){
   errBox.textContent = msg;
 }
 
 function build(){
   errBox.textContent = "";
-  const subject  = subjectEl().value;
-  const grade    = gradeEl().value;
-  const lesson   = lessonEl().value || "—";
-  const question = questionEl().value.trim();
-  const concept  = conceptEl().value.trim();
-  const duration = durationEl().value;
-  const file     = fileInput.files[٠];
+
+  const subject  = document.getElementById("subject").value;
+  const grade    = document.getElementById("grade").value;
+  const lesson   = document.getElementById("lesson").value || "—";
+  const question = document.getElementById("question").value.trim();
+  const concept  = document.getElementById("concept").value.trim();
+  const duration = document.getElementById("duration").value;
+  const file     = fileInput.files[0];
   const out      = document.getElementById("output");
 
-  if(!question || !concept){
-    error("❌ سؤال الحصة والفكرة المقفولة عنصران إلزاميان");
+  if (!question || !concept) {
+    showError("❌ سؤال الحصة والفكرة المقفولة عنصران إلزاميان");
     return;
   }
 
@@ -263,10 +258,10 @@ function build(){
 المادة: ${subject}
 الصف: ${grade}
 الدرس: ${lesson}
-المدة: ${duration} دقيقة
+المدة: ${duration === "40" ? "٤٠" : "٤٥"} دقيقة
 
 ملف الكتاب:
-${file ? file.name + " (" + (file.size/(١٠٢٤*١٠٢٤)).toFixed(٢) + " MB)" : "غير مرفق"}
+${file ? file.name : "غير مرفق"}
 
 سؤال الحصة الواحد:
 «${question}»
@@ -274,12 +269,12 @@ ${file ? file.name + " (" + (file.size/(١٠٢٤*١٠٢٤)).toFixed(٢) + " MB)"
 الفكرة المقفولة:
 «${concept}»
 
-بنية التنفيذ السيادي:
-١) طرح السؤال فقط.
-٢) مثال واحد من الكتاب.
-٣) صمت مقصود للتفكير.
-٤) تلميذ واحد ينطق الفكرة.
-٥) تثبيت قصير ثم إغلاق.
+بنية التنفيذ:
+١) سؤال واحد فقط.
+٢) مثال واحد.
+٣) صمت مقصود.
+٤) نطق تلميذ.
+٥) إغلاق الحصة.
 
 مبدأ الحصة:
 الصمت أداة.
@@ -287,13 +282,6 @@ ${file ? file.name + " (" + (file.size/(١٠٢٤*١٠٢٤)).toFixed(٢) + " MB)"
 النطق دليل الفهم.
 `;
 }
-
-const subjectEl  = ()=>document.getElementById("subject");
-const gradeEl    = ()=>document.getElementById("grade");
-const lessonEl   = ()=>document.getElementById("lesson");
-const questionEl = ()=>document.getElementById("question");
-const conceptEl  = ()=>document.getElementById("concept");
-const durationEl = ()=>document.getElementById("duration");
 </script>
 
 </body>
