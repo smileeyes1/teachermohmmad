@@ -3,72 +3,218 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اختبار Gemini</title>
+<title>محرك المحاكاة التعليمية العميقة</title>
 
 <style>
-body { font-family: Arial; background:#f4f6f8; padding:16px }
-.container { background:#fff; max-width:640px; margin:auto; padding:20px; border-radius:10px }
-label { font-weight:bold; margin-top:10px; display:block }
-input, textarea, select { width:100%; padding:10px; margin-top:6px }
-button { margin-top:16px; width:100%; padding:12px; font-size:18px }
-textarea { height:380px; white-space:pre-wrap }
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f8;
+  margin: 0;
+  padding: 16px;
+}
+
+.container {
+  background: #ffffff;
+  max-width: 680px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 12px;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px;
+  font-size: 18px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #125aa0;
+}
+
+.output textarea {
+  height: 500px;
+  white-space: pre-wrap;
+  font-family: Tahoma, Arial, sans-serif;
+}
 </style>
 </head>
 
 <body>
 
 <div class="container">
-<h2>اختبار Gemini البسيط</h2>
+<h2>إنشاء محاكاة تعليمية عميقة</h2>
 
 <label>المادة</label>
-<input id="subject" value="رياضيات">
+<input id="subject" placeholder="رياضيات، علوم، لغة عربية...">
 
-<label>الدرس</label>
-<input id="lesson" value="المقارنة بين عددين">
+<label>الصف</label>
+<input id="grade" placeholder="الثاني، الرابع، السابع...">
 
-<button onclick="generate()">اختبار الإرسال</button>
+<label>الدرس أو المفهوم</label>
+<input id="lesson" placeholder="المقارنة بين عددين، الجملة الاسمية...">
 
-<label>الناتج</label>
-<textarea id="output">لم يتم الإرسال بعد</textarea>
+<label>مستوى الطلبة</label>
+<select id="level">
+  <option value="ضعاف">طلاب ضعاف</option>
+  <option value="عادي" selected>صف عادي</option>
+  <option value="موهوبين">طلاب موهوبين</option>
+</select>
+
+<label>نوع المحاكاة</label>
+<select id="type">
+  <option>عميقة</option>
+  <option>علاجية</option>
+  <option>إثرائية</option>
+</select>
+
+<label>الهدف العميق (اختياري)</label>
+<textarea id="deepGoal" placeholder="ما الذي تريد أن يتغير في طريقة تفكير الطالب؟"></textarea>
+
+<button onclick="generateSimulation()">إنشاء المحاكاة</button>
+
+<div class="output">
+<label>ناتج المحاكاة</label>
+<textarea id="output" placeholder="سيتم توليد المحاكاة هنا..."></textarea>
+</div>
 </div>
 
 <script>
-const GEMINI_API_KEY = "AIzaSyDVHQUv74yz3p65aeKlcTgvLZ30yC8wu14";
+function generateSimulation() {
 
-async function generate() {
-  const output = document.getElementById("output");
-  output.value = "🔄 يتم الإرسال...";
+  const subject = subjectInput();
+  const grade = gradeInput();
+  const lesson = lessonInput();
+  const level = document.getElementById("level").value;
+  const type = document.getElementById("type").value;
+  const goal = document.getElementById("deepGoal").value || "بناء فهم أعمق وأكثر وعيًا للمفهوم";
 
-  const prompt = `
-اكتب فقرة تربوية قصيرة تشرح درس:
-${document.getElementById("lesson").value}
-بأسلوب بسيط.
+  const levelAdaptation = {
+    "ضعاف": `
+- تبسيط الموقف
+- استخدام تمثيل بصري أو حسي
+- سؤال واحد في كل مرة
+سؤال موجّه: ماذا يحدث لو غيّرنا جزءًا واحدًا فقط؟
+`,
+    "عادي": `
+- طرح الموقف كاملًا
+- مناقشة جماعية
+سؤال موجّه: هل يمكن أن يكون هناك تفسير آخر؟
+`,
+    "موهوبين": `
+- إضافة شرط جديد أو متغير
+سؤال موجّه: هل يبقى تفسيرك صحيحًا بعد هذا التغيير؟
+`
+  };
+
+  const simulation = `
+محاكاة تعليمية ${type}
+
+المادة: ${subject}
+الصف: ${grade}
+الدرس: ${lesson}
+مستوى الطلبة: ${level}
+
+١) الافتراض الحدسي:
+غالبًا ما يعتقد الطلبة فهمًا أوليًا بسيطًا للمفهوم.
+
+سؤال:
+لماذا يبدو هذا الفهم منطقيًا لك في البداية؟
+
+٢) موقف واقعي كاشف:
+يقدّم المعلم موقفًا من الحياة اليومية
+يجعل هذا الفهم غير كافٍ للإجابة بدقة.
+
+سؤال:
+هل ما فكرتَ فيه يحل الموقف بالكامل؟ لماذا؟
+
+٣) التكييف حسب المستوى:
+${levelAdaptation[level]}
+
+٤) الاحتكاك المعرفي:
+تظهر تفسيرات متعددة ومتعارضة.
+
+سؤال:
+ما الشيء المشترك الذي تحتاجه كل هذه الإجابات؟
+
+٥) لحظة التحول المفاهيمي:
+يكتشف الطلبة أن جوهر المفهوم، لا شكله الظاهر، هو الأساس.
+
+سؤال:
+لو تجاهلنا المظهر الخارجي، ما الذي يجب أن نركّز عليه؟
+
+٦) تسمية المفهوم:
+يقدّم المعلم المصطلح أو القاعدة بوصفها اسمًا لما تم اكتشافه، لا بداية له.
+
+٧) التطبيق:
+نشاط قصير لتطبيق الفهم الجديد.
+
+سؤال:
+ما الذي جعلك تختار هذا الحل؟
+
+٨) نقل التعلّم:
+ربط المفهوم بسياق جديد خارج الدرس.
+
+سؤال:
+أين يمكن أن نحتاج هذا النوع من التفكير في حياتنا؟
+
+٩) التقويم العميق:
+ليس اختبارًا بل قرارًا مبرّرًا.
+
+سؤال:
+كيف ستفكر في موقف مشابه لاحقًا بشكل مختلف؟
+
+الهدف العميق:
+${goal}
+
+إرشاد للمعلم:
+إذا أجاب الطالب بسرعة دون تفكير،
+فالسؤال يحتاج إعادة صياغة، لا شرح.
 `;
 
-  try {
-    const res = await fetch(
-      "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key=" + GEMINI_API_KEY,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            { role: "user", parts: [{ text: prompt }] }
-          ]
-        })
-      }
-    );
+  document.getElementById("output").value = simulation.trim();
+}
 
-    const data = await res.json();
-    output.value = "📥 تم استلام الرد:\n\n" + JSON.stringify(data, null, 2);
+function subjectInput() {
+  return document.getElementById("subject").value || "غير محددة";
+}
 
-    if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
-      output.value = data.candidates[0].content.parts[0].text;
-    }
+function gradeInput() {
+  return document.getElementById("grade").value || "غير محدد";
+}
 
-  } catch (e) {
-    output.value = "❌ خطأ تقني:\n" + e.message;
-  }
+function lessonInput() {
+  return document.getElementById("lesson").value || "غير محدد";
 }
 </script>
 
