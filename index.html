@@ -3,36 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>محرك المحاكاة الصفّية التربوية – النسخة النهائية</title>
+
+<title>محرك المحاكاة الصفّية التربوية – نسخة كاملة</title>
 
 <!--
-© جميع الحقوق محفوظة – استخدام تعليمي غير تجاري
-مشروع: محرك المحاكاة الصفّية التربوية
-نسخة مستقلة محلية بدون API أو إنترنت
+© حقوق محفوظة
+مشروع تعليمي مستقل – استخدام غير تجاري
 -->
 
 <style>
 body{
   font-family: Tahoma, Arial, sans-serif;
   background:#f4f6f8;
-  margin:0; padding:16px; direction:rtl;
+  margin:0;
+  padding:16px;
+  direction:rtl;
 }
 .container{
-  background:#fff;
+  background:#ffffff;
   max-width:1000px;
   margin:auto;
   padding:20px;
   border-radius:10px;
   box-shadow:0 4px 8px rgba(0,0,0,.1);
 }
-h1,h2{
-  text-align:center;
-}
-label{
-  font-weight:bold;
-  display:block;
-  margin-top:10px;
-}
+h1,h2{text-align:center;}
+label{font-weight:bold;display:block;margin-top:10px;}
 input, textarea, select{
   width:100%;
   padding:10px;
@@ -43,9 +39,7 @@ input, textarea, select{
   direction:rtl;
   text-align:right;
 }
-textarea{
-  resize:vertical;
-}
+textarea{resize:vertical;}
 .actions{
   display:flex;
   flex-wrap:wrap;
@@ -74,7 +68,6 @@ button:hover{opacity:.9;}
   line-height:1.8;
 }
 
-/* إرشاد المعلم */
 .teacher-only{
   background:#eef3f8;
   border-right:4px solid #1976d2;
@@ -83,9 +76,8 @@ button:hover{opacity:.9;}
 }
 .print-view .teacher-only{display:none;}
 
-/* طباعة عربية صحيحة */
 @media print{
-  .actions,label,input,select{display:none !important;}
+  .actions,label,input,select,small{display:none!important;}
   .container{box-shadow:none;}
   .output textarea{
     border:none;
@@ -94,6 +86,7 @@ button:hover{opacity:.9;}
     line-height:1.9;
   }
 }
+small{color:#555;}
 </style>
 </head>
 
@@ -129,11 +122,14 @@ button:hover{opacity:.9;}
   <option value="classroom">محاكاة حصة صفية واقعية متعددة المسارات</option>
 </select>
 
+<label>رفع ملف كتاب (TXT أو PDF)</label>
+<input type="file" id="bookFile" accept=".txt,.pdf">
+<small>يستخدم محتوى الكتاب كمرجع تربوي داخل المحاكاة فقط</small>
+
 <div class="actions">
   <button onclick="build()">🧠 إنشاء المحاكاة</button>
   <button class="secondary" onclick="teacherView()">👩‍🏫 عرض المعلم</button>
   <button class="secondary" onclick="printView()">🧾 عرض الطباعة</button>
-  <button class="alt" onclick="startTimer()">⏱️ بدء مؤقّت الحصة</button>
   <button class="alt" onclick="scenario('good')">🟢 متفاعلون</button>
   <button class="warn" onclick="scenario('mixed')">🟡 مختلفون</button>
   <button class="danger" onclick="scenario('weak')">🔴 متعثرون</button>
@@ -155,131 +151,135 @@ button:hover{opacity:.9;}
 
 </div>
 
+<!-- مكتبة PDF.js -->
+https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.jsscript>
+
 <script>
-let lessonText="";
-let timerStarted=false;
+let bookContent="";
 
-/* إنشاء المحاكاة */
+/* قراءة ملف الكتاب */
+document.getElementById("bookFile").addEventListener("change", e=>{
+  const file=e.target.files[0];
+  if(!file)return;
+  if(file.name.toLowerCase().endsWith(".txt")){
+    const r=new FileReader();
+    r.onload=ev=>{bookContent=ev.target.result||"";alert("✅ تم تحميل نص الكتاب");};
+    r.readAsText(file,"UTF-8");
+  }
+  else if(file.name.toLowerCase().endsWith(".pdf")){
+    readPDF(file);
+  }
+  else alert("❌ ملف غير مدعوم");
+});
+
+async function readPDF(file){
+  const buf=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+  let t="";
+  for(let i=1;i<=pdf.numPages;i++){
+    const p=await pdf.getPage(i);
+    const c=await p.getTextContent();
+    c.items.forEach(it=>t+=(it.str||" ")+" ");
+  }
+  bookContent=t;
+  alert("✅ تم تحميل كتاب PDF");
+}
+
+/* بناء المحاكاة */
 function build(){
-  const subject=val("subject","غير محددة");
-  const grade=val("grade","غير محدد");
-  const lesson=val("lesson","غير محدد");
-  const minutes=duration.value;
-  const delivery=delivery.value;
-  const mode=mode.value;
+  const s=val("subject","غير محددة");
+  const g=val("grade","غير محدد");
+  const l=val("lesson","غير محدد");
+  const d=duration.value;
+  const del=delivery.value;
+  const m=mode.value;
 
-  const timePlan = minutes=="40"
-    ? "• تمهيد: 5د\n• نقاش وتحليل: 15د\n• تحوّل مفاهيمي: 8د\n• تطبيق: 7د\n• إغلاق: 5د"
-    : "• تمهيد: 7د\n• نقاش وتحليل: 18د\n• تحوّل مفاهيمي: 8د\n• تطبيق: 7د\n• إغلاق: 5د";
+  const timePlan=d=="40"
+    ?"تمهيد 5د ✔\nنقاش 15د ✔\nتحول مفاهيمي 8د ✔\nتطبيق 7د ✔\nإغلاق 5د ✔"
+    :"تمهيد 7د ✔\nنقاش 18د ✔\nتحول مفاهيمي 8د ✔\nتطبيق 7د ✔\nإغلاق 5د ✔";
 
-  const deliveryGuide = delivery=="face"
-    ? "• استخدم الصمت بعد السؤال\n• راقب لغة الجسد\n• اسمح بالحوار الحر"
-    : "• حدد زمن التفكير (٣٠ ثانية)\n• الرد عبر الشات\n• استخدم غرف فرعية";
+  const execGuide=del=="face"
+    ?"• استخدم الصمت\n• راقب لغة الجسد\n• حوار مباشر"
+    :"• زمن تفكير 30 ثانية\n• الرد عبر الدردشة\n• غرف فرعية";
 
-  if(mode=="engine"){
-    lessonText = `
+  const ref=bookContent?bookContent.slice(0,600):"لا يوجد كتاب مرفوع";
+
+  out.value = (m=="engine"
+?`
 محاكاة تعليمية منظمة
 
-المادة: ${subject}
-الصف: ${grade}
-الدرس: ${lesson}
+المادة: ${s}
+الصف: ${g}
+الدرس: ${l}
 
-1) افتراض حدسي:
-فهم أولي بسيط. لماذا يبدو صحيحًا؟
+1) افتراض حدسي ⇒ لماذا يبدو صحيحًا؟
+2) موقف كاشف ⇒ إظهار القصور
+3) قرار واحد ⇒ تفسير واحد
+4) تحول مفاهيمي ⇒ الجوهر
+5) تطبيق ونقل تعلم
 
-2) موقف كاشف:
-إظهار قصور الفهم.
-
-3) قرار واحد فقط للحصة:
-تفسير واحد يُبرَّر جماعيًا.
-
-4) التحول المفاهيمي:
-التركيز على الجوهر لا الشكل.
-
-5) تطبيق + نقل تعلم.
-
+الإطار الزمني:
 ${timePlan}
 
-<div class="teacher-only">
-إرشاد المعلم:
-${deliveryGuide}
-</div>
-`.trim();
-  } else {
-    lessonText = `
+مرجع من الكتاب:
+${ref}
+
+`
+:`
 محاكاة حصة صفية واقعية متعددة المسارات
 
-المادة: ${subject}
-الصف: ${grade}
-الدرس: ${lesson}
-مدة الحصة: ${minutes} دقيقة
-نمط التنفيذ: ${delivery=="face"?"وجاهي":"Teams"}
+المادة: ${s}
+الصف: ${g}
+الدرس: ${l}
+مدة الحصة: ${d} دقيقة
+نمط التنفيذ: ${del=="face"?"وجاهي":"Teams"}
 
-الفتح:
-سؤال واقعي دون شرح.
+فتح الحصة بسؤال واقعي مفتوح.
 
-🔀 المسارات المحتملة:
-• إجابة صحيحة → اسأل عن التعميم
-• اختلاف → اطلب التفكيك
-• خطأ واسع → استخدم تمثيلًا حسيًا
+🔀 المسارات:
+• صحيح ⇒ تعميم
+• مختلف ⇒ تفكيك
+• خطأ واسع ⇒ تمثيل حسي
 
 نقطة القرار:
-قرار واحد للحصة مع تبرير.
+قرار واحد + تبرير
 
 اختبار الصمت:
-٢٠ ثانية بعد السؤال الحاسم.
+20 ثانية
 
+الإطار الزمني:
 ${timePlan}
 
-<div class="teacher-only">
-إرشاد التنفيذ:
-${deliveryGuide}
+مرجع من الكتاب:
+${ref}
 
-مؤشر النجاح:
-اختلاف التبرير دون طلب الإجابة.
-</div>
-`.trim();
-  }
-
-  out.value = lessonText;
+[إرشاد المعلم]
+${execGuide}
+`
+).trim();
 }
 
-/* مؤقّت الحصة */
-function startTimer(){
-  if(!timerStarted){
-    timerStarted=true;
-    alert("⏱️ ابدأ متابعة الزمن حسب التقسيم المقترح.\nانتقل كل 5–10 دقائق تربويًا.");
-  }
-}
-
-/* تبديل المسار أثناء الحصة */
-function scenario(type){
-  if(type=="good"){
-    out.value += "\n\n✅ الطلبة متفاعلون:\n• قدّم مثالًا أعمق\n• لا تسمِّ القاعدة سريعًا";
-  }
-  if(type=="mixed"){
-    out.value += "\n\n🟡 اختلاف في التبرير:\n• اطلب التفكيك\n• امنع الحل السريع";
-  }
-  if(type=="weak"){
-    out.value += "\n\n🔴 تعثّر عام:\n• تمثيل حسي\n• تبسيط السؤال";
-  }
+/* مسارات لحظية */
+function scenario(t){
+  if(t=="good") out.value+="\n\n✅ المسار الأخضر: تعميق المثال وعدم التسمية المبكرة";
+  if(t=="mixed") out.value+="\n\n🟡 المسار الأصفر: طلب التفكيك ومنع الإجابة السريعة";
+  if(t=="weak") out.value+="\n\n🔴 المسار الأحمر: تبسيط وتمثيل حسي";
 }
 
 /* عرض */
 function teacherView(){document.body.classList.remove("print-view");}
 function printView(){document.body.classList.add("print-view");}
 
-/* حفظ الانعكاس */
+/* انعكاس */
 function saveReflection(){
-  const r=reflection.value;
-  if(!r)return alert("لا يوجد انعكاس مكتوب");
+  if(!reflection.value)return alert("لا يوجد نص");
   const L=JSON.parse(localStorage.getItem("reflections")||"[]");
-  L.push({time:new Date().toLocaleString(),text:r});
+  L.push({time:new Date().toLocaleString(),text:reflection.value});
   localStorage.setItem("reflections",JSON.stringify(L));
-  alert("✅ تم حفظ الانعكاس التربوي");
+  alert("✅ تم حفظ الانعكاس");
 }
 
-/* مساعدة */
+/* أداة */
 function val(id,def){return document.getElementById(id).value||def;}
 </script>
 
