@@ -9,7 +9,9 @@
 body{
   font-family: Tahoma, Arial, sans-serif;
   background:#f4f6f8;
-  margin:0; padding:16px; direction:rtl;
+  margin:0;
+  padding:16px;
+  direction:rtl;
 }
 .container{
   background:#fff;
@@ -19,8 +21,8 @@ body{
   border-radius:10px;
   box-shadow:0 4px 8px rgba(0,0,0,.1);
 }
-h1{text-align:center;}
-label{font-weight:bold;display:block;margin-top:10px;}
+h1{text-align:center;margin-bottom:12px;}
+label{font-weight:bold;margin-top:10px;display:block;}
 input,select,textarea{
   width:100%;
   padding:10px;
@@ -56,26 +58,19 @@ button:hover{opacity:.9;}
   font-size:14.5px;
   line-height:1.8;
 }
-.teacher-note{
-  background:#eef3f8;
-  border-right:4px solid #1976d2;
-  padding:10px;
-  margin-top:12px;
-}
+small{color:#555;}
 @media print{
-  .actions,label,input,select{display:none!important;}
-  .container{box-shadow:none;}
-  .output textarea{
-    border:none;height:auto;font-size:14pt;line-height:1.9;
-  }
+  .actions,label,input,select,small{display:none}
+  .container{box-shadow:none}
+  textarea{border:none;height:auto;font-size:14pt}
 }
 </style>
 </head>
 
 <body>
-<div class="container">
 
-<h1>محاكاة حصة صفية واقعية</h1>
+<div class="container">
+<h1>محاكاة حصة صفية حقيقية</h1>
 
 <label>المادة</label>
 <input id="subject" placeholder="رياضيات / علوم / لغة عربية">
@@ -94,12 +89,16 @@ button:hover{opacity:.9;}
 
 <label>طريقة التنفيذ</label>
 <select id="delivery">
-  <option value="face">وجاهي</option>
+  <option value="face">وجاهي داخل الصف</option>
   <option value="teams">عبر Teams</option>
 </select>
 
+<label>رفع ملف الكتاب (TXT أو PDF)</label>
+<input type="file" id="bookFile" accept=".txt,.pdf">
+<small>يُستخدم نص الكتاب كمرجع داخل المحاكاة</small>
+
 <div class="actions">
-  <button onclick="build()">🧠 إنشـاء المحاكاة</button>
+  <button onclick="build()">🧠 إنشاء المحاكاة</button>
   <button class="alt" onclick="path('good')">🟢 الطلاب متفاعلون</button>
   <button class="warn" onclick="path('mixed')">🟡 الطلاب مختلفون</button>
   <button class="danger" onclick="path('weak')">🔴 الطلاب متعثرون</button>
@@ -109,99 +108,98 @@ button:hover{opacity:.9;}
 <div class="output">
 <textarea id="out"></textarea>
 </div>
-
 </div>
 
+https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.jsscript>
+
 <script>
+let bookText="";
+
+/* قراءة ملف الكتاب */
+document.getElementById("bookFile").addEventListener("change",function(e){
+  const f=e.target.files[0];
+  if(!f)return;
+  if(f.name.endsWith(".txt")){
+    const r=new FileReader();
+    r.onload=x=>{bookText=x.target.result||"";alert("تم تحميل الكتاب");};
+    r.readAsText(f,"UTF-8");
+  }else if(f.name.endsWith(".pdf")){
+    readPDF(f);
+  }
+});
+
+async function readPDF(file){
+  const buf=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+  let t="";
+  for(let i=1;i<=pdf.numPages;i++){
+    const p=await pdf.getPage(i);
+    const c=await p.getTextContent();
+    c.items.forEach(it=>t+=it.str+" ");
+  }
+  bookText=t;
+  alert("تم تحميل كتاب PDF");
+}
+
+/* إنشاء المحاكاة */
 function build(){
   const s=subject.value||"غير محددة";
   const g=grade.value||"غير محدد";
   const l=lesson.value||"غير محدد";
   const d=duration.value;
-  const m=delivery.value;
+  const mode=delivery.value;
 
-  out.value = `
-محاكاة حصة صفية – جاهزة للتنفيذ
+  out.value =
+`محاكاة حصة صفية جاهزة للتنفيذ
 
 المادة: ${s}
 الصف: ${g}
 الدرس: ${l}
 مدة الحصة: ${d} دقيقة
-طريقة التنفيذ: ${m=="face"?"وجاهي":"Teams"}
+طريقة التنفيذ: ${mode=="face"?"وجاهي":"Teams"}
 
-━━━━━━━━━━━━━━━━━━━━
+1) بداية الحصة (5 دقائق)
+- اكتب مثالًا من الدرس.
+- اسأل: أي نتيجة أدق؟ ولماذا؟
+- لا تشرح. لا تصحح.
 
-① بداية الحصة (5 دقائق)
-• اكتب مثالًا مناسبًا للدرس على اللوح.
-• اسأل: «أي نتيجة أدق؟ ولماذا؟»
-• لا تشرح. لا تصحّح الآن.
+2) أثناء إجابات الطلاب
+- استمع فقط.
+- راقب من يبرّر ومن يخمّن.
 
-② أثناء النقاش
-• استمع لإجابات الطلاب فقط.
+3) قرار الحصة
+- اطلب قرارًا واحدًا فقط مع سبب واحد.
 
-③ قرار الحصة
-• اطلب قرارًا واحدًا فقط مع سبب واحد:
-  «كيف نقرر هنا؟»
+4) متى أذكر القاعدة؟
+- عندما ينطق بها طالب بوضوح.
+- لا تطِل الشرح.
 
-④ متى أقدّم القاعدة؟
-• إذا قال طالب سببًا صحيحًا بوضوح.
-• عندها فقط اذكر اسم القاعدة.
-• لا تطِل الشرح.
+5) تطبيق (7 دقائق)
+- مثال جديد.
+- طالب يجيب وآخر يبرّر.
 
-⑤ تطبيق (7 دقائق)
-• مثال جديد أو تمرين شفهي.
-• طالب يجيب، وآخر يبرر.
+6) نهاية الحصة
+- سؤال أخير.
+- صمت 20 ثانية.
 
-⑥ نهاية الحصة
-• مثال أخير.
-• اسأل سؤالًا واحدًا.
-• اصمت 20 ثانية.
+ملاحظة للمعلم:
+التفكير أهم من الإجابة.
 
-━━━━━━━━━━━━━━━━━━━━
-
-تنبيه للمعلم:
-• الصمت جزء من الدرس.
-• لا تنقذ الطالب بالإجابة.
-• المهم كيف فكر، لا ماذا قال.
+مرجع من الكتاب:
+${bookText?bookText.slice(0,500):"لم يتم رفع كتاب"}
 `;
-
-  if(m=="teams"){
-    out.value += `
-
-ملاحظة لـ Teams:
-• حدّد زمن التفكير (30 ثانية).
-• اسمح بالإجابة عبر الدردشة.
-• اختر طالبًا واحدًا للتبرير الصوتي.
-`;
-  }
 }
 
+/* مسارات حسب الواقع */
 function path(t){
   if(t=="good"){
-    out.value += `
-
-🟢 الطلاب متفاعلون:
-• أعط مثالًا أصعب قليلًا.
-• اسأل: «هل ينطبق هذا دائمًا؟»
-• لا تذكر القاعدة سريعًا.
-`;
+    out.value+="\n\n🟢 الطلاب متفاعلون:\n- أعط مثالًا أصعب قليلًا.\n- لا تذكر القاعدة سريعًا.";
   }
   if(t=="mixed"){
-    out.value += `
-
-🟡 الطلاب مختلفون:
-• اطلب تفكيك المثال خطوة خطوة.
-• اسأل: «ما أول شيء ننظر إليه؟»
-`;
+    out.value+="\n\n🟡 الطلاب مختلفون:\n- اطلب تفكيك المثال خطوة خطوة.\n- اسأل: ما أول شيء ننظر إليه؟";
   }
   if(t=="weak"){
-    out.value += `
-
-🔴 الطلاب متعثرون:
-• لا تقل «خطأ».
-• استخدم تمثيلًا حسيًا أو رسمة.
-• عد لسؤال أبسط.
-`;
+    out.value+="\n\n🔴 الطلاب متعثرون:\n- لا تقل خطأ.\n- استخدم تمثيلًا حسيًا.\n- بسّط السؤال.";
   }
 }
 </script>
