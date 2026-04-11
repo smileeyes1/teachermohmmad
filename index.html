@@ -2,130 +2,62 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>النظام السيادي لتحضير الحصة</title>
-
 <style>
-:root{
-  --main:#1565c0;
-  --bg:#eef2f6;
-  --card:#ffffff;
-  --ink:#333;
-}
 body{
-  margin:0;
+  font-family:Tahoma,Arial;
+  background:#f0f3f7;
   padding:١٢px;
-  font-family: Tahoma, Arial, sans-serif;
-  background:linear-gradient(135deg,#e3f2fd,#f1f8e9);
-  color:var(--ink);
 }
-.container{
-  max-width:٨٥٠px;
+.box{
+  max-width:٨٠٠px;
   margin:auto;
-  background:var(--card);
-  border-radius:١٦px;
+  background:#ffffff;
   padding:٢٠px;
-  box-shadow:0 ٦px ١٦px rgba(0,0,0,.12);
-}
-header{
-  text-align:center;
-  margin-bottom:٢٠px;
-}
-header h1{
-  margin:٠;
-  font-size:٢٢px;
-  color:var(--main);
-}
-header .sub{
-  margin-top:٦px;
-  font-size:١٤.٥px;
-  color:#٤٤٤;
+  border-radius:١٢px;
+  box-shadow:0 ٤px ١٠px rgba(0,0,0,.1);
 }
 label{
-  display:block;
-  margin-top:١٤px;
   font-weight:bold;
-  font-size:١٥px;
+  display:block;
+  margin-top:١٢px;
 }
 input,select,textarea,button{
   width:١٠٠%;
+  padding:١٢px;
   margin-top:٦px;
-  padding:١٤px;
   font-size:١٥px;
-  border-radius:١٠px;
-  border:١px solid #ccc;
   direction:rtl;
 }
 textarea{
-  height:٥٤٠px;
-  resize:vertical;
+  height:٤٠٠px;
   white-space:pre-wrap;
-  line-height:١.٩;
-}
-.hint{
-  margin-top:٦px;
-  padding:٨px ١٠px;
-  background:#f9fafb;
-  border:١px dashed #ccc;
-  border-radius:٨px;
-  font-size:١٣.٥px;
-  color:#٥٥٥;
-}
-.file-box{
-  margin-top:١٢px;
-  background:#f1f5ff;
-  border:١px solid #c3d3ff;
-  border-radius:١٠px;
-  padding:١٢px;
-}
-.file-name{
-  margin-top:٨px;
-  font-size:١٤px;
-  color:#0d47a1;
-}
-.actions{
-  display:flex;
-  gap:١٠px;
-  margin-top:٢٠px;
+  line-height:١.٨;
 }
 button{
-  flex:١;
-  background:var(--main);
-  color:#fff;
+  background:#١٥٦٥c٠;
+  color:#ffffff;
   border:none;
-  font-size:١٦px;
+  margin-top:١٦px;
   cursor:pointer;
 }
-button.secondary{
-  background:#455a64;
+button.test{
+  background:#٤٥٥a٦٤;
 }
-button:active{opacity:.٨٥}
-.badge{
-  margin-top:١٦px;
-  padding:١٠px;
-  text-align:center;
-  font-size:١٤.٥px;
-  border-radius:١٠px;
-  background:#e8f5e9;
-  color:#1b5e20;
-}
-@media print{
-  header,label,input,select,button,.hint,.badge,.file-box{display:none}
-  textarea{border:none;height:auto;font-size:١٤pt}
+.error{
+  color:red;
+  font-weight:bold;
+  margin-top:١٠px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="box">
 
-<header>
-  <h1>النظام السيادي لتحضير الحصة</h1>
-  <div class="sub">
-    إعداد: <b>محمد وجيه</b> — مدرسة <b>عاطوف المختلطة</b>
-  </div>
-</header>
+<h2>النظام السيادي لتحضير الحصة</h2>
+<p><b>محمد وجيه — مدرسة عاطوف المختلطة</b></p>
 
 <label>المادة</label>
 <select id="subject">
@@ -140,22 +72,13 @@ button:active{opacity:.٨٥}
 </select>
 
 <label>عنوان الدرس</label>
-<input id="lesson" placeholder="كما ورد في الكتاب">
+<input id="lesson">
 
-<label>رفع ملف الكتاب (PDF أو صورة)</label>
-<div class="file-box">
-  <input type="file" id="bookFile" accept=".pdf,image/*" onchange="showFile()">
-  <div id="fileName" class="file-name">لم يتم رفع ملف بعد</div>
-  <div class="hint">
-    الغرض تنظيمي فقط: استدعاء الكتاب بصريًا أثناء التحضير.
-  </div>
-</div>
+<label>سؤال الحصة الواحد</label>
+<input id="question">
 
-<label>سؤال الحصة الواحد 🔒</label>
-<input id="question" placeholder="سؤال واحد لا يتغير">
-
-<label>الفكرة المقفولة 🔒</label>
-<input id="concept" placeholder="جملة قصيرة سينطقها تلميذ">
+<label>الفكرة المقفولة</label>
+<input id="concept">
 
 <label>مدة الحصة</label>
 <select id="duration">
@@ -163,51 +86,35 @@ button:active{opacity:.٨٥}
   <option value="٤٥">٤٥ دقيقة</option>
 </select>
 
-<div class="actions">
-  <button onclick="build()">✅ توليد الحصة</button>
-  <button class="secondary" onclick="window.print()">🖨️ طباعة</button>
-</div>
+<button onclick="build()">✅ توليد الحصة</button>
+<button class="test" onclick="test()">🧪 اختبار فوري</button>
 
-<div class="badge">
-🛡️ التلميذ يفكّر — المعلّم يُدير الصمت
-</div>
+<div id="err" class="error"></div>
 
-<textarea id="output" placeholder="ستظهر الحصة الجاهزة هنا..."></textarea>
+<textarea id="output" placeholder="سيظهر التحضير هنا..."></textarea>
 
 </div>
 
 <script>
-function showFile(){
-  const f = document.getElementById("bookFile").files[0];
-  document.getElementById("fileName").textContent =
-    f ? "📘 تم رفع الملف: " + f.name : "لم يتم رفع ملف بعد";
-}
-
 function build(){
+  const out = document.getElementById("output");
+  const err = document.getElementById("err");
+  err.textContent = "";
 
-  const subjectEl  = document.getElementById("subject");
-  const gradeEl    = document.getElementById("grade");
-  const lessonEl   = document.getElementById("lesson");
-  const questionEl = document.getElementById("question");
-  const conceptEl  = document.getElementById("concept");
-  const durationEl = document.getElementById("duration");
-  const bookFileEl = document.getElementById("bookFile");
-  const out        = document.getElementById("output");
+  try{
+    const subject  = document.getElementById("subject").value;
+    const grade    = document.getElementById("grade").value;
+    const lesson   = document.getElementById("lesson").value || "—";
+    const question = document.getElementById("question").value.trim();
+    const concept  = document.getElementById("concept").value.trim();
+    const duration = document.getElementById("duration").value;
 
-  const subject  = subjectEl.value;
-  const grade    = gradeEl.value;
-  const lesson   = lessonEl.value || "—";
-  const question = questionEl.value.trim();
-  const concept  = conceptEl.value.trim();
-  const duration = durationEl.value;
-  const file     = bookFileEl.files[0];
+    if(!question || !concept){
+      err.textContent = "❌ يجب إدخال سؤال الحصة والفكرة المقفولة";
+      return;
+    }
 
-  if(!question || !concept){
-    alert("سؤال الحصة والفكرة المقفولة عنصران إلزاميان");
-    return;
-  }
-
-  out.value =
+    out.value =
 `تحضير حصة صفّية سيادية
 
 المدرسة: عاطوف المختلطة
@@ -217,7 +124,6 @@ function build(){
 الصف: ${grade}
 الدرس: ${lesson}
 المدة: ${duration} دقيقة
-الكتاب المرفق: ${file ? file.name : "غير مرفق"}
 
 سؤال الحصة الواحد:
 «${question}»
@@ -225,18 +131,28 @@ function build(){
 الفكرة المقفولة:
 «${concept}»
 
-بنية التنفيذ السيادي:
-١) أطرح السؤال فقط دون شرح.
-٢) مثال واحد من الكتاب.
-٣) صمت مقصود للتفكير.
-٤) تلميذ واحد ينطق الفكرة.
-٥) تثبيت قصير ثم إغلاق.
+بنية التنفيذ:
+١) سؤال واحد فقط.
+٢) مثال واحد.
+٣) صمت للتفكير.
+٤) نطق تلميذ.
+٥) إغلاق الحصة.
 
-مبدأ الحصة:
+مبدأ العمل:
 الصمت أداة.
-التفكير جوهر.
+التفكير هدف.
 النطق دليل الفهم.
 `;
+  }catch(e){
+    err.textContent = "❌ خطأ تقني: " + e.message;
+  }
+}
+
+function test(){
+  document.getElementById("lesson").value="درس تجريبي";
+  document.getElementById("question").value="ما الحرف الأول؟";
+  document.getElementById("concept").value="الحرف الأول هو ب";
+  build();
 }
 </script>
 
