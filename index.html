@@ -6,9 +6,6 @@
 <title>النظام التربوي الحكيم</title>
 
 <style>
-/* =====================
-   الهوية البصرية
-===================== */
 :root{
   --primary:#0d47a1;
   --primary-soft:#e3f2fd;
@@ -35,18 +32,12 @@ body{
   line-height:1.7;
 }
 
-/* =====================
-   الحاوية العامة
-===================== */
 .app{
   max-width:1200px;
   margin:auto;
   padding:16px;
 }
 
-/* =====================
-   الرأس
-===================== */
 .header{
   background:var(--surface);
   border-radius:var(--radius);
@@ -67,9 +58,6 @@ body{
   color:var(--muted);
 }
 
-/* =====================
-   الشبكة الرئيسية
-===================== */
 .main{
   margin-top:16px;
   display:grid;
@@ -77,9 +65,6 @@ body{
   gap:16px;
 }
 
-/* =====================
-   البطاقات
-===================== */
 .card{
   background:var(--surface);
   border-radius:var(--radius);
@@ -93,9 +78,6 @@ body{
   color:var(--primary);
 }
 
-/* =====================
-   المدخلات
-===================== */
 label{
   display:block;
   margin-top:10px;
@@ -110,7 +92,6 @@ input, textarea, button{
   font-size:.95rem;
   border:1px solid var(--border);
   border-radius:10px;
-  transition:var(--transition);
 }
 
 input:focus, textarea:focus{
@@ -121,9 +102,6 @@ input:focus, textarea:focus{
 
 textarea{resize:vertical}
 
-/* =====================
-   الملاحظات
-===================== */
 .note{
   margin-top:10px;
   padding:10px;
@@ -133,9 +111,6 @@ textarea{resize:vertical}
   color:#0b3c88;
 }
 
-/* =====================
-   شريط الإرشاد
-===================== */
 .guide{
   position:sticky;
   top:0;
@@ -150,9 +125,6 @@ textarea{resize:vertical}
   box-shadow:var(--shadow);
 }
 
-/* =====================
-   الأزرار
-===================== */
 .actions{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -170,18 +142,10 @@ button{
 button.secondary{background:#455a64}
 button.success{background:var(--success)}
 button.warning{background:var(--warning);color:#000}
-button.danger{background:var(--danger)}
 
-button:hover{
-  opacity:.9;
-}
+button:hover{opacity:.9}
 
-/* =====================
-   الإخراج
-===================== */
-.output{
-  margin-top:16px;
-}
+.output{margin-top:16px}
 
 #output{
   height:420px;
@@ -189,9 +153,6 @@ button:hover{
   background:#fafafa;
 }
 
-/* =====================
-   وضع التشغيل
-===================== */
 .run{
   margin-top:16px;
   background:var(--surface);
@@ -209,9 +170,6 @@ button:hover{
   font-size:.9rem;
 }
 
-/* =====================
-   التوافق مع الشاشات
-===================== */
 @media (max-width:900px){
   .main{grid-template-columns:1fr}
   .actions{grid-template-columns:1fr 1fr}
@@ -222,9 +180,6 @@ button:hover{
   .header h1{font-size:1.2rem}
 }
 
-/* =====================
-   الطباعة
-===================== */
 @media print{
   .header,.guide,.actions,.run,input,button,textarea:not(#output){display:none}
   #output{border:none;height:auto;font-size:14pt}
@@ -238,7 +193,7 @@ button:hover{
 
   <div class="header">
     <h1>النظام التربوي الحكيم</h1>
-    <p>إدارة حصص واقعية تدعم المعلّم نفسيًا ومهنيًا دون ضغط</p>
+    <p>نظام حاكم لإدارة الحصص الواقعية — دعم مهني دون استنزاف</p>
   </div>
 
   <div class="guide" id="guide">
@@ -248,14 +203,14 @@ button:hover{
   <div class="main">
 
     <div class="card">
-      <h2>اعتماد المنهاج</h2>
+      <h2>اعتماد الكتاب (المنهاج)</h2>
       <label>رفع الكتاب</label>
       <input type="file" id="book">
       <label>المادة</label>
       <input id="subject">
       <label>الصف</label>
       <input id="grade">
-      <div class="note" id="bookInfo">
+      <div class="note">
         الكتاب هو المرجع الكامل — التنفيذ يتم حصّة بحصّة.
       </div>
     </div>
@@ -297,9 +252,11 @@ button:hover{
 
 <script>
 const g=m=>document.getElementById("guide").textContent="الإرشاد اللحظي: "+m;
+const output=document.getElementById("output");
+const log=document.getElementById("log");
 
 function prep(){
-  g("حضّر بهدوء. فكرة واحدة تكفي.");
+  g("فكرة واحدة تكفي. لا تنتقل قبل النطق.");
   output.value=
 `تحضير حصّة واقعية
 
@@ -320,7 +277,7 @@ ${concept.value}
 }
 
 function simulate(){
-  g("هذه محاكاة لا تفترض المثالية.");
+  g("هذه محاكاة واقعية، لا مثالية.");
   output.value+=
 `\n\nمحاكاة:
 سؤال
@@ -334,8 +291,9 @@ ${concept.value}
 function act(t){
   log.textContent+="\n• "+t;
 }
+
 function closeLesson(){
-  g("توقّف الآن. التعلم حدث.");
+  g("توقّف الآن. التعلّم حدث.");
   log.textContent+="\n• انتهت الحصّة";
 }
 </script>
