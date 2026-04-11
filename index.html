@@ -2,166 +2,232 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=١.٠">
-<title>النظام التربوي — أداة دعم المعلّم</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>النظام التربوي الحكيم</title>
 
 <style>
+/* =====================
+   الهوية البصرية
+===================== */
 :root{
-  --main:#1a5fb4;
-  --bg:#f2f4f7;
-  --card:#ffffff;
-  --soft:#eef2f6;
-  --ink:#1f2933;
+  --primary:#0d47a1;
+  --primary-soft:#e3f2fd;
+  --background:#f6f8fb;
+  --surface:#ffffff;
+  --text:#1f2937;
   --muted:#6b7280;
-  --primary:#1a5fb4;
   --success:#2e7d32;
-  --warn:#f9a825;
+  --warning:#f9a825;
+  --danger:#c62828;
+  --border:#e5e7eb;
+  --radius:14px;
+  --shadow:0 8px 24px rgba(0,0,0,.08);
+  --transition:.25s ease;
 }
 
 *{box-sizing:border-box}
 
 body{
-  margin:٠;
-  font-family:Tahoma, Arial, sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-  line-height:١.٨;
+  margin:0;
+  font-family:"Segoe UI",Tahoma,Arial,sans-serif;
+  background:var(--background);
+  color:var(--text);
+  line-height:1.7;
 }
 
+/* =====================
+   الحاوية العامة
+===================== */
 .app{
-  max-width:١٠٨٠px;
-  margin:٢٠px auto;
-  padding:٢٠px;
+  max-width:1200px;
+  margin:auto;
+  padding:16px;
 }
 
+/* =====================
+   الرأس
+===================== */
 .header{
-  background:var(--card);
-  padding:٢٠px;
-  border-radius:١٤px;
+  background:var(--surface);
+  border-radius:var(--radius);
+  padding:16px 20px;
+  box-shadow:var(--shadow);
   text-align:center;
-  margin-bottom:٢٠px;
-  box-shadow:٠ ٦px ٢٠px rgba(٠,٠,٠,.٠٧);
 }
 
-.header h١{
-  margin:٠;
-  font-size:٢٤px;
+.header h1{
+  margin:0;
   color:var(--primary);
+  font-size:1.4rem;
 }
 
 .header p{
-  margin:٨px ٠ ٠;
-  font-size:١٤px;
+  margin:6px 0 0;
+  font-size:.95rem;
   color:var(--muted);
 }
 
-.section{
-  background:var(--card);
-  border-radius:١٤px;
-  padding:٢٠px;
-  margin-bottom:٢٠px;
-  box-shadow:٠ ٤px ١٦px rgba(٠,٠,٠,.٠٦);
-}
-
-.grid{
+/* =====================
+   الشبكة الرئيسية
+===================== */
+.main{
+  margin-top:16px;
   display:grid;
-  grid-template-columns:١fr ١fr;
-  gap:١٦px;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
 }
 
-h٢{
-  font-size:١٨px;
-  margin:٠ ٠ ١٢px;
+/* =====================
+   البطاقات
+===================== */
+.card{
+  background:var(--surface);
+  border-radius:var(--radius);
+  padding:16px;
+  box-shadow:var(--shadow);
 }
 
+.card h2{
+  margin-top:0;
+  font-size:1.05rem;
+  color:var(--primary);
+}
+
+/* =====================
+   المدخلات
+===================== */
 label{
   display:block;
-  margin-top:١٢px;
-  font-size:١٤px;
-  font-weight:bold;
+  margin-top:10px;
+  font-weight:600;
+  font-size:.9rem;
 }
 
-input, textarea{
-  width:١٠٠%;
-  margin-top:٦px;
-  padding:١٠px;
-  border-radius:١٠px;
-  border:١px solid #d1d5db;
-  font-size:١٥px;
+input, textarea, button{
+  width:100%;
+  margin-top:6px;
+  padding:10px;
+  font-size:.95rem;
+  border:1px solid var(--border);
+  border-radius:10px;
+  transition:var(--transition);
 }
 
 input:focus, textarea:focus{
   outline:none;
   border-color:var(--primary);
+  background:#fafcff;
 }
 
+textarea{resize:vertical}
+
+/* =====================
+   الملاحظات
+===================== */
 .note{
-  background:#fef9e7;
-  padding:٨px ١٠px;
-  border-radius:٨px;
-  font-size:١٣px;
-  margin-top:١٠px;
-  color:#7f6000;
+  margin-top:10px;
+  padding:10px;
+  background:var(--primary-soft);
+  border-radius:10px;
+  font-size:.85rem;
+  color:#0b3c88;
 }
 
+/* =====================
+   شريط الإرشاد
+===================== */
+.guide{
+  position:sticky;
+  top:0;
+  margin:16px 0;
+  padding:12px;
+  background:var(--primary);
+  color:#fff;
+  text-align:center;
+  border-radius:12px;
+  font-size:.9rem;
+  z-index:10;
+  box-shadow:var(--shadow);
+}
+
+/* =====================
+   الأزرار
+===================== */
 .actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:١٠px;
-  margin-top:١٦px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:12px;
 }
 
 button{
-  padding:١٠px ١٤px;
-  border-radius:١٠px;
-  border:none;
   cursor:pointer;
-  font-size:١٤px;
+  border:none;
   color:#fff;
+  background:var(--primary);
 }
 
-.btn-main{background:var(--primary)}
-.btn-soft{background:#4b5563}
-.btn-warn{background:var(--warn);color:#000}
-.btn-success{background:var(--success)}
+button.secondary{background:#455a64}
+button.success{background:var(--success)}
+button.warning{background:var(--warning);color:#000}
+button.danger{background:var(--danger)}
 
-textarea#output{
-  min-height:٤٨٠px;
+button:hover{
+  opacity:.9;
+}
+
+/* =====================
+   الإخراج
+===================== */
+.output{
+  margin-top:16px;
+}
+
+#output{
+  height:420px;
+  white-space:pre-wrap;
   background:#fafafa;
-  white-space:pre-wrap;
-  line-height:١.٩;
 }
 
+/* =====================
+   وضع التشغيل
+===================== */
 .run{
-  background:var(--soft);
-  padding:١٦px;
-  border-radius:١٢px;
+  margin-top:16px;
+  background:var(--surface);
+  padding:16px;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
 }
 
-#log{
-  background:#fff;
-  padding:١٠px;
-  border-radius:٨px;
-  margin-top:٨px;
-  min-height:١٤٠px;
-  white-space:pre-wrap;
-  font-size:١٤px;
+.log{
+  margin-top:10px;
+  padding:10px;
+  background:#fafafa;
+  border-radius:10px;
+  min-height:120px;
+  font-size:.9rem;
 }
 
-.footer{
-  text-align:center;
-  font-size:١٣px;
-  color:var(--muted);
-  margin-top:٢٠px;
+/* =====================
+   التوافق مع الشاشات
+===================== */
+@media (max-width:900px){
+  .main{grid-template-columns:1fr}
+  .actions{grid-template-columns:1fr 1fr}
 }
 
-@media (max-width:٩٠٠px){
-  .grid{grid-template-columns:١fr}
+@media (max-width:500px){
+  .actions{grid-template-columns:1fr}
+  .header h1{font-size:1.2rem}
 }
 
+/* =====================
+   الطباعة
+===================== */
 @media print{
-  button,.actions,.run,.footer{display:none}
-  textarea#output{border:none}
+  .header,.guide,.actions,.run,input,button,textarea:not(#output){display:none}
+  #output{border:none;height:auto;font-size:14pt}
 }
 </style>
 </head>
@@ -170,130 +236,107 @@ textarea#output{
 
 <div class="app">
 
-<div class="header">
-<h١>أداة دعم المعلّم</h١>
-<p>تنظيم الحصّة الواحدة بهدوء — دون إنهاك</p>
-</div>
+  <div class="header">
+    <h1>النظام التربوي الحكيم</h1>
+    <p>إدارة حصص واقعية تدعم المعلّم نفسيًا ومهنيًا دون ضغط</p>
+  </div>
 
-<div class="section">
-<h٢>اعتماد المنهاج</h٢>
+  <div class="guide" id="guide">
+    الإرشاد اللحظي: ابدأ بسؤال واحد واترك الصمت يعمل.
+  </div>
 
-<div class="grid">
-<div>
-<label>الصف</label>
-<input id="grade">
+  <div class="main">
 
-<label>المادة</label>
-<input id="subject">
+    <div class="card">
+      <h2>اعتماد المنهاج</h2>
+      <label>رفع الكتاب</label>
+      <input type="file" id="book">
+      <label>المادة</label>
+      <input id="subject">
+      <label>الصف</label>
+      <input id="grade">
+      <div class="note" id="bookInfo">
+        الكتاب هو المرجع الكامل — التنفيذ يتم حصّة بحصّة.
+      </div>
+    </div>
 
-<label>عنوان الدرس</label>
-<input id="lesson">
-</div>
+    <div class="card">
+      <h2>جوهر الحصّة</h2>
+      <label>سؤال الحصّة</label>
+      <input id="question">
+      <label>الفكرة المقفولة</label>
+      <input id="concept">
+      <div class="note">
+        نطق الفكرة = اكتمال الحصّة + توقّف فوري.
+      </div>
+    </div>
 
-<div>
-<label>رفع الكتاب</label>
-<input type="file" id="bookFile">
-<div id="bookInfo" class="note">لم يتم اعتماد الكتاب.</div>
+  </div>
 
-<label>مرجعية الصفحة / الوحدة</label>
-<input id="bookRef">
-</div>
-</div>
-</div>
+  <div class="actions">
+    <button onclick="prep()">تحضير</button>
+    <button class="secondary" onclick="simulate()">محاكاة</button>
+    <button class="warning" onclick="window.print()">طباعة</button>
+  </div>
 
-<div class="section">
-<h٢>جوهر الحصّة</h٢>
+  <div class="output">
+    <textarea id="output" readonly></textarea>
+  </div>
 
-<label>الهدف السلوكي</label>
-<input id="goal">
-
-<label>سؤال الحصّة</label>
-<input id="question">
-
-<label>الفكرة المقفولة</label>
-<input id="concept">
-
-<div class="note">🎯 نطق الفكرة ثم التوقّف = تعلّم</div>
-</div>
-
-<div class="section">
-<h٢>الإخراج</h٢>
-
-<div class="actions">
-<button class="btn-main" onclick="makePrep()">تحضير حصّة</button>
-<button class="btn-soft" onclick="makePlan()">خطة</button>
-<button class="btn-soft" onclick="makeObservation()">رصد</button>
-<button class="btn-soft" onclick="makeTreatment()">دعم</button>
-<button class="btn-soft" onclick="simulate()">محاكاة</button>
-<button class="btn-warn" onclick="window.print()">طباعة</button>
-</div>
-
-<textarea id="output" readonly placeholder="المخرجات تظهر هنا..."></textarea>
-</div>
-
-<div class="section run">
-<strong>أثناء الحصّة</strong>
-<div class="actions">
-<button class="btn-main" onclick="act('طُرح السؤال')">اطرح السؤال</button>
-<button class="btn-soft" onclick="act('صمت')">صمت</button>
-<button class="btn-warn" onclick="act('ارجع للسؤال')">ارجع</button>
-<button class="btn-success" onclick="closeLesson()">نُطقت الفكرة</button>
-</div>
-<div id="log">سجل التنفيذ:</div>
-</div>
-
-<div class="footer">
-أداة دعم مهني — لا تقييم، لا محاسبة
-</div>
+  <div class="run">
+    <h3>وضع التنفيذ</h3>
+    <div class="actions">
+      <button onclick="act('طرح السؤال')">اطرح السؤال</button>
+      <button class="secondary" onclick="act('صمت')">صمت</button>
+      <button class="success" onclick="closeLesson()">نُطقت الفكرة</button>
+    </div>
+    <div class="log" id="log"></div>
+  </div>
 
 </div>
 
 <script>
-const $=id=>document.getElementById(id);
-let closed=false;
+const g=m=>document.getElementById("guide").textContent="الإرشاد اللحظي: "+m;
 
-$("bookFile").onchange=e=>{
- const f=e.target.files[0];
- $("bookInfo").textContent=f?`✅ تم اعتماد: ${f.name}`:"لم يتم اعتماد الكتاب.";
-};
+function prep(){
+  g("حضّر بهدوء. فكرة واحدة تكفي.");
+  output.value=
+`تحضير حصّة واقعية
 
-function makePrep(){
- $("output").value=
-`تحضير حصّة
+المادة: ${subject.value}
+الصف: ${grade.value}
 
-المادة: ${$("subject").value}
-الصف: ${$("grade").value}
-المرجع: ${$("bookRef").value}
+سؤال الحصّة:
+${question.value}
 
-الهدف:
-${$("goal").value}
+الفكرة المقفولة:
+${concept.value}
 
-السؤال:
-${$("question").value}
-
-الفكرة:
-${$("concept").value}
-
-الخطوات:
-- سؤال
-- صمت
+خطوات:
+- طرح السؤال
+- صمت واعٍ
 - نطق
 - توقّف`;
 }
 
-function makePlan(){ $("output").value+="\n\nخطة:\n- حصّة = فكرة"; }
-function makeObservation(){ $("output").value+="\n\nرصد:\n[ ] حاول\n[ ] نطق"; }
-function makeTreatment(){ $("output").value+="\n\nدعم:\n- صمت\n- تشجيع"; }
-function simulate(){ $("output").value+=`\n\nمحاكاة:\nسؤال → نطق: ${$("concept").value}`; }
-
-function act(msg){
- if(closed)return;
- $("log").textContent+=`\n• ${msg}`;
+function simulate(){
+  g("هذه محاكاة لا تفترض المثالية.");
+  output.value+=
+`\n\nمحاكاة:
+سؤال
+صمت
+تردّد
+نطق:
+${concept.value}
+إغلاق`;
 }
 
+function act(t){
+  log.textContent+="\n• "+t;
+}
 function closeLesson(){
- closed=true;
- $("log").textContent+="\n• انتهت الحصّة";
+  g("توقّف الآن. التعلم حدث.");
+  log.textContent+="\n• انتهت الحصّة";
 }
 </script>
 
