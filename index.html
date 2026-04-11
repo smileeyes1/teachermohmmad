@@ -3,16 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>النظام الحكيم للحصّة الصفّية</title>
+<title>النظام التربوي الحكيم — منتج خبير متكامل</title>
 
 <style>
 :root{
   --main:#1565c0;
   --bg:#f4f6f8;
   --card:#ffffff;
-  --ink:#222;
   --soft:#eef3f9;
-  --hint:#fff8e1;
+  --ink:#222;
   --gray:#455a64;
   --green:#2e7d32;
   --yellow:#f9a825;
@@ -29,7 +28,7 @@ body{
 }
 
 .container{
-  max-width:920px;
+  max-width:1100px;
   margin:16px auto;
   background:var(--card);
   padding:18px;
@@ -43,22 +42,33 @@ h1{
   margin:0;
   font-size:22px;
 }
-
 .sub{
   text-align:center;
   font-size:14px;
   color:#444;
-  margin-bottom:16px;
+  margin-bottom:14px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:16px;
+}
+
+.card{
+  border:1px dashed #dcdcdc;
+  padding:14px;
+  border-radius:12px;
+  background:#fff;
 }
 
 label{
   display:block;
-  margin-top:12px;
+  margin-top:10px;
   font-weight:bold;
-  font-size:15px;
 }
 
-input, select, textarea, button{
+input, textarea, button, select{
   width:100%;
   padding:10px;
   margin-top:6px;
@@ -70,26 +80,20 @@ input, select, textarea, button{
 
 textarea{resize:vertical}
 
-.hint{
-  margin-top:6px;
-  background:var(--hint);
+.note{
+  margin-top:8px;
+  background:#fff8e1;
   padding:8px;
   border-radius:8px;
   font-size:13.5px;
   color:#7f6000;
 }
 
-.section{
-  margin-top:20px;
-  padding-top:14px;
-  border-top:1px dashed #ccc;
-}
-
 .actions{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:8px;
-  margin-top:14px;
+  margin-top:12px;
 }
 
 button{
@@ -101,8 +105,16 @@ button{
 .primary{background:var(--main)}
 .gray{background:var(--gray)}
 .green{background:var(--green)}
-.yellow{background:var(--yellow); color:#000}
+.yellow{background:var(--yellow);color:#000}
 .red{background:var(--red)}
+
+#guide{
+  margin:14px 0;
+  padding:10px;
+  background:var(--soft);
+  border-radius:10px;
+  font-size:14px;
+}
 
 #output{
   margin-top:16px;
@@ -113,29 +125,29 @@ button{
   font-size:14.5px;
 }
 
-#runPanel{
-  margin-top:22px;
+#run{
+  margin-top:20px;
+  padding:14px;
   background:var(--soft);
-  padding:16px;
   border-radius:12px;
 }
 
 #log{
-  margin-top:12px;
+  margin-top:10px;
+  min-height:160px;
   background:#fafafa;
   padding:10px;
-  min-height:160px;
   white-space:pre-wrap;
   font-size:14px;
 }
 
-@media (max-width:600px){
-  .actions{grid-template-columns:1fr}
-  #output{height:460px}
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr}
+  .actions{grid-template-columns:1fr 1fr}
 }
 
 @media print{
-  input,select,button,textarea:not(#output),.hint,.sub,#runPanel{display:none}
+  input,select,button,textarea:not(#output),#run,#guide,.sub{display:none}
   #output{border:none;height:auto;font-size:14pt}
 }
 </style>
@@ -145,184 +157,192 @@ button{
 
 <div class="container">
 
-<h1>النظام الحكيم للحصّة الصفّية</h1>
+<h1>النظام التربوي الحكيم</h1>
 <div class="sub">
-إطار تربوي عملي لإدارة حصّة عميقة بأقل تدخّل وبأثر أوضح
+منتج خبير متكامل لدعم المعلّم نفسيًا ومهنيًا — حصّة بحصّة، دون إنهاك
 </div>
 
-<!-- بيانات المنهاج -->
-<label>المادة</label>
-<input id="subject" placeholder="اللغة العربية / الرياضيات">
+<div class="grid">
 
-<label>الصف</label>
-<input id="grade" placeholder="الصف الأول / الثاني">
+<!-- اعتماد الكتاب والمنهاج -->
+<div class="card">
+  <h3>اعتماد الكتاب (المنهاج كاملًا)</h3>
+  <label>رفع الكتاب (PDF/صورة)</label>
+  <input type="file" id="bookFile" accept=".pdf,image/*">
+  <div id="bookInfo" class="note">لم يتم اعتماد الكتاب بعد.</div>
 
-<label>عنوان الدرس (مرجعي فقط)</label>
-<input id="lesson">
+  <label>الصف</label>
+  <input id="grade" placeholder="الصف الأول / الثاني">
 
-<label>رفع ملف الكتاب (PDF أو صورة)</label>
-<input type="file" id="bookFile" accept=".pdf,image/*">
-<div id="bookInfo" class="hint">
-لم يتم رفع كتاب بعد — الكتاب يُعتمد مرجعًا للمنهاج فقط.
-</div>
+  <label>المادة</label>
+  <input id="subject" placeholder="لغة عربية / رياضيات">
 
-<label>صفحة الكتاب المعتمدة</label>
-<input id="bookPage" placeholder="مثال: صفحة 12">
-<div class="hint">
-اختر صفحة واحدة فقط. مثال واحد فقط يُستخدم منها.
+  <label>عنوان الدرس (مرجعي فقط)</label>
+  <input id="lesson" placeholder="كما في الكتاب">
+
+  <label>مرجعية الصفحة/الوحدة</label>
+  <input id="bookRef" placeholder="الوحدة ٢ – صفحة ١٢">
+
+  <div class="note">
+    ✅ الكتاب معتمد كاملًا. التنفيذ يتم بحصص مستقلة (حصّة = فكرة).
+  </div>
 </div>
 
 <!-- جوهر الحصّة -->
-<div class="section">
-<label>الهدف السلوكي القابل للرصد</label>
-<input id="goal" placeholder="أن ينطق التلميذ الفكرة بوضوح">
+<div class="card">
+  <h3>جَوهر الحصّة الواحدة</h3>
+  <label>الهدف السلوكي القابل للرصد</label>
+  <input id="goal" placeholder="أن ينطق التلميذ الفكرة بوضوح">
 
-<label>سؤال الحصّة الواحد 🔒</label>
-<input id="question" placeholder="سؤال يُدار حوله الدرس كاملًا">
+  <label>سؤال الحصّة الواحد</label>
+  <input id="question" placeholder="سؤال بسيط يُدار حوله الدرس">
 
-<label>الفكرة المقفولة 🔒</label>
-<input id="concept" placeholder="جملة قصيرة ينطقها تلميذ">
-<div class="hint">
-هذا النطق هو شرط الإغلاق، لا الزمن ولا كثرة الأنشطة.
-</div>
-</div>
+  <label>الفكرة المقفولة (جملة الإغلاق)</label>
+  <input id="concept" placeholder="جملة قصيرة ينطقها تلميذ">
 
-<!-- أزرار التحضير والمحاكاة -->
-<div class="section actions">
-  <button class="primary" onclick="build()">✅ توليد التحضير</button>
-  <button class="gray" onclick="simulate()">🎭 محاكاة حصّة واقعية</button>
-  <button class="gray" onclick="window.print()">🖨️ طباعة</button>
-</div>
-
-<textarea id="output" readonly placeholder="سيظهر التحضير والمحاكاة هنا..."></textarea>
-
-<!-- التشغيل الصفّي -->
-<div id="runPanel">
-  <div class="hint">
-أثناء الحصّة: النظام لا يشرح، بل يضبط الإيقاع ويُعينك على التوقّف في اللحظة الصحيحة.
+  <div class="note">
+    🎯 النجاح = نطق الفكرة + توقّف في وقته.
   </div>
+</div>
 
-  <div class="actions">
-    <button class="primary" onclick="logAct('طُرح السؤال كما هو من المثال')">🟦 طرح السؤال</button>
-    <button class="gray" onclick="logAct('صمت مقصود — تفكير جارٍ')">🔇 صمت تربوي</button>
-    <button class="yellow" onclick="logAct('إعادة توجيه: ارجع للسؤال')">↩️ رجوع</button>
-    <button class="green" onclick="closeLesson()">✅ نُطقت الفكرة</button>
+</div>
+
+<!-- الإرشاد اللحظي -->
+<div id="guide">🧭 الإرشاد اللحظي: ابدأ بسؤال واحد واترك الصمت يعمل.</div>
+
+<!-- الأزرار الرئيسية -->
+<div class="actions">
+  <button class="primary" onclick="makePrep()">تحضير حصّة</button>
+  <button class="gray" onclick="makePlan()">الخطط</button>
+  <button class="gray" onclick="makeObservation()">قوائم رصد</button>
+  <button class="gray" onclick="makeTreatment()">علاج تربوي</button>
+  <button class="gray" onclick="simulate()">محاكاة حصّة</button>
+  <button class="yellow" onclick="window.print()">طباعة</button>
+</div>
+
+<textarea id="output" readonly placeholder="ستظهر هنا كل المخرجات (تحضير، خطط، رصد، علاج، محاكاة)..."></textarea>
+
+<!-- وضع التشغيل الصفّي -->
+<div id="run">
+  <strong>وضع التشغيل أثناء الحصّة (دعم بلحظة بلحظة)</strong>
+  <div class="actions" style="margin-top:10px">
+    <button class="primary" onclick="act('طُرح السؤال')">اطرح السؤال</button>
+    <button class="gray" onclick="act('صمت مطمئن')">صمت</button>
+    <button class="yellow" onclick="act('ارجع للسؤال')">ارجع للسؤال</button>
+    <button class="green" onclick="closeLesson()">نُطقت الفكرة</button>
   </div>
-
-  <div id="log">سجلّ التنفيذ (لتوثيق مهني فقط):</div>
+  <div id="log">سجلّ التنفيذ:</div>
 </div>
 
 </div>
 
 <script>
-"use strict";
-const $ = id => document.getElementById(id);
-const out = $("output");
-const log = $("log");
-let closed = false;
+const $=id=>document.getElementById(id);
+let closed=false;
 
 /* اعتماد الكتاب */
 $("bookFile").addEventListener("change",()=>{
-  const f = $("bookFile").files[0];
-  if(!f){
-    $("bookInfo").textContent="لم يتم رفع كتاب بعد.";
-    return;
-  }
-  $("bookInfo").textContent =
-    `✅ تم اعتماد الكتاب: ${f.name} (مرجع المنهاج لهذه الحصّة)`;
+  const f=$("bookFile").files[0];
+  $("bookInfo").textContent = f
+   ? `✅ تم اعتماد الكتاب كمنهاج كامل: ${f.name}`
+   : "لم يتم اعتماد الكتاب بعد.";
 });
 
-/* تحقق الأساس */
-function coreReady(){
-  if(!$("question").value.trim() || !$("concept").value.trim()){
-    alert("سؤال الحصّة والفكرة المقفولة عنصران إلزاميان.");
-    return false;
+/* الإرشاد */
+function guide(msg){$("guide").textContent="🧭 "+msg}
+
+/* تحضير */
+function makePrep(){
+  if(!$("question").value||!$("concept").value){
+    alert("سؤال الحصّة والفكرة المقفولة إلزاميان.");
+    return;
   }
-  return true;
-}
+  guide("حضّر بهدوء. لا تخطط لأكثر من فكرة.");
+  $("output").value =
+`تحضير حصّة صفّية (نموذج خبير)
 
-/* بناء التحضير */
-function build(){
-  if(!coreReady()) return;
-
-  out.value =
-`تحضير حصّة صفّية – إطار حكيم
-
-المادة: ${$("subject").value || "—"}
-الصف: ${$("grade").value || "—"}
-الدرس: ${$("lesson").value || "—"}
-
-المنهاج المعتمد:
-الكتاب المدرسي الرسمي
-الملف: ${$("bookFile").files[0]?.name || "غير مرفق"}
-الصفحة: ${$("bookPage").value || "—"}
+المادة: ${$("subject").value||"—"}
+الصف: ${$("grade").value||"—"}
+الدرس: ${$("lesson").value||"—"}
+مرجعية الكتاب: ${$("bookRef").value||"—"}
 
 الهدف السلوكي:
-«${$("goal").value || "—"}»
+«${$("goal").value||"—"}»
 
-سؤال الحصّة الواحد:
-«${$("question").value.trim()}»
+سؤال الحصّة:
+«${$("question").value}»
 
 الفكرة المقفولة:
-«${$("concept").value.trim()}»
+«${$("concept").value}»
 
-بنية التنفيذ المعتمدة:
-1) طرح السؤال فقط من المثال
-2) مثال واحد من الصفحة المحددة
-3) صمت مقصود للتفكير
-4) نطق تلميذ واحد للفكرة
-5) إغلاق الحصّة فور النطق
+إجراءات التنفيذ:
+- طرح السؤال فقط
+- صمت للتفكير
+- توجيه واحد عند الحاجة
+- نطق تلميذ
+- إغلاق الحصّة فور النطق
 
-مبدأ الخبير:
-الإكثار لا يُعمّق.
-التوقّف في وقته يُثبّت الفهم.
-`;
+ملاحظة خبير:
+التوقّف في وقته يثبّت التعلّم.`;
 }
 
-/* محاكاة واقعية */
+/* الخطط */
+function makePlan(){
+  guide("الخطط تنظّم العمل ولا تُنهي المنهاج.");
+  $("output").value +=
+`\n\nخطة تربوية (مرنة):
+- الكتاب كامل معتمد
+- كل حصّة = فكرة واحدة
+- إيقاع هادئ
+- التوقّف قرار مهني واعٍ`;
+}
+
+/* الرصد */
+function makeObservation(){
+  guide("الرصد وصفي بلا أرقام.");
+  $("output").value +=
+`\n\nقائمة رصد:
+[ ] حاول
+[ ] تردّد
+[ ] نطق
+[ ] احتاج دعم`;
+}
+
+/* العلاج */
+function makeTreatment(){
+  guide("العلاج دعم لا عقاب.");
+  $("output").value +=
+`\n\nعلاج تربوي:
+- إعادة المثال بصريًا
+- تبسيط لغوي
+- صمت أطول
+- تشجيع بلا ضغط`;
+}
+
+/* المحاكاة */
 function simulate(){
-  if(!coreReady()) return;
-
-  out.value +=
-`\n\n—— محاكاة حصّة واقعية قابلة للتنفيذ ——
-
-الدقيقة الأولى:
-المعلّم يطرح السؤال:
-«${$("question").value.trim()}»
-
-الدقائق التالية:
-الطلاب ينظرون إلى المثال في الكتاب.
-لا شرح إضافي.
-صمت محسوب.
-
-إعادة توجيه واحدة فقط:
-«ارجع للسؤال.»
-
-اللحظة الحاسمة:
-ينطق أحد التلاميذ:
-«${$("concept").value.trim()}»
-
-الإجراء المهني:
-✅ إغلاق الحصّة فورًا.
-التعلّم حدث، ولا يحتاج استكمالًا.
-
-—— انتهت المحاكاة ——
-`;
+  guide("محاكاة واقعية غير مثالية.");
+  $("output").value +=
+`\n\nمحاكاة حصّة:
+طرح السؤال
+صمت
+تردّد
+محاولة
+نطق:
+«${$("concept").value||"…"}»
+إغلاق الدرس`;
 }
 
-/* سجل التنفيذ */
-function time(){
-  return new Date().toLocaleTimeString("ar-EG");
-}
-function logAct(msg){
+/* التشغيل */
+function act(msg){
   if(closed) return;
-  log.textContent += `\n[${time()}] ${msg}`;
+  $("log").textContent += `\n• ${msg}`;
 }
 function closeLesson(){
   if(closed) return;
   closed=true;
-  logAct("نُطقت الفكرة المستهدفة.");
-  logAct("أُغلقت الحصّة مهنيًا دون شرح إضافي.");
+  guide("توقّف الآن. التعلم حدث.");
+  $("log").textContent += "\n• نُطقت الفكرة – انتهت الحصّة";
 }
 </script>
 
