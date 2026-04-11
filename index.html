@@ -3,19 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تحضير حصة بسيطة — سؤال واحد وفكرة واحدة</title>
+<title>النظام السيادي لتحضير الحصة — سؤال واحد، فكرة واحدة</title>
 
 <style>
+:root{
+  --main:#1976d2;
+  --soft:#f2f4f7;
+  --ink:#333;
+}
 body{
   font-family: Tahoma, Arial, sans-serif;
-  background:#f2f4f7;
+  background:var(--soft);
   margin:0;
   padding:١٢px;
+  color:var(--ink);
 }
 .container{
-  max-width:٨٠٠px;
+  max-width:٨٢٠px;
   margin:auto;
-  background:#ffffff;
+  background:#fff;
   padding:١٦px;
   border-radius:١٢px;
   box-shadow:0 ٤px ١٠px rgba(0,0,0,.08);
@@ -23,17 +29,15 @@ body{
 h1{
   text-align:center;
   font-size:٢٠px;
-  margin-bottom:١٤px;
+  margin-bottom:١٦px;
 }
-
-/* الحقول */
 label{
   display:block;
   font-weight:bold;
   margin-top:١٢px;
   font-size:١٥px;
 }
-input, select, textarea, button{
+input,select,textarea,button{
   width:١٠٠%;
   padding:١٤px;
   margin-top:٦px;
@@ -43,13 +47,11 @@ input, select, textarea, button{
   direction:rtl;
 }
 textarea{
-  height:٥٤٠px;
+  height:٥٦٠px;
   resize:vertical;
   white-space:pre-wrap;
   line-height:١.٩;
 }
-
-/* تلميحات */
 .hint{
   background:#f8f9fa;
   border:١px solid #e0e0e0;
@@ -57,22 +59,28 @@ textarea{
   padding:٨px ١٠px;
   margin-top:٦px;
   font-size:١٣.٥px;
-  color:#444;
+  color:#٤٤٤;
 }
-
-/* أزرار */
 button{
-  margin-top:١٦px;
-  background:#1976d2;
-  color:#ffffff;
+  margin-top:١٨px;
+  background:var(--main);
+  color:#fff;
   border:none;
   font-size:١٦px;
+  cursor:pointer;
 }
 button:active{opacity:.٨٥}
-
-/* طباعة */
+.badge{
+  text-align:center;
+  margin-top:١٤px;
+  padding:٨px;
+  border-radius:٨px;
+  font-size:١٤.٥px;
+  background:#e٨f٥e٩;
+  color:#١b٥e٢٠;
+}
 @media print{
-  label,input,select,button,.hint{display:none}
+  label,input,select,button,.hint,.badge{display:none}
   textarea{
     border:none;
     height:auto;
@@ -85,87 +93,95 @@ button:active{opacity:.٨٥}
 <body>
 
 <div class="container">
-<h1>تحضير حصة صفّية بسيطة</h1>
+<h1>النظام السيادي لتحضير الحصة</h1>
 
 <label>المادة</label>
-<input id="subject" placeholder="اللغة العربية / الرياضيات">
+<select id="subject">
+  <option>اللغة العربية</option>
+  <option>الرياضيات</option>
+</select>
 
 <label>الصف</label>
-<input id="grade" placeholder="الصف الأول / الصف الثاني">
+<select id="grade">
+  <option>الصف الأول</option>
+  <option>الصف الثاني</option>
+</select>
 
 <label>عنوان الدرس</label>
-<input id="lesson" placeholder="مثال: التنوين / الطرح ضمن ١٠">
+<input id="lesson" placeholder="كما ورد في الكتاب">
 
-<label>سؤال الحصّة</label>
-<input id="question" placeholder="اكتب سؤالًا واحدًا فقط">
+<label>سؤال الحصة الواحد 🔒</label>
+<input id="question" placeholder="سؤال واحد لا يتغير">
 <div class="hint">
-هذا سؤال نردّده طول الحصّة، ولا نغيّره.<br>
-مثال: «لماذا نطقنا هذا الصوت؟» أو «كيف عرفت العملية؟»
+سؤال ثابت يُطرح من الدقيقة الأولى حتى الأخيرة.<br>
+لا تفريع، لا تشتيت.
 </div>
 
-<label>فكرة الحصّة</label>
-<input id="concept" placeholder="جملة قصيرة وبسيطة">
+<label>الفكرة المقفولة 🔒</label>
+<input id="concept" placeholder="جملة قصيرة سينطقها تلميذ">
 <div class="hint">
-هذه الجملة نريد من <b>تلميذ</b> أن يقولها قبل نهاية الحصّة.<br>
-مثال: «كل صوت له علامة» أو «لكل مسألة عملية واحدة».
+لا تُغلق الحصة حتى ينطقها <b>تلميذ</b> بوضوح.
 </div>
 
-<label>مدة الحصّة</label>
+<label>مدة الحصة</label>
 <select id="duration">
   <option value="٤٠">٤٠ دقيقة</option>
   <option value="٤٥">٤٥ دقيقة</option>
 </select>
 
-<button onclick="build()">✅ حضّر الحصّة</button>
+<button onclick="build()">✅ توليد الحصة السيادية</button>
+<button onclick="window.print()">🖨️ طباعة</button>
 
-<textarea id="output" placeholder="ستظهر الحصّة الجاهزة هنا..."></textarea>
+<div class="badge">🛡️ التلميذ يفكّر — المعلّم يُدير الصمت</div>
+
+<textarea id="output" placeholder="ستظهر الحصة الجاهزة هنا..."></textarea>
 </div>
 
 <script>
 function build(){
-
-  const subject  = document.getElementById("subject").value || "—";
-  const grade    = document.getElementById("grade").value || "—";
+  const subject  = document.getElementById("subject").value;
+  const grade    = document.getElementById("grade").value;
   const lesson   = document.getElementById("lesson").value || "—";
-  const question = document.getElementById("question").value;
-  const concept  = document.getElementById("concept").value;
+  const question = document.getElementById("question").value.trim();
+  const concept  = document.getElementById("concept").value.trim();
   const duration = document.getElementById("duration").value;
   const out      = document.getElementById("output");
 
   if(!question || !concept){
-    alert("اكتب سؤال الحصّة وفكرتها أولًا");
+    alert("سؤال الحصة والفكرة المقفولة عنصران إلزاميان");
     return;
   }
 
   out.value =
-`تحضير حصة صفّية
+`تحضير حصة صفّية سيادية
 
 المادة: ${subject}
 الصف: ${grade}
 الدرس: ${lesson}
 المدة: ${duration} دقيقة
 
-سؤال الحصّة:
+سؤال الحصة الواحد:
 «${question}»
 
-فكرة الحصّة:
+الفكرة المقفولة:
 «${concept}»
 
-كيف أُنفّذ؟
-١) أطرح السؤال فقط.
-٢) أعطي مثالًا واحدًا.
-٣) أسكت قليلًا (تفكير).
-٤) تلميذ واحد يجيب.
-٥) أطلب من تلميذ قول فكرة الحصّة.
+بنية التنفيذ السيادي:
+١) أطرح السؤال فقط — دون شرح.
+٢) مثال واحد من الكتاب.
+٣) صمت مقصود للتفكير.
+٤) تلميذ واحد ينطق الفكرة.
+٥) تثبيت قصير ثم إغلاق.
 
-قرار الحصّة:
-لا شرح طويل.
-لا أسئلة كثيرة.
-فكرة واحدة تكفي.
+قرارات غير قابلة للنقاش:
+– لا شرح طويل.
+– لا أسئلة متعددة.
+– لا سبورة مزدحمة.
 
 تذكير للمعلم:
-التلميذ يفكّر.
-وأنا أُدير الصمت.
+الصمت أداة.
+التفكير هدف.
+النطق دليل الفهم.
 `;
 }
 </script>
