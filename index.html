@@ -6,37 +6,44 @@
 <title>النظام السيادي لتحضير الحصة</title>
 
 <style>
+:root{
+  --main:#1565c0;
+  --bg:#eef2f6;
+  --card:#ffffff;
+  --ink:#333;
+}
 body{
-  margin:0;
+  margin:٠;
   padding:١٢px;
-  font-family:Tahoma, Arial, sans-serif;
-  background:#f0f3f7;
+  font-family: Tahoma, Arial, sans-serif;
+  background:linear-gradient(135deg,#e3f2fd,#f1f8e9);
+  color:var(--ink);
 }
 .container{
   max-width:٨٥٠px;
   margin:auto;
-  background:#ffffff;
+  background:var(--card);
   padding:٢٠px;
-  border-radius:١٤px;
-  box-shadow:0 ٥px ١٥px rgba(0,0,0,.12);
+  border-radius:١٦px;
+  box-shadow:0 ٦px ١٦px rgba(0,0,0,.١٢);
 }
 header{
   text-align:center;
-  margin-bottom:١٨px;
+  margin-bottom:٢٠px;
 }
 header h1{
   margin:٠;
   font-size:٢٢px;
-  color:#١٥٦٥c٠;
+  color:var(--main);
 }
 header p{
-  margin:٦px ٠ ٠;
+  margin-top:٦px;
   font-size:١٤.٥px;
 }
 label{
   display:block;
-  font-weight:bold;
   margin-top:١٤px;
+  font-weight:bold;
 }
 input,select,textarea,button{
   width:١٠٠%;
@@ -49,19 +56,37 @@ input,select,textarea,button{
 }
 textarea{
   height:٤٨٠px;
+  resize:vertical;
   white-space:pre-wrap;
   line-height:١.٨;
 }
+.file-box{
+  margin-top:١٢px;
+  background:#f1f5ff;
+  border:١px solid #c3d3ff;
+  border-radius:١٠px;
+  padding:١٢px;
+}
+.file-name{
+  margin-top:٨px;
+  font-size:١٤px;
+  color:#0d47a1;
+}
+.actions{
+  display:flex;
+  gap:١٠px;
+  margin-top:٢٠px;
+}
 button{
-  margin-top:١٦px;
-  background:#١٥٦٥c٠;
+  flex:١;
+  background:var(--main);
   color:#ffffff;
   border:none;
   font-size:١٦px;
   cursor:pointer;
 }
 button.secondary{
-  background:#٤٥٥a٦٤;
+  background:#455a64;
 }
 button:active{opacity:.٨٥}
 .notice{
@@ -70,15 +95,16 @@ button:active{opacity:.٨٥}
   font-weight:bold;
 }
 .badge{
-  margin-top:١٤px;
+  margin-top:١٦px;
   padding:١٠px;
   text-align:center;
-  background:#e٨f٥e٩;
-  color:#١b٥e٢٠;
+  font-size:١٤.٥px;
   border-radius:١٠px;
+  background:#e8f5e9;
+  color:#1b5e20;
 }
 @media print{
-  header,label,input,select,button,.notice,.badge{display:none}
+  header,label,input,select,button,.notice,.badge,.file-box{display:none}
   textarea{border:none;height:auto;font-size:١٤pt}
 }
 </style>
@@ -108,10 +134,16 @@ button:active{opacity:.٨٥}
 <label>عنوان الدرس</label>
 <input id="lesson" placeholder="كما ورد في الكتاب">
 
-<label>سؤال الحصة الواحد</label>
+<label>رفع ملف الكتاب (PDF أو صورة)</label>
+<div class="file-box">
+  <input type="file" id="bookFile" accept=".pdf,image/*">
+  <div id="fileName" class="file-name">لم يتم رفع ملف بعد</div>
+</div>
+
+<label>سؤال الحصة الواحد 🔒</label>
 <input id="question">
 
-<label>الفكرة المقفولة</label>
+<label>الفكرة المقفولة 🔒</label>
 <input id="concept">
 
 <label>مدة الحصة</label>
@@ -120,8 +152,10 @@ button:active{opacity:.٨٥}
   <option value="٤٥">٤٥ دقيقة</option>
 </select>
 
-<button onclick="build()">✅ توليد الحصة</button>
-<button class="secondary" onclick="test()">🧪 اختبار فوري</button>
+<div class="actions">
+  <button onclick="build()">✅ توليد الحصة</button>
+  <button class="secondary" onclick="test()">🧪 اختبار فوري</button>
+</div>
 
 <div id="err" class="notice"></div>
 
@@ -129,30 +163,37 @@ button:active{opacity:.٨٥}
 🛡️ التلميذ يفكّر — المعلّم يُدير الصمت
 </div>
 
-<textarea id="output" placeholder="سيظهر التحضير هنا..."></textarea>
+<textarea id="output" placeholder="ستظهر الحصة الجاهزة هنا..."></textarea>
 
 </div>
 
 <script>
+document.getElementById("bookFile").addEventListener("change",function(){
+  const f=this.files[٠];
+  document.getElementById("fileName").textContent =
+    f ? "📘 تم رفع الملف: " + f.name : "لم يتم رفع ملف بعد";
+});
+
 function build(){
-  const err = document.getElementById("err");
-  const out = document.getElementById("output");
+  const err=document.getElementById("err");
+  const out=document.getElementById("output");
   err.textContent="";
 
-  try{
-    const subject  = document.getElementById("subject").value;
-    const grade    = document.getElementById("grade").value;
-    const lesson   = document.getElementById("lesson").value || "—";
-    const question = document.getElementById("question").value.trim();
-    const concept  = document.getElementById("concept").value.trim();
-    const duration = document.getElementById("duration").value;
+  const subject=document.getElementById("subject").value;
+  const grade=document.getElementById("grade").value;
+  const lesson=document.getElementById("lesson").value || "—";
+  const question=document.getElementById("question").value.trim();
+  const concept=document.getElementById("concept").value.trim();
+  const duration=document.getElementById("duration").value;
+  const fileEl=document.getElementById("bookFile");
+  const file=fileEl.files[٠];
 
-    if(!question || !concept){
-      err.textContent="❌ يجب إدخال سؤال الحصة والفكرة المقفولة";
-      return;
-    }
+  if(!question || !concept){
+    err.textContent="❌ يجب إدخال سؤال الحصة والفكرة المقفولة";
+    return;
+  }
 
-    out.value =
+  out.value =
 `تحضير حصة صفّية سيادية
 
 المدرسة: عاطوف المختلطة
@@ -162,6 +203,7 @@ function build(){
 الصف: ${grade}
 الدرس: ${lesson}
 المدة: ${duration} دقيقة
+الكتاب المرفق: ${file ? file.name : "غير مرفق"}
 
 سؤال الحصة الواحد:
 «${question}»
@@ -181,9 +223,6 @@ function build(){
 التفكير هدف.
 النطق دليل الفهم.
 `;
-  }catch(e){
-    err.textContent="❌ خطأ تقني: "+e.message;
-  }
 }
 
 function test(){
