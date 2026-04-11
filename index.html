@@ -2,77 +2,95 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>المحاكاة السيادية المرتبطة بالكتاب — نسخة موحَّدة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>محاكاة حصة صفية سيادية — نسخة الهاتف</title>
 
 <style>
 body{
   font-family: Tahoma, Arial, sans-serif;
-  background:#f4f6f8;
+  background:#f2f4f7;
   margin:0;
-  padding:16px;
+  padding:12px;
 }
 .container{
   background:#fff;
-  max-width:960px;
   margin:auto;
-  padding:20px;
-  border-radius:10px;
-  box-shadow:0 4px 8px rgba(0,0,0,.1);
+  padding:16px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
 }
-h1{text-align:center;margin-bottom:12px;}
-label{font-weight:bold;margin-top:10px;display:block;}
+h1{
+  text-align:center;
+  font-size:20px;
+  margin-bottom:16px;
+}
+label{
+  font-weight:bold;
+  margin-top:12px;
+  display:block;
+  font-size:14.5px;
+}
 input,select,textarea{
   width:100%;
-  padding:10px;
+  padding:12px;
   margin-top:6px;
-  border-radius:6px;
+  border-radius:8px;
   border:1px solid #ccc;
   font-size:15px;
   direction:rtl;
 }
-textarea{resize:vertical;}
+textarea{
+  resize:vertical;
+}
 .actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin:16px 0;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:18px 0;
 }
 button{
-  padding:12px;
+  padding:14px;
   font-size:15px;
   border:none;
-  border-radius:6px;
+  border-radius:10px;
   background:#1976d2;
   color:#fff;
   cursor:pointer;
 }
 button.alt{background:#009688;}
-button.warn{background:#ffa000;}
+button.warn{background:#f9a825;color:#000;}
 button.danger{background:#d32f2f;}
 button.dark{background:#455a64;}
-button:hover{opacity:.9;}
-.output textarea{
-  height:650px;
-  white-space:pre-wrap;
-  font-size:14.5px;
-  line-height:1.8;
-}
+button:active{opacity:0.85;}
+
 .badge{
-  display:inline-block;
-  padding:4px 10px;
-  border-radius:6px;
-  font-size:14px;
-  margin-bottom:8px;
+  display:block;
+  text-align:center;
+  padding:8px;
+  border-radius:8px;
+  font-size:14.5px;
+  margin-bottom:10px;
 }
 .green{background:#e8f5e9;color:#1b5e20;}
 .yellow{background:#fff8e1;color:#7f6000;}
 .red{background:#fde0dc;color:#b71c1c;}
-small{color:#555;}
+
+.output textarea{
+  height:520px;
+  white-space:pre-wrap;
+  font-size:14.5px;
+  line-height:1.9;
+}
+
+small{color:#555;font-size:13px;}
+
 @media print{
   .actions,label,input,select,small,.badge{display:none}
-  .container{box-shadow:none}
-  textarea{border:none;height:auto;font-size:14pt}
+  textarea{
+    border:none;
+    height:auto;
+    font-size:14pt;
+  }
 }
 </style>
 </head>
@@ -80,7 +98,7 @@ small{color:#555;}
 <body>
 
 <div class="container">
-<h1>محاكاة حصة صفية سيادية مرتبطة بالكتاب</h1>
+<h1>محاكاة حصة صفية سيادية</h1>
 
 <label>المادة</label>
 <input id="subject">
@@ -91,14 +109,14 @@ small{color:#555;}
 <label>الدرس</label>
 <input id="lesson">
 
-<label>هدف الحصة (سلوك ذهني قابل للرصد)</label>
-<input id="goal" placeholder="مثال: أن يبرّر اختياره بسبب واحد">
+<label>هدف الحصة</label>
+<input id="goal" placeholder="سلوك ذهني قابل للرصد">
 
 <label>سؤال الحصة الواحد</label>
-<input id="coreQuestion" placeholder="سؤال واحد تُدار حوله الحصة كاملة">
+<input id="coreQuestion">
 
 <label>المفهوم المقفول</label>
-<input id="lockedConcept" placeholder="المفهوم الذي لا يُتجاوز حتى ينضج">
+<input id="lockedConcept">
 
 <label>مدة الحصة</label>
 <select id="duration">
@@ -106,22 +124,22 @@ small{color:#555;}
   <option value="٤٥">٤٥ دقيقة</option>
 </select>
 
-<label>طريقة التنفيذ</label>
+<label>النمط</label>
 <select id="delivery">
   <option value="face">وجاهي</option>
   <option value="teams">عن بُعد</option>
 </select>
 
-<label>رفع ملف الكتاب (TXT أو PDF)</label>
+<label>رفع كتاب (TXT أو PDF)</label>
 <input type="file" id="bookFile" accept=".txt,.pdf">
-<small>يُستخدم لتحديد نطاق الدرس والأمثلة المسموح بها</small>
+<small>يُستخدم لضبط الأمثلة ضمن نطاق الكتاب</small>
 
 <div class="actions">
-  <button onclick="build()">🧠 إنشاء المحاكاة</button>
-  <button class="alt" onclick="path('good')">🟢 تفاعل مرتفع</button>
-  <button class="warn" onclick="path('mixed')">🟡 تفاعل متباين</button>
+  <button onclick="build()">🧠 إنشاء</button>
+  <button class="alt" onclick="path('good')">🟢 مرتفع</button>
+  <button class="warn" onclick="path('mixed')">🟡 متباين</button>
   <button class="danger" onclick="path('weak')">🔴 تعثّر</button>
-  <button class="dark" onclick="silentCheck()">⏱️ فحص الصمت</button>
+  <button class="dark" onclick="silentCheck()">⏱️ صمت</button>
   <button onclick="window.print()">🖨️ طباعة</button>
 </div>
 
@@ -132,94 +150,67 @@ small{color:#555;}
 </div>
 </div>
 
-<!-- pdf.js -->
-https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js</script>
+<!-- pdf.js (تصحيح نهائي) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc =
 "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 </script>
 
 <script>
-const subject = document.getElementById("subject");
-const grade = document.getElementById("grade");
-const lesson = document.getElementById("lesson");
-const goal = document.getElementById("goal");
-const coreQuestion = document.getElementById("coreQuestion");
-const lockedConcept = document.getElementById("lockedConcept");
-const duration = document.getElementById("duration");
-const delivery = document.getElementById("delivery");
-const bookFile = document.getElementById("bookFile");
-const out = document.getElementById("out");
-const gauge = document.getElementById("gauge");
+const el = id => document.getElementById(id);
 
-let bookText = "";
-let keywords = [];
-let built = false;
-let talkRatio = 0.5;
-let diversity = 0.5;
+const subject = el("subject"),
+      grade = el("grade"),
+      lesson = el("lesson"),
+      goal = el("goal"),
+      coreQuestion = el("coreQuestion"),
+      lockedConcept = el("lockedConcept"),
+      duration = el("duration"),
+      delivery = el("delivery"),
+      bookFile = el("bookFile"),
+      out = el("out"),
+      gauge = el("gauge");
+
+let bookText="", keywords=[], built=false;
+let talkRatio=0.5, diversity=0.5;
 
 /* قراءة الكتاب */
-bookFile.addEventListener("change", async e => {
-  const f = e.target.files[0];
-  if(!f) return;
-
+bookFile.addEventListener("change", async e=>{
+  const f=e.target.files[0]; if(!f) return;
   if(f.name.endsWith(".txt")){
-    const r = new FileReader();
-    r.onload = () => {
-      bookText = (r.result || "").trim();
-      keywords = extractKeywords(bookText);
-      alert("تم تحميل الكتاب النصي وتحديد النطاق");
-    };
+    const r=new FileReader();
+    r.onload=()=>{ bookText=r.result||""; extract(); alert("تم تحميل الملف النصي"); };
     r.readAsText(f,"UTF-8");
   }else{
-    const buf = await f.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({data:buf}).promise;
+    const buf=await f.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:buf}).promise;
     let t="";
     for(let i=1;i<=pdf.numPages;i++){
-      const p = await pdf.getPage(i);
-      const c = await p.getTextContent();
-      c.items.forEach(it=>t += it.str + " ");
+      const p=await pdf.getPage(i);
+      const c=await p.getTextContent();
+      c.items.forEach(it=>t+=it.str+" ");
     }
-    bookText = t.trim();
-    keywords = extractKeywords(bookText);
-    alert("تم تحميل كتاب PDF وتحديد النطاق");
+    bookText=t; extract(); alert("تم تحميل PDF");
   }
 });
 
-/* استخراج كلمات النطاق */
-function extractKeywords(text){
-  const words = text
-    .replace(/[^\u0600-\u06FF\s]/g,"")
-    .split(/\s+/)
-    .filter(w=>w.length>3);
-  const freq = {};
+function extract(){
+  const words=bookText.replace(/[^\u0600-\u06FF\s]/g,"")
+    .split(/\s+/).filter(w=>w.length>3);
+  const freq={};
   words.forEach(w=>freq[w]=(freq[w]||0)+1);
-  return Object.entries(freq)
-    .sort((a,b)=>b[1]-a[1])
-    .slice(0,5)
-    .map(e=>e[0]);
+  keywords=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,5).map(e=>e[0]);
 }
 
-/* التحقق من توافق الهدف */
-function goalAligned(goalText, keys){
-  if(!keys.length) return true;
-  return keys.some(k => goalText.includes(k));
-}
-
-/* إنشاء المحاكاة */
 function build(){
-  if(!goal.value || !coreQuestion.value || !lockedConcept.value){
-    alert("الهدف، السؤال الواحد، والمفهوم المقفول عناصر إلزامية");
+  if(!goal.value||!coreQuestion.value||!lockedConcept.value){
+    alert("الهدف، السؤال، والمفهوم المقفول إلزامية");
     return;
   }
-  if(bookText && !goalAligned(goal.value, keywords)){
-    alert("الهدف لا يرتبط بنطاق الكتاب المرفق");
-    return;
-  }
-
-  built = true;
-  out.value = `
-محاكاة حصة صفية سيادية — مرتبطة بالكتاب
+  built=true;
+  out.value=`
+محاكاة حصة صفية سيادية
 
 المادة: ${subject.value||"—"}
 الصف: ${grade.value||"—"}
@@ -227,59 +218,45 @@ function build(){
 المدة: ${duration.value} دقيقة
 النمط: ${delivery.value==="face"?"وجاهي":"عن بُعد"}
 
-الهدف السلوكي:
+الهدف:
 «${goal.value}»
 
-سؤال الحصة الواحد:
+سؤال الحصة:
 «${coreQuestion.value}»
 
 المفهوم المقفول:
 «${lockedConcept.value}»
 
-نطاق الدرس:
-${keywords.length ? keywords.join("، ") : "—"}
-
-قواعد ضابطة:
-— كل مثال يخدم السؤال الواحد.
-— لا انتقال قبل نضج المفهوم.
-— القاعدة لا تُلقَّن.
-— الصمت أداة تفكير.
+نطاق الكتاب:
+${keywords.length?keywords.join("، "):"—"}
 
 بنية الحصة:
-١) إثارة بسؤال.
-٢) أمثلة من الكتاب.
-٣) انتظار دليل نضج.
-٤) فتح القفل ثم الإغلاق.
+١) سؤال فقط.
+٢) مثال واحد.
+٣) صمت مقصود.
+٤) نطق طالب.
 `;
   updateGauge();
 }
 
-/* مسارات */
 function path(t){
-  if(!built) return;
-  if(t==="good"){diversity=0.8; out.value+="\n\n🟢 تفاعل مرتفع";}
-  if(t==="mixed"){diversity=0.5; out.value+="\n\n🟡 تفاعل متباين";}
-  if(t==="weak"){diversity=0.2; out.value+="\n\n🔴 تعثّر";}
+  if(!built)return;
+  diversity={good:0.8,mixed:0.5,weak:0.2}[t];
   updateGauge();
 }
 
-/* الصمت */
 function silentCheck(){
   talkRatio=Math.max(0,talkRatio-0.1);
   updateGauge();
 }
 
-/* المؤشر */
 function updateGauge(){
-  if(talkRatio<0.4 && diversity>0.6){
-    gauge.textContent="🟢 توازن الحصة";
-    gauge.className="badge green";
+  if(talkRatio<0.4&&diversity>0.6){
+    gauge.className="badge green"; gauge.textContent="🟢 توازن";
   }else if(talkRatio<0.7){
-    gauge.textContent="🟡 قابل للتحسين";
-    gauge.className="badge yellow";
+    gauge.className="badge yellow"; gauge.textContent="🟡 قابل للتحسين";
   }else{
-    gauge.textContent="🔴 اختلال";
-    gauge.className="badge red";
+    gauge.className="badge red"; gauge.textContent="🔴 اختلال";
   }
 }
 </script>
