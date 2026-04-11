@@ -16,7 +16,7 @@ body {
 
 .container {
   background: #ffffff;
-  max-width: 760px;
+  max-width: 820px;
   margin: auto;
   padding: 20px;
   border-radius: 10px;
@@ -49,10 +49,13 @@ textarea {
   resize: vertical;
 }
 
+small {
+  color: #666;
+}
+
 button {
-  margin-top: 10px;
   padding: 12px;
-  font-size: 16px;
+  font-size: 15px;
   background-color: #1976d2;
   color: white;
   border: none;
@@ -60,17 +63,8 @@ button {
   cursor: pointer;
 }
 
-button.secondary {
-  background-color: #455a64;
-}
-
-button.danger {
-  background-color: #8e0000;
-}
-
-button:hover {
-  opacity: 0.9;
-}
+button.secondary { background-color: #455a64; }
+button:hover { opacity: 0.9; }
 
 .controls {
   display: flex;
@@ -93,40 +87,19 @@ button:hover {
   margin-top: 12px;
 }
 
+/* إخفاء إرشادات المعلم في وضع الطباعة */
 .print-view .teacher-only {
   display: none;
 }
 
 /* ===== الطباعة العربية ===== */
 @media print {
-  body {
-    background: #fff;
-    margin: 0;
-  }
-
-  .controls,
-  input,
-  select,
-  label {
-    display: none !important;
-  }
-
-  .container {
-    box-shadow: none;
-    max-width: 100%;
-    padding: 10mm 12mm;
-  }
-
+  body { background:#fff; margin:0; }
+  .controls, input, select, label, small { display:none !important; }
+  .container { box-shadow:none; max-width:100%; padding:10mm 12mm; }
   .output textarea {
-    border: none;
-    height: auto;
-    font-size: 14pt;
-    line-height: 1.8;
-  }
-
-  h1 {
-    font-size: 20pt;
-    margin-bottom: 10mm;
+    border:none; height:auto;
+    font-size:14pt; line-height:1.8;
   }
 }
 </style>
@@ -138,10 +111,10 @@ button:hover {
 <h1>محرك المحاكاة التعليمية العميقة</h1>
 
 <label>المادة</label>
-<input id="subject" placeholder="رياضيات / علوم / لغة عربية">
+<input id="subject" placeholder="رياضيات – علوم – لغة عربية">
 
 <label>الصف</label>
-<input id="grade" placeholder="الصف الثاني – الخامس – الثامن">
+<input id="grade" placeholder="الثاني – الخامس">
 
 <label>الدرس / المفهوم</label>
 <input id="lesson" placeholder="المقارنة بين عددين – الجملة الاسمية">
@@ -161,7 +134,11 @@ button:hover {
 </select>
 
 <label>الهدف العميق (اختياري)</label>
-<textarea id="deepGoal" placeholder="ما الذي تريد أن يتغير في تفكير الطالب؟"></textarea>
+<textarea id="deepGoal" placeholder="ما الذي تريد أن يتغير في طريقة تفكير الطالب؟"></textarea>
+
+<label>رفع ملف الكتاب (TXT أو PDF)</label>
+<input type="file" id="bookFile" accept=".txt,.pdf">
+<small>يُستخدم محتوى الكتاب كمرجع للمحاكاة دون نسخه أو عرضه كاملًا</small>
 
 <div class="controls">
 <button onclick="generateSimulation()">🧠 إنشاء المحاكاة</button>
@@ -178,22 +155,66 @@ button:hover {
 </div>
 </div>
 
+<!-- ================== المنطق ================== -->
+https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.jsscript>
 <script>
+let bookContent = "";
+
+/* قراءة ملف الكتاب */
+document.getElementById("bookFile").addEventListener("change", function () {
+  const file = this.files[0];
+  if (!file) return;
+
+  if (file.name.endsWith(".txt")) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      bookContent = e.target.result;
+      alert("✅ تم تحميل نص الكتاب");
+    };
+    reader.readAsText(file, "UTF-8");
+
+  } else if (file.name.endsWith(".pdf")) {
+    readPDF(file);
+
+  } else {
+    alert("❌ نوع ملف غير مدعوم");
+  }
+});
+
+/* قراءة PDF محليًا */
+async function readPDF(file) {
+  const buffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+  let text = "";
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    content.items.forEach(item => text += item.str + " ");
+  }
+  bookContent = text;
+  alert("✅ تم تحميل كتاب PDF");
+}
+
+/* توليد المحاكاة */
 function generateSimulation() {
   const subject = subjectInput();
   const grade = gradeInput();
   const lesson = lessonInput();
-  const level = document.getElementById("level").value;
-  const type = document.getElementById("type").value;
-  const goal = document.getElementById("deepGoal").value || "بناء فهم أعمق ومستقر للمفهوم";
+  const level = levelSelect.value;
+  const type = typeSelect.value;
+  const goal = deepGoal.value || "بناء فهم أعمق ومستقر للمفهوم";
+
+  const reference = bookContent
+    ? bookContent.slice(0, 600)
+    : "لم يتم تحميل كتاب – الاعتماد على خبرة المعلم.";
 
   const levelMap = {
-    "ضعاف": "تبسيط الموقف واستخدام تمثيل حسي مع سؤال واحد فقط.",
-    "عادي": "مناقشة جماعية وطرح أكثر من تفسير محتمل.",
-    "موهوبين": "إضافة شرط جديد أو متغير يتحدى التفسير الأول."
+    "ضعاف": "تبسيط الموقف، تمثيل حسي، سؤال واحد في كل مرة.",
+    "عادي": "نقاش جماعي، احتمال أكثر من تفسير.",
+    "موهوبين": "إضافة شرط جديد يختبر التفسير الأول."
   };
 
-  const simulation = `
+  output.value = `
 محاكاة تعليمية ${type}
 
 المادة: ${subject}
@@ -202,64 +223,56 @@ function generateSimulation() {
 مستوى الطلبة: ${level}
 
 ١) الافتراض الحدسي:
-ينطلق الطلبة من فهم أولي بسيط للمفهوم.
+ينطلق الطلبة من فهم أولي بسيط.
 
 سؤال:
 لماذا يبدو هذا الفهم صحيحًا في البداية؟
 
 ٢) موقف واقعي كاشف:
-يُعرض موقف يجعل هذا الفهم غير كافٍ لحلّه.
+موقف يجعل هذا الفهم غير كافٍ.
 
 سؤال:
-هل تفسيرك يحل المشكلة بالكامل؟ لماذا؟
+هل تفسيرك يحل المشكلة بالكامل؟
 
-٣) تكييف حسب المستوى:
+٣) التكييف حسب المستوى:
 ${levelMap[level]}
 
-٤) لحظة التحوّل المفاهيمي:
-يبدأ الطلبة بتعديل التفكير للوصول إلى جوهر الفكرة.
-
-سؤال:
-ما الشيء الذي يجب التركيز عليه بدل الشكل الظاهري؟
+٤) لحظة التحول المفاهيمي:
+التركيز على جوهر الفكرة لا شكلها.
 
 ٥) التطبيق:
 نشاط قصير لتثبيت الفهم.
 
-سؤال:
-ما الذي جعلك تختار هذا الحل؟
-
 ٦) نقل التعلّم:
 ربط المفهوم بسياق جديد.
-
-سؤال:
-أين يمكن استخدام هذا التفكير خارج الدرس؟
 
 الهدف العميق:
 ${goal}
 
---------------------
+--------------------------------
+مرجع من الكتاب:
+${reference}
+--------------------------------
 
 <div class="teacher-only">
 بوصلة دور المعلم:
-🟢 اترك الطلبة يبرّرون.
-🟡 انتظر صمتًا تربويًا بعد السؤال.
+🟢 دع الطلبة يبررون.
+🟡 استخدم صمتًا تربويًا.
 🔴 لا تُسمِّ القاعدة مبكرًا.
 
 نقطة القرار الواحدة:
-قرار واحد فقط للحصة يُبرَّر جماعيًا.
+قرار واحد فقط للحصة.
 
 اختبار الصمت:
-صمت ٢٠ ثانية بعد السؤال الحاسم.
+صمت ٢٠ ثانية.
 
-مؤشّر النجاح:
+مؤشر النجاح:
 اختلاف التبريرات دون طلب الإجابة.
 </div>
-`;
-
-  output.value = simulation.trim();
+`.trim();
 }
 
-/* ===== العرض ===== */
+/* عرض */
 function showTeacherView() {
   document.body.classList.remove("print-view");
 }
@@ -267,43 +280,29 @@ function showPrintView() {
   document.body.classList.add("print-view");
 }
 
-/* ===== المدخلات ===== */
-function subjectInput() {
-  return subject.value || "غير محددة";
-}
-function gradeInput() {
-  return grade.value || "غير محدد";
-}
-function lessonInput() {
-  return lesson.value || "غير محدد";
-}
+/* مدخلات */
+function subjectInput(){ return subject.value || "غير محددة"; }
+function gradeInput(){ return grade.value || "غير محدد"; }
+function lessonInput(){ return lesson.value || "غير محدد"; }
 
-/* ===== الحفظ والبحث ===== */
+/* حفظ وبحث */
 function saveSimulation() {
-  if (!output.value) return alert("لا يوجد محتوى");
+  if (!output.value) return alert("لا يوجد محتوى للحفظ");
   const lib = JSON.parse(localStorage.getItem("simulations") || "[]");
-  lib.push({
-    time: new Date().toLocaleString(),
-    subject: subject.value,
-    grade: grade.value,
-    lesson: lesson.value,
-    text: output.value
-  });
+  lib.push({ time:new Date().toLocaleString(), text:output.value });
   localStorage.setItem("simulations", JSON.stringify(lib));
-  alert("تم الحفظ ✅");
+  alert("✅ تم الحفظ");
 }
 
 function searchLibrary() {
-  const q = prompt("اكتب كلمة للبحث:");
+  const q = prompt("ابحث بكلمة:");
   if (!q) return;
   const lib = JSON.parse(localStorage.getItem("simulations") || "[]");
-  const results = lib.filter(x =>
-    (x.text + x.subject + x.lesson).includes(q)
-  );
-  if (!results.length) return alert("لا نتائج");
-  const list = results.map((e,i)=>`${i+1}) ${e.subject} | ${e.lesson}`).join("\n");
-  const idx = prompt("النتائج:\n"+list+"\n\nاختر رقم:");
-  if (results[idx-1]) output.value = results[idx-1].text;
+  const res = lib.filter(x => x.text.includes(q));
+  if (!res.length) return alert("لا نتائج");
+  const list = res.map((e,i)=>`${i+1}) ${e.time}`).join("\n");
+  const idx = prompt(list+"\nاختر رقم:");
+  if (res[idx-1]) output.value = res[idx-1].text;
 }
 </script>
 
