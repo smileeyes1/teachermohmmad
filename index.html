@@ -2,62 +2,96 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>النظام السيادي لتحضير الحصة</title>
+
 <style>
 body{
-  font-family:Tahoma,Arial;
-  background:#f0f3f7;
+  margin:0;
   padding:١٢px;
+  font-family:Tahoma, Arial, sans-serif;
+  background:#f0f3f7;
 }
-.box{
-  max-width:٨٠٠px;
+.container{
+  max-width:٨٥٠px;
   margin:auto;
   background:#ffffff;
   padding:٢٠px;
-  border-radius:١٢px;
-  box-shadow:0 ٤px ١٠px rgba(0,0,0,.1);
+  border-radius:١٤px;
+  box-shadow:0 ٥px ١٥px rgba(0,0,0,.12);
+}
+header{
+  text-align:center;
+  margin-bottom:١٨px;
+}
+header h1{
+  margin:٠;
+  font-size:٢٢px;
+  color:#١٥٦٥c٠;
+}
+header p{
+  margin:٦px ٠ ٠;
+  font-size:١٤.٥px;
 }
 label{
-  font-weight:bold;
   display:block;
-  margin-top:١٢px;
+  font-weight:bold;
+  margin-top:١٤px;
 }
 input,select,textarea,button{
   width:١٠٠%;
-  padding:١٢px;
   margin-top:٦px;
+  padding:١٤px;
   font-size:١٥px;
+  border-radius:١٠px;
+  border:١px solid #ccc;
   direction:rtl;
 }
 textarea{
-  height:٤٠٠px;
+  height:٤٨٠px;
   white-space:pre-wrap;
   line-height:١.٨;
 }
 button{
+  margin-top:١٦px;
   background:#١٥٦٥c٠;
   color:#ffffff;
   border:none;
-  margin-top:١٦px;
+  font-size:١٦px;
   cursor:pointer;
 }
-button.test{
+button.secondary{
   background:#٤٥٥a٦٤;
 }
-.error{
+button:active{opacity:.٨٥}
+.notice{
+  margin-top:١٠px;
   color:red;
   font-weight:bold;
-  margin-top:١٠px;
+}
+.badge{
+  margin-top:١٤px;
+  padding:١٠px;
+  text-align:center;
+  background:#e٨f٥e٩;
+  color:#١b٥e٢٠;
+  border-radius:١٠px;
+}
+@media print{
+  header,label,input,select,button,.notice,.badge{display:none}
+  textarea{border:none;height:auto;font-size:١٤pt}
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="container">
 
-<h2>النظام السيادي لتحضير الحصة</h2>
-<p><b>محمد وجيه — مدرسة عاطوف المختلطة</b></p>
+<header>
+  <h1>النظام السيادي لتحضير الحصة</h1>
+  <p><b>محمد وجيه</b> — مدرسة <b>عاطوف المختلطة</b></p>
+</header>
 
 <label>المادة</label>
 <select id="subject">
@@ -72,7 +106,7 @@ button.test{
 </select>
 
 <label>عنوان الدرس</label>
-<input id="lesson">
+<input id="lesson" placeholder="كما ورد في الكتاب">
 
 <label>سؤال الحصة الواحد</label>
 <input id="question">
@@ -87,9 +121,13 @@ button.test{
 </select>
 
 <button onclick="build()">✅ توليد الحصة</button>
-<button class="test" onclick="test()">🧪 اختبار فوري</button>
+<button class="secondary" onclick="test()">🧪 اختبار فوري</button>
 
-<div id="err" class="error"></div>
+<div id="err" class="notice"></div>
+
+<div class="badge">
+🛡️ التلميذ يفكّر — المعلّم يُدير الصمت
+</div>
 
 <textarea id="output" placeholder="سيظهر التحضير هنا..."></textarea>
 
@@ -97,9 +135,9 @@ button.test{
 
 <script>
 function build(){
-  const out = document.getElementById("output");
   const err = document.getElementById("err");
-  err.textContent = "";
+  const out = document.getElementById("output");
+  err.textContent="";
 
   try{
     const subject  = document.getElementById("subject").value;
@@ -110,7 +148,7 @@ function build(){
     const duration = document.getElementById("duration").value;
 
     if(!question || !concept){
-      err.textContent = "❌ يجب إدخال سؤال الحصة والفكرة المقفولة";
+      err.textContent="❌ يجب إدخال سؤال الحصة والفكرة المقفولة";
       return;
     }
 
@@ -131,20 +169,20 @@ function build(){
 الفكرة المقفولة:
 «${concept}»
 
-بنية التنفيذ:
-١) سؤال واحد فقط.
-٢) مثال واحد.
-٣) صمت للتفكير.
-٤) نطق تلميذ.
-٥) إغلاق الحصة.
+بنية التنفيذ السيادي:
+١) طرح السؤال فقط.
+٢) مثال واحد من الكتاب.
+٣) صمت مقصود للتفكير.
+٤) تلميذ واحد ينطق الفكرة.
+٥) تثبيت قصير ثم إغلاق.
 
-مبدأ العمل:
+مبدأ الحصة:
 الصمت أداة.
 التفكير هدف.
 النطق دليل الفهم.
 `;
   }catch(e){
-    err.textContent = "❌ خطأ تقني: " + e.message;
+    err.textContent="❌ خطأ تقني: "+e.message;
   }
 }
 
