@@ -1,106 +1,171 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>محاكاة حصة صفية تربوية – نموذج متكامل</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!--
+مشروع: محرك محاكاة صفّية تربوية – الإصدار المحمي 1.1
+© جميع الحقوق محفوظة للمؤلف.
+الاستخدام مسموح للمعلمين لأغراض تعليمية غير تجارية.
+-->
+
+<title>محاكاة صفّية تربوية – نسخة محمية</title>
 
 <style>
+/* ===== الأساس ===== */
+:root{
+  --brand:#1976d2;
+  --muted:#455a64;
+}
 body{
   font-family: Tahoma, Arial, sans-serif;
-  background:#f4f6f8;
-  margin:0; padding:16px; direction:rtl;
+  background:#f4f6f8; margin:0; padding:16px; direction:rtl;
 }
 .container{
   background:#fff; max-width:900px; margin:auto; padding:20px;
   border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,.1);
+  position:relative;
 }
-h1{ text-align:center; margin-bottom:16px; }
+h1{ text-align:center; margin:8px 0 16px; }
 label{ font-weight:bold; display:block; margin-top:10px; }
-
 input, textarea, select{
   width:100%; padding:10px; margin-top:6px;
   border-radius:6px; border:1px solid #ccc;
   font-size:15px; direction:rtl; text-align:right;
 }
 textarea{ resize:vertical; }
+small{ color:#666; }
 
+/* ===== أزرار ===== */
 .actions{
   display:flex; flex-wrap:wrap; gap:8px; margin:16px 0;
 }
 button{
   padding:12px; font-size:15px; border:none; border-radius:6px;
-  cursor:pointer; background:#1976d2; color:#fff;
+  cursor:pointer; background:var(--brand); color:#fff;
 }
-button.secondary{ background:#455a64; }
-button.alt{ background:#009688; }
+button.secondary{ background:var(--muted); }
 button:hover{ opacity:.9; }
 
+/* ===== الإخراج ===== */
 .output textarea{
   height:540px; white-space:pre-wrap;
   font-size:14.5px; line-height:1.7;
 }
 
-/* إرشاد المعلم */
+/* ===== إرشاد المعلم ===== */
 .teacher-only{
-  background:#eef3f8; border-right:4px solid #1976d2;
+  background:#eef3f8; border-right:4px solid var(--brand);
   padding:10px; margin-top:12px;
 }
 
-/* وضع الطباعة */
+/* إخفاء الإرشاد في عرض الطباعة */
 .print-view .teacher-only{ display:none; }
 
+/* ===== علامة طباعة (خفيفة) ===== */
+.print-watermark{
+  display:none;
+}
+.print-view .print-watermark{
+  display:block;
+  position:absolute; inset:40% 0 auto 0;
+  text-align:center; opacity:.08; font-size:38px; transform:rotate(-18deg);
+  pointer-events:none;
+}
+
+/* ===== الطباعة العربية ===== */
 @media print{
   body{ background:#fff; margin:0; }
-  .actions, input, select, label{ display:none !important; }
+  .actions, input, select, label, small{ display:none !important; }
   .container{ box-shadow:none; max-width:100%; padding:10mm 12mm; }
-  .output textarea{
-    border:none; height:auto; font-size:14pt; line-height:1.8;
-  }
+  .output textarea{ border:none; height:auto; font-size:14pt; line-height:1.8; }
+}
+
+/* ===== قفل النسخ العَرَضي (خفيف) ===== */
+.copy-guard{
+  user-select:text; /* افتراضي مسموح */
+}
+.copy-guard.lock{
+  user-select:none; /* يُفعل فقط عند اختيارك */
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
-<h1>محاكاة حصة صفية تربوية</h1>
+  <div class="print-watermark">Pedagogical Simulation Engine</div>
 
-<label>المادة</label>
-<input id="subject" placeholder="رياضيات – علوم – لغة عربية">
+  <h1>محاكاة صفّية تربوية (نسخة محمية)</h1>
 
-<label>الصف</label>
-<input id="grade" placeholder="الثاني – الخامس">
+  <label>المادة</label>
+  <input id="subject" placeholder="رياضيات – علوم – لغة عربية" />
 
-<label>الدرس / المفهوم</label>
-<input id="lesson" placeholder="المقارنة بين عددين – الجملة الاسمية">
+  <label>الصف</label>
+  <input id="grade" placeholder="الثاني – الخامس" />
 
-<label>مدة الحصة</label>
-<select id="duration">
-  <option value="40">٤٠ دقيقة</option>
-  <option value="45">٤٥ دقيقة</option>
-</select>
+  <label>الدرس / المفهوم</label>
+  <input id="lesson" placeholder="المقارنة بين عددين – الجملة الاسمية" />
 
-<label>نمط التنفيذ</label>
-<select id="delivery">
-  <option value="face">وجاهي داخل الصف</option>
-  <option value="teams">عبر Microsoft Teams</option>
-</select>
+  <label>مدة الحصة</label>
+  <select id="duration">
+    <option value="40">٤٠ دقيقة</option>
+    <option value="45">٤٥ دقيقة</option>
+  </select>
 
-<div class="actions">
-  <button onclick="build()">🧠 إنشاء محاكاة الحصة</button>
-  <button class="secondary" onclick="teacherView()">👩‍🏫 عرض المعلم</button>
-  <button class="secondary" onclick="printView()">🧾 عرض الطباعة</button>
-  <button onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
-</div>
+  <label>نمط التنفيذ</label>
+  <select id="delivery">
+    <option value="face">وجاهي داخل الصف</option>
+    <option value="teams">عبر Microsoft Teams</option>
+  </select>
 
-<div class="output">
-<label>ناتج المحاكاة</label>
-<textarea id="out"></textarea>
-</div>
+  <div class="actions">
+    <button onclick="build()">🧠 إنشاء محاكاة الحصة</button>
+    <button class="secondary" onclick="teacherView()">👩‍🏫 عرض المعلم</button>
+    <button class="secondary" onclick="printView()">🧾 عرض الطباعة</button>
+    <button onclick="toggleCopyGuard()">🔐 نسخ آمن</button>
+    <button onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+  </div>
+
+  <div class="output copy-guard" id="outWrap">
+    <label>ناتج المحاكاة</label>
+    <textarea id="out" placeholder="سيظهر الناتج هنا..." readonly></textarea>
+  </div>
+
+  <small>© حقوق المؤلف محفوظة — استخدام تعليمي غير تجاري.</small>
 </div>
 
 <script>
+/* ===== إعدادات وحماية خفيفة ===== */
+const NS = "PSE_v1_1"; // Namespace للتخزين
+const AUTO_SAVE_MS = 60000; // حفظ تلقائي كل دقيقة
+
+let copyLocked = false;
+
+/* منع النقر بالزر الأيمن (خفيف/اختياري) */
+document.addEventListener("contextmenu", e => {
+  if(copyLocked){ e.preventDefault(); }
+});
+
+/* حفظ تلقائي احتياطي */
+setInterval(()=>{
+  const t = out.value;
+  if(t){ localStorage.setItem(NS+"_autosave", t); }
+}, AUTO_SAVE_MS);
+
+/* استرجاع تلقائي عند الفتح */
+window.addEventListener("load", ()=>{
+  const a = localStorage.getItem(NS+"_autosave");
+  if(a && !out.value){ out.value = a; }
+});
+
+function toggleCopyGuard(){
+  copyLocked = !copyLocked;
+  document.getElementById("outWrap").classList.toggle("lock", copyLocked);
+  alert(copyLocked ? "🔐 تم تفعيل النسخ الآمن" : "🔓 تم إلغاء النسخ الآمن");
+}
+
+/* ===== البناء بضغطة زر ===== */
 function build(){
   const subject = val("subject","غير محددة");
   const grade   = val("grade","غير محدد");
@@ -108,61 +173,60 @@ function build(){
   const minutes = document.getElementById("duration").value;
   const mode    = document.getElementById("delivery").value;
 
-  const timePlan = minutes=="40"
-  ? "• تمهيد: 5د\n• نقاش وتحليل: 15د\n• تحويل مفاهيمي: 8د\n• تطبيق: 7د\n• إغلاق: 5د"
-  : "• تمهيد: 7د\n• نقاش وتحليل: 18د\n• تحويل مفاهيمي: 8د\n• تطبيق: 7د\n• إغلاق: 5د";
+  const timePlan = minutes==="40"
+   ? "• تمهيد: 5د\n• نقاش وتحليل: 15د\n• تحوّل مفاهيمي: 8د\n• تطبيق: 7د\n• إغلاق: 5د"
+   : "• تمهيد: 7د\n• نقاش وتحليل: 18د\n• تحوّل مفاهيمي: 8د\n• تطبيق: 7د\n• إغلاق: 5د";
 
-  const deliveryGuide = mode=="face"
-  ? "• استخدم الصمت بعد الأسئلة.\n• راقب لغة الجسد.\n• اسمح بالحوار المباشر."
-  : "• حدّد زمن التفكير (30 ثانية).\n• اسمح بالرد عبر الدردشة.\n• استخدم غرف فرعية إن أمكن.";
+  const deliveryGuide = mode==="face"
+   ? "• استخدم الصمت بعد الأسئلة.\n• راقب لغة الجسد.\n• اسمح بالحوار المباشر."
+   : "• حدّد زمن التفكير (30 ثانية).\n• اسمح بالرد عبر الدردشة.\n• استخدم غرفًا فرعية إن أمكن.";
 
-  document.getElementById("out").value = `
-محاكاة حصة صفية واقعية قابلة للتنفيذ
+  out.value = `
+محاكاة حصة صفّية واقعية قابلة للتنفيذ
 
 المادة: ${subject}
 الصف: ${grade}
 الدرس: ${lesson}
 مدة الحصة: ${minutes} دقيقة
-نمط التنفيذ: ${mode=="face"?"وجاهي":"عبر Teams"}
+نمط التنفيذ: ${mode==="face"?"وجاهي":"عبر Teams"}
 
 ① تمهيد الحصة:
 طرح سؤال واقعي مرتبط بالمفهوم دون شرح.
 
-② مراقبة استجابات الطلبة:
-➤ إن كانت الإجابات صحيحة: اسأل عن التعميم.
-➤ إن اختلفوا: اطلب التفكيك.
-➤ إن أخطأ أغلبهم: استخدم تمثيلًا حسيًا دون تصحيح مباشر.
+② مراقبة الاستجابات:
+- إن كانت صحيحة: اسأل عن التعميم.
+- إن اختلفوا: اطلب التفكيك.
+- إن غلب الخطأ: استخدم تمثيلًا حسيًا دون تصحيح مباشر.
 
 ③ نقطة القرار الواحدة:
 اتفاق الصف على تفسير واحد فقط مع تبرير.
 
-④ التحول المفاهيمي:
-توجيه النقاش نحو جوهر الفكرة قبل التسمية.
+④ التحوّل المفاهيمي:
+التوجّه إلى جوهر الفكرة قبل التسمية.
 
 ⑤ التطبيق:
-مثال جديد يطبّقه الطلبة فرديًا أو جماعيًا.
+مثال جديد فردي/جماعي.
 
 ⑥ اختبار الصمت:
-بعد السؤال الختامي، التزم بصمت 20 ثانية.
+بعد السؤال الختامي التزم بصمت 20 ثانية.
 
 إطار زمني مقترح:
 ${timePlan}
 
-<div class="teacher-only">
-إرشاد للمعلم حسب نمط التنفيذ:
+[إرشاد المعلم حسب النمط]
 ${deliveryGuide}
 
-مؤشر نجاح الحصة:
-عندما يختلف الطلبة في السبب لا في النتيجة،
-ودون طلب الإجابة منك.
-</div>
+مؤشّر النجاح:
+اختلاف التبريرات دون طلب الإجابة.
 `.trim();
 }
 
-/* أدوات */
-function val(id,def){ return document.getElementById(id).value || def; }
+/* ===== العرض ===== */
 function teacherView(){ document.body.classList.remove("print-view"); }
 function printView(){ document.body.classList.add("print-view"); }
+
+/* ===== أدوات ===== */
+function val(id,def){ return document.getElementById(id).value || def; }
 </script>
 
 </body>
