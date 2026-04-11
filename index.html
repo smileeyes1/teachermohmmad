@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مشروع المحاكاة الصفّية التربوية – نسخة متكاملة</title>
+<title>محاكاة حصة صفية تربوية – نموذج متكامل</title>
 
 <style>
 body{
@@ -15,8 +15,9 @@ body{
   background:#fff; max-width:900px; margin:auto; padding:20px;
   border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,.1);
 }
-h1,h2{ text-align:center; margin-bottom:12px; }
+h1{ text-align:center; margin-bottom:16px; }
 label{ font-weight:bold; display:block; margin-top:10px; }
+
 input, textarea, select{
   width:100%; padding:10px; margin-top:6px;
   border-radius:6px; border:1px solid #ccc;
@@ -36,10 +37,11 @@ button.alt{ background:#009688; }
 button:hover{ opacity:.9; }
 
 .output textarea{
-  height:520px; white-space:pre-wrap;
+  height:540px; white-space:pre-wrap;
   font-size:14.5px; line-height:1.7;
 }
 
+/* إرشاد المعلم */
 .teacher-only{
   background:#eef3f8; border-right:4px solid #1976d2;
   padding:10px; margin-top:12px;
@@ -62,7 +64,7 @@ button:hover{ opacity:.9; }
 <body>
 
 <div class="container">
-<h1>مشروع المحاكاة الصفّية التربوية</h1>
+<h1>محاكاة حصة صفية تربوية</h1>
 
 <label>المادة</label>
 <input id="subject" placeholder="رياضيات – علوم – لغة عربية">
@@ -73,26 +75,23 @@ button:hover{ opacity:.9; }
 <label>الدرس / المفهوم</label>
 <input id="lesson" placeholder="المقارنة بين عددين – الجملة الاسمية">
 
-<label>مستوى الطلبة</label>
-<select id="level">
-  <option>ضعاف</option>
-  <option selected>عادي</option>
-  <option>موهوبين</option>
+<label>مدة الحصة</label>
+<select id="duration">
+  <option value="40">٤٠ دقيقة</option>
+  <option value="45">٤٥ دقيقة</option>
 </select>
 
-<label>نوع المخرج</label>
-<select id="mode">
-  <option value="engine">محاكاة تعليمية تقليدية</option>
-  <option value="classroom">محاكاة حصة صفية واقعية متعدّدة الخيارات</option>
+<label>نمط التنفيذ</label>
+<select id="delivery">
+  <option value="face">وجاهي داخل الصف</option>
+  <option value="teams">عبر Microsoft Teams</option>
 </select>
 
 <div class="actions">
-  <button onclick="build()">🧠 إنشاء المحاكاة</button>
+  <button onclick="build()">🧠 إنشاء محاكاة الحصة</button>
   <button class="secondary" onclick="teacherView()">👩‍🏫 عرض المعلم</button>
   <button class="secondary" onclick="printView()">🧾 عرض الطباعة</button>
-  <button onclick="save()">💾 حفظ</button>
-  <button onclick="search()">🔍 بحث</button>
-  <button onclick="window.print()">🖨️ طباعة</button>
+  <button onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
 </div>
 
 <div class="output">
@@ -106,128 +105,64 @@ function build(){
   const subject = val("subject","غير محددة");
   const grade   = val("grade","غير محدد");
   const lesson  = val("lesson","غير محدد");
-  const level   = document.getElementById("level").value;
-  const mode    = document.getElementById("mode").value;
+  const minutes = document.getElementById("duration").value;
+  const mode    = document.getElementById("delivery").value;
 
-  let text="";
+  const timePlan = minutes=="40"
+  ? "• تمهيد: 5د\n• نقاش وتحليل: 15د\n• تحويل مفاهيمي: 8د\n• تطبيق: 7د\n• إغلاق: 5د"
+  : "• تمهيد: 7د\n• نقاش وتحليل: 18د\n• تحويل مفاهيمي: 8د\n• تطبيق: 7د\n• إغلاق: 5د";
 
-  if(mode==="engine"){
-    text = `
-محاكاة تعليمية (بنية تربوية)
+  const deliveryGuide = mode=="face"
+  ? "• استخدم الصمت بعد الأسئلة.\n• راقب لغة الجسد.\n• اسمح بالحوار المباشر."
+  : "• حدّد زمن التفكير (30 ثانية).\n• اسمح بالرد عبر الدردشة.\n• استخدم غرف فرعية إن أمكن.";
 
-المادة: ${subject}
-الصف: ${grade}
-الدرس: ${lesson}
-المستوى: ${level}
-
-١) افتراض حدسي:
-ينطلق الطلبة من فهم أولي بسيط للمفهوم.
-
-سؤال:
-لماذا يبدو هذا الفهم صحيحًا؟
-
-٢) موقف كاشف:
-يظهر أن هذا الفهم غير كافٍ.
-
-٣) تكييف حسب المستوى:
-${level==="ضعاف"?"تبسيط وتمثيل حسي":level==="عادي"?"نقاش جماعي":"إضافة شرط جديد"}
-
-٤) التحول المفاهيمي:
-التركيز على جوهر الفكرة.
-
-٥) التطبيق ونقل التعلّم.
-
-<div class="teacher-only">
-— بوصلة الدور:
-اترك التبرير – استخدم الصمت – لا تسمِّ مبكرًا.
-</div>
-`.trim();
-  }
-
-  if(mode==="classroom"){
-    text = `
-محاكاة حصة صفية واقعية متعدّدة الخيارات
+  document.getElementById("out").value = `
+محاكاة حصة صفية واقعية قابلة للتنفيذ
 
 المادة: ${subject}
 الصف: ${grade}
 الدرس: ${lesson}
-زمن الحصة: ٤٠ دقيقة
+مدة الحصة: ${minutes} دقيقة
+نمط التنفيذ: ${mode=="face"?"وجاهي":"عبر Teams"}
 
-المرحلة الأولى: فتح الحصة
-— اكتب مثالًا مناسبًا على اللوح.
-— اسأل: «أي النتيجة أدق؟ ولماذا؟»
+① تمهيد الحصة:
+طرح سؤال واقعي مرتبط بالمفهوم دون شرح.
 
-ثم راقب ردود الطلبة.
+② مراقبة استجابات الطلبة:
+➤ إن كانت الإجابات صحيحة: اسأل عن التعميم.
+➤ إن اختلفوا: اطلب التفكيك.
+➤ إن أخطأ أغلبهم: استخدم تمثيلًا حسيًا دون تصحيح مباشر.
 
-🔀 مسارات القرار:
+③ نقطة القرار الواحدة:
+اتفاق الصف على تفسير واحد فقط مع تبرير.
 
-(أ) إن أجاب أغلب الطلبة بإجابة صحيحة مع تعليل:
-— لا تثبّت النتيجة.
-— اسأل: «هل هذا صحيح دائمًا؟»
-— قدّم مثالًا مشابهاً أعقد قليلاً.
+④ التحول المفاهيمي:
+توجيه النقاش نحو جوهر الفكرة قبل التسمية.
 
-(ب) إن اختلف الطلبة في التعليل:
-— لا تصحّح.
-— اطلب تفكيك المثال.
-— اسأل: «ما الخانة الأهم؟»
+⑤ التطبيق:
+مثال جديد يطبّقه الطلبة فرديًا أو جماعيًا.
 
-(ج) إن غلب الخطأ:
-— لا تقل (خطأ).
-— استخدم تمثيلًا حسيًا.
-— اسأل: «أي قيمة أكبر فعليًا؟»
+⑥ اختبار الصمت:
+بعد السؤال الختامي، التزم بصمت 20 ثانية.
 
-نقطة القرار الواحدة:
-اجعل الصف يتفق على قرار واحد فقط مع تبرير.
-
-اختبار الصمت:
-بعد القرار، صمت ٢٠ ثانية.
-
-مؤشّر النجاح:
-اختلاف التبريرات دون طلب الإجابة.
+إطار زمني مقترح:
+${timePlan}
 
 <div class="teacher-only">
-إرشاد المعلم:
-🟢 دع الحيرة تعمل
-🟡 انتظر قبل التدخل
-🔴 لا تختصر الطريق
+إرشاد للمعلم حسب نمط التنفيذ:
+${deliveryGuide}
+
+مؤشر نجاح الحصة:
+عندما يختلف الطلبة في السبب لا في النتيجة،
+ودون طلب الإجابة منك.
 </div>
 `.trim();
-  }
-
-  document.getElementById("out").value = text;
 }
 
-function val(id,def){
-  return document.getElementById(id).value || def;
-}
-
-function teacherView(){
-  document.body.classList.remove("print-view");
-}
-
-function printView(){
-  document.body.classList.add("print-view");
-}
-
-function save(){
-  const t = out.value;
-  if(!t) return alert("لا محتوى");
-  const L = JSON.parse(localStorage.getItem("sims")||"[]");
-  L.push({time:new Date().toLocaleString(), text:t});
-  localStorage.setItem("sims",JSON.stringify(L));
-  alert("✅ تم الحفظ");
-}
-
-function search(){
-  const q = prompt("كلمة البحث:");
-  if(!q) return;
-  const L = JSON.parse(localStorage.getItem("sims")||"[]");
-  const R = L.filter(x=>x.text.includes(q));
-  if(!R.length) return alert("لا نتائج");
-  const list = R.map((e,i)=>`${i+1}) ${e.time}`).join("\n");
-  const k = prompt(list+"\nاختر رقم:");
-  if(R[k-1]) out.value = R[k-1].text;
-}
+/* أدوات */
+function val(id,def){ return document.getElementById(id).value || def; }
+function teacherView(){ document.body.classList.remove("print-view"); }
+function printView(){ document.body.classList.add("print-view"); }
 </script>
 
 </body>
