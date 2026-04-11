@@ -2,105 +2,104 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=١.٠">
 <title>أداة مُسانِدة للمعلّم — اعتماد الكتاب والتنفيذ الصامت</title>
 
 <style>
 :root{
-  --main:#1a5fb4;
-  --bg:#f3f5f8;
+  --main:#١a٥fb٤;
+  --bg:#f٣f٥f٨;
   --card:#ffffff;
-  --soft:#eef2f6;
-  --ink:#222;
-  --muted:#6b7280;
-  --ok:#2e7d32;
-  --alt:#455a64;
+  --soft:#eef٢f٦;
+  --ink:#٢٢٢;
+  --muted:#٦b٧٢٨٠;
+  --ok:#٢e٧d٣٢;
+  --alt:#٤٥٥a٦٤;
 }
 
 *{box-sizing:border-box}
 
 body{
-  margin:0;
+  margin:٠;
   font-family:Tahoma, Arial, sans-serif;
   background:var(--bg);
   color:var(--ink);
-  line-height:1.9;
+  line-height:١.٩;
 }
 
 .app{
-  max-width:920px;
-  margin:24px auto;
-  padding:16px;
+  max-width:٩٢٠px;
+  margin:٢٤px auto;
+  padding:١٦px;
 }
 
 .header{
   background:var(--card);
-  padding:24px;
-  border-radius:18px;
+  padding:٢٤px;
+  border-radius:١٨px;
   text-align:center;
-  box-shadow:0 6px 22px rgba(0,0,0,.06);
-  margin-bottom:22px;
+  box-shadow:٠ ٦px ٢٢px rgba(٠,٠,٠,.٠٦);
+  margin-bottom:٢٢px;
 }
 
-.header h1{
-  margin:0;
-  font-size:22px;
+.header h١{
+  margin:٠;
+  font-size:٢٢px;
   color:var(--main);
 }
 
 .header p{
-  margin-top:8px;
-  font-size:14px;
+  margin-top:٨px;
+  font-size:١٤px;
   color:var(--muted);
 }
 
 .card{
   background:var(--card);
-  padding:24px;
-  border-radius:18px;
-  box-shadow:0 4px 18px rgba(0,0,0,.06);
-  margin-bottom:20px;
+  padding:٢٤px;
+  border-radius:١٨px;
+  box-shadow:٠ ٤px ١٨px rgba(٠,٠,٠,.٠٦);
+  margin-bottom:٢٠px;
 }
 
-h2{
-  margin:0 0 14px 0;
-  font-size:18px;
+h٢{
+  margin:٠ ٠ ١٤px ٠;
+  font-size:١٨px;
 }
 
 input[type="file"]{
-  width:100%;
-  padding:14px;
-  font-size:14px;
-  border-radius:14px;
-  border:1px dashed #ccc;
+  width:١٠٠%;
+  padding:١٤px;
+  font-size:١٤px;
+  border-radius:١٤px;
+  border:١px dashed #ccc;
   background:#fafafa;
 }
 
 .note{
-  margin-top:14px;
-  background:#fef9e7;
-  color:#7f6000;
-  padding:14px;
-  border-radius:14px;
-  font-size:14px;
+  margin-top:١٤px;
+  background:#fef٩e٧;
+  color:#٧f٦٠٠٠;
+  padding:١٤px;
+  border-radius:١٤px;
+  font-size:١٤px;
 }
 
 .buttons{
   display:flex;
   flex-wrap:wrap;
-  gap:12px;
-  margin-top:14px;
+  gap:١٢px;
+  margin-top:١٤px;
 }
 
 button{
-  flex:1;
-  min-width:160px;
-  padding:14px 16px;
-  border-radius:16px;
+  flex:١;
+  min-width:١٦٠px;
+  padding:١٤px ١٦px;
+  border-radius:١٦px;
   border:none;
   cursor:pointer;
-  font-size:15px;
+  font-size:١٥px;
   background:var(--main);
   color:#fff;
 }
@@ -110,21 +109,21 @@ button.ok{background:var(--ok)}
 
 #whisper, #output, #end{
   display:none;
-  border-radius:18px;
-  padding:22px;
-  font-size:16px;
-  margin-bottom:20px;
+  border-radius:١٨px;
+  padding:٢٢px;
+  font-size:١٦px;
+  margin-bottom:٢٠px;
 }
 
 #whisper{background:var(--soft)}
-#end{background:#e8f5e9;color:var(--ok)}
+#end{background:#e٨f٥e٩;color:var(--ok)}
 #output{background:#fafafa;white-space:pre-wrap}
 
 .footer{
   text-align:center;
-  font-size:13px;
+  font-size:١٣px;
   color:var(--muted);
-  margin-top:22px;
+  margin-top:٢٢px;
 }
 
 @media print{
@@ -140,13 +139,13 @@ button.ok{background:var(--ok)}
 
 <!-- العنوان -->
 <div class="header">
-  <h1>أداة مُسانِدة للمعلّم</h1>
+  <h١>أداة مُسانِدة للمعلّم</h١>
   <p>الكتاب هو المرجع — الاختيار فقط — الإرشاد يهمس ثم ينسحب</p>
 </div>
 
-<!-- اعتماد الكتاب -->
-<div class="card" id="step0">
-  <h2>اعتماد الكتاب (المنهاج)</h2>
+<!-- الخطوة ٠: اعتماد الكتاب -->
+<div class="card" id="step٠">
+  <h٢>اعتماد الكتاب (المنهاج)</h٢>
   <input type="file" accept=".pdf,image/*" onchange="acceptBook(this)">
   <div class="note" id="bookNote">❗ لم يتم اعتماد كتاب بعد.</div>
   <div class="note">
@@ -157,33 +156,33 @@ button.ok{background:var(--ok)}
   </div>
 </div>
 
-<!-- اختيار الصف -->
-<div class="card" id="step1" style="display:none">
-  <h2>أين أنت الآن؟</h2>
+<!-- الخطوة ١: اختيار الصف -->
+<div class="card" id="step١" style="display:none">
+  <h٢>أين أنت الآن؟</h٢>
   <div class="buttons">
-    <button onclick="next(1)">الصف الأوّل</button>
-    <button onclick="next(1)">الصف الثاني</button>
-    <button onclick="next(1)">الصف الثالث</button>
+    <button onclick="goStep(١)">الصف الأوّل</button>
+    <button onclick="goStep(١)">الصف الثاني</button>
+    <button onclick="goStep(١)">الصف الثالث</button>
   </div>
 </div>
 
-<!-- نوع الدرس -->
-<div class="card" id="step2" style="display:none">
-  <h2>نوع الدرس (كما في الكتاب)</h2>
+<!-- الخطوة ٢: نوع الدرس -->
+<div class="card" id="step٢" style="display:none">
+  <h٢>نوع الدرس كما في الكتاب</h٢>
   <div class="buttons">
-    <button onclick="next(2)">قراءة</button>
-    <button onclick="next(2)">لغة</button>
-    <button onclick="next(2)">حساب</button>
-    <button onclick="next(2)">نشاط</button>
-    <button onclick="next(2)">مراجعة</button>
+    <button onclick="goStep(٢)">قراءة</button>
+    <button onclick="goStep(٢)">لغة</button>
+    <button onclick="goStep(٢)">حساب</button>
+    <button onclick="goStep(٢)">نشاط</button>
+    <button onclick="goStep(٢)">مراجعة</button>
   </div>
 </div>
 
-<!-- اللحظة الصفّية -->
-<div class="card" id="step3" style="display:none">
-  <h2>أي وصف أقرب لما يحدث الآن؟</h2>
+<!-- الخطوة ٣: اللحظة الصفّية -->
+<div class="card" id="step٣" style="display:none">
+  <h٢>أي وصف أقرب لما يحدث الآن؟</h٢>
   <div class="buttons">
-    <button onclick="whisper('🧭 اعتمد مثال الكتاب فقط. انتظر محاولة واحدة ولا تُضف شرحًا.')">
+    <button onclick="whisper('🧭 اعتمد مثال الكتاب فقط. انتظر محاولة واحدة ولا تُضِف شرحًا.')">
       التلاميذ يحاولون لكن مترددون
     </button>
     <button onclick="whisper('🧭 توقّف عن الإضافة. ما في الكتاب كافٍ.')">
@@ -195,12 +194,12 @@ button.ok{background:var(--ok)}
   </div>
 </div>
 
-<!-- الإرشاد -->
+<!-- الإرشاد الصامت -->
 <div id="whisper"></div>
 
 <!-- أزرار الطلبات -->
 <div class="card" id="actions" style="display:none">
-  <h2>طلبات سريعة (اختياريّة)</h2>
+  <h٢>طلبات سريعة (اختياريّة)</h٢>
   <div class="buttons">
     <button onclick="prep()">📘 تحضير</button>
     <button onclick="simulate()">🧪 محاكاة</button>
@@ -234,13 +233,13 @@ function acceptBook(input){
   if(input.files.length>0){
     document.getElementById("bookNote").textContent =
       "✅ تم اعتماد الكتاب: " + input.files[0].name;
-    document.getElementById("step1").style.display="block";
+    document.getElementById("step١").style.display="block";
   }
 }
 
-function next(step){
-  document.getElementById("step"+step).style.display="none";
-  document.getElementById("step"+(step+1)).style.display="block";
+function goStep(n){
+  document.getElementById("step"+(n)).style.display="none";
+  document.getElementById("step"+(n+١)).style.display="block";
 }
 
 function whisper(text){
@@ -254,9 +253,9 @@ function prep(){
   show(
 `تحضير حصّة (من الكتاب فقط):
 - افتح الصفحة المحددة
-- اعرض المثال الأول
+- اعرض المثال الأوّل
 - اترك محاولة واحدة
-- توقّف عند أول فهم`
+- توقّف عند أوّل فهم`
   );
 }
 
@@ -265,7 +264,7 @@ function simulate(){
 `محاكاة حصّة واقعية:
 - فتح الكتاب
 - طرح مثال
-- صمت
+- صمت واعٍ
 - محاولة تلميذ
 - إغلاق عند الفهم`
   );
@@ -293,8 +292,8 @@ function finish(){
 }
 
 function resetAll(){
-  ["step0","step1","step2","step3"].forEach((id,i)=>{
-    document.getElementById(id).style.display = (i===0)?"block":"none";
+  ["step٠","step١","step٢","step٣"].forEach((id,i)=>{
+    document.getElementById(id).style.display = (i===٠)?"block":"none";
   });
   document.getElementById("bookNote").textContent="❗ لم يتم اعتماد كتاب بعد.";
   document.getElementById("whisper").style.display="none";
