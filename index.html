@@ -3,279 +3,125 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>النظام السيادي للحصّة الصفّية</title>
+<title>الحكمة في الحصّة</title>
 
 <style>
-:root{
-  --main:#1565c0;
-  --bg:#f4f6f8;
-  --card:#ffffff;
-  --ink:#222;
-  --soft:#f0f3f7;
-  --hint:#fff8e1;
-  --gray:#455a64;
-}
-
-*{box-sizing:border-box}
-
 body{
   margin:0;
   font-family:Tahoma, Arial, sans-serif;
-  background:var(--bg);
-  color:var(--ink);
+  background:#f4f6f8;
+  color:#222;
 }
-
-.container{
-  max-width:860px;
+.box{
+  max-width:820px;
   margin:16px auto;
-  background:var(--card);
-  padding:16px;
+  background:#ffffff;
+  padding:18px;
   border-radius:12px;
   box-shadow:0 4px 10px rgba(0,0,0,.08);
 }
-
 h1{
   text-align:center;
-  margin:0 0 8px 0;
-  color:var(--main);
-  font-size:22px;
+  color:#1565c0;
+  margin:0;
 }
-
 .sub{
   text-align:center;
   font-size:14px;
-  margin-bottom:14px;
-  color:#444;
+  margin:10px 0;
+  color:#555;
 }
-
 label{
   display:block;
-  margin-top:12px;
   font-weight:bold;
-  font-size:15px;
+  margin-top:14px;
 }
-
-input, textarea, button{
+input,textarea,button{
   width:100%;
   padding:10px;
   margin-top:6px;
   font-size:15px;
-  border-radius:8px;
-  border:1px solid #ccc;
   direction:rtl;
-  font-family:inherit;
 }
-
 textarea{
   resize:vertical;
 }
-
-.hint{
-  margin-top:6px;
-  background:var(--hint);
-  padding:8px;
-  border-radius:8px;
-  font-size:13.5px;
-  color:#7f6000;
-}
-
-.section{
-  margin-top:18px;
-  padding-top:12px;
-  border-top:1px dashed #ccc;
-}
-
-.actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:14px;
-}
-
 button{
-  background:var(--main);
+  margin-top:14px;
+  background:#1565c0;
   color:#fff;
   border:none;
   cursor:pointer;
 }
-
-button.secondary{background:var(--gray)}
-
-button:active{opacity:.88}
-
-.output{
-  margin-top:18px;
+.note{
+  margin-top:10px;
+  background:#faf6e8;
+  padding:10px;
+  border-radius:8px;
+  font-size:14px;
+  color:#7a5c00;
 }
-
 #output{
-  height:460px;
+  margin-top:16px;
+  height:360px;
+  background:#fafafa;
   white-space:pre-wrap;
   line-height:1.8;
-  background:#fafafa;
-}
-
-@media (max-width:600px){
-  .actions{
-    grid-template-columns:1fr;
-  }
-  #output{
-    height:420px;
-  }
-}
-
-@media print{
-  input,button,textarea:not(#output),.hint,.actions,.sub{display:none}
-  #output{
-    border:none;
-    height:auto;
-    font-size:14pt;
-    background:#fff;
-  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-
-<h1>النظام السيادي للحصّة الصفّية</h1>
+<div class="box">
+<h1>الحِكمة في الحصّة</h1>
 <div class="sub">
-سؤال واحد • فكرة واحدة • صمت واعٍ • الكتاب هو المنهاج
+ليس المطلوب أن تملأ الوقت… بل أن تُنهيه في موضعه
 </div>
 
-<!-- معلومات المنهاج -->
-<label>المادة</label>
-<input id="subject" placeholder="اللغة العربية / الرياضيات">
+<label>سؤال الحصّة</label>
+<input id="q" placeholder="سؤال واحد يكفي">
 
-<label>الصف</label>
-<input id="grade" placeholder="الصف الأول">
+<label>الكلمة التي إن نُطقت انتهى الدرس</label>
+<input id="c" placeholder="جملة صادقة من فم طفل">
 
-<label>عنوان الدرس (من الكتاب)</label>
-<input id="lesson">
-
-<label>صفحة الكتاب المعتمدة</label>
-<input id="bookPage" placeholder="مثال: صفحة 12">
-<div class="hint">
-يُستخدم مثال واحد فقط من صفحة واحدة.
+<div class="note">
+🪶 حِكمة المعلّم:  
+إذا أردت أن تُعلِّم، فاصمت.  
+وإذا نطق الطفل، فتوقّف.
 </div>
 
-<!-- جوهر الحصّة -->
-<div class="section">
-<label>سؤال الحصّة الواحد 🔒</label>
-<input id="question" placeholder="لماذا؟ كيف؟ أين؟">
+<button onclick="build()">اكتب الحكمة</button>
 
-<label>الفكرة المقفولة 🔒</label>
-<input id="concept" placeholder="جملة قصيرة ينطقها تلميذ">
-</div>
-
-<!-- أسماء التلاميذ -->
-<div class="section">
-<label>أسماء التلاميذ (اختياري)</label>
-<textarea id="students" placeholder="محمد&#10;ليان&#10;أحمد"></textarea>
-</div>
-
-<!-- أزرار التشغيل -->
-<div class="section actions">
-  <button onclick="build()">✅ توليد التحضير</button>
-  <button class="secondary" onclick="simulate()">🎭 محاكاة حصة</button>
-  <button class="secondary" onclick="drawCard()">🎴 بطاقة صفية</button>
-  <button class="secondary" onclick="window.print()">🖨️ طباعة</button>
-</div>
-
-<!-- المخرج -->
-<div class="output">
-<textarea id="output" readonly placeholder="سيظهر التحضير والمحاكاة هنا..."></textarea>
-</div>
-
+<textarea id="output" readonly placeholder="ستظهر هنا حكمة الحصّة…"></textarea>
 </div>
 
 <script>
-"use strict";
-const $ = id => document.getElementById(id);
-const out = $("output");
-
-/* أدوات */
-function safe(v){return v.trim();}
-function requireCore(){
-  if(!safe($("question").value) || !safe($("concept").value)){
-    alert("⚠️ سؤال الحصة والفكرة المقفولة إلزاميان");
-    return false;
-  }
-  return true;
-}
-
-/* توليد التحضير */
 function build(){
-  if(!requireCore()) return;
+  const q=document.getElementById("q").value.trim();
+  const c=document.getElementById("c").value.trim();
+  if(!q||!c){
+    alert("الحكمة لا تُستعجل");
+    return;
+  }
 
-  out.value=
-`تحضير حصّة صفّية سيادية
+  document.getElementById("output").value=
+`حِكمة هذه الحصّة:
 
-المادة: ${safe($("subject").value) || "—"}
-الصف: ${safe($("grade").value) || "—"}
-الدرس: ${safe($("lesson").value) || "—"}
+سأطرح سؤالاً واحدًا:
+«${q}»
 
-المنهاج المعتمد:
-الكتاب المدرسي — ${safe($("bookPage").value) || "—"}
+ثم سأنتظر.
+لأن الانتظار تربية.
 
-سؤال الحصة الواحد:
-«${safe($("question").value)}»
+وعندما يقول طفل:
+«${c}»
 
-الفكرة المقفولة:
-«${safe($("concept").value)}»
+سأتوقف.
+لأن التوقّف حكمة.
 
-بنية التنفيذ:
-1) طرح السؤال فقط
-2) مثال واحد من نفس الصفحة
-3) صمت مقصود
-4) نطق تلميذ واحد
-5) إغلاق الحصة فور النطق
-
-مبدأ العمل:
-الصمت أداة
-التفكير هدف
-النطق دليل`;
-}
-
-/* محاكاة واقعية */
-function simulate(){
-  if(!requireCore()) return;
-
-  out.value +=
-`\n\n——— محاكاة تنفيذ واقعية ———
-
-الدقيقة الأولى:
-المعلم يقول:
-«${safe($("question").value)}»
-ثم يصمت.
-
-الدقائق التالية:
-التلاميذ ينظرون إلى مثال الكتاب.
-لا شرح.
-
-إعادة توجيه واحدة:
-«ارجع للسؤال.»
-
-اللحظة الحاسمة:
-عندما ينطق تلميذ:
-«${safe($("concept").value)}»
-
-القرار:
-نعم.
-✅ أُغلقت الحصة فورًا.
-
-——— نهاية المحاكاة ———`;
-}
-
-/* بطاقات صفية */
-function drawCard(){
-  const cards=[
-    "🟦 بطاقة صمت: لا كلام — نفكّر فقط.",
-    "🟨 بطاقة عودة: ارجع للسؤال.",
-    "🟩 بطاقة نطق: تلميذ واحد ينطق الفكرة."
-  ];
-  out.value += "\n\n" + cards[Math.floor(Math.random()*cards.length)];
+فالدرس الذي انتهى في وقته،
+أبقى أثرًا من درسٍ طال شرحه.`;
 }
 </script>
 
