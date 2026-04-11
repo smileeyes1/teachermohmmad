@@ -3,125 +3,326 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الحكمة في الحصّة</title>
+<title>النظام الحكيم للحصّة الصفّية</title>
 
 <style>
+:root{
+  --main:#1565c0;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --ink:#222;
+  --soft:#eef3f9;
+  --hint:#fff8e1;
+  --gray:#455a64;
+  --green:#2e7d32;
+  --yellow:#f9a825;
+  --red:#c62828;
+}
+
+*{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:Tahoma, Arial, sans-serif;
-  background:#f4f6f8;
-  color:#222;
+  background:var(--bg);
+  color:var(--ink);
 }
-.box{
-  max-width:820px;
+
+.container{
+  max-width:920px;
   margin:16px auto;
-  background:#ffffff;
+  background:var(--card);
   padding:18px;
-  border-radius:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,.08);
+  border-radius:14px;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
 }
+
 h1{
   text-align:center;
-  color:#1565c0;
+  color:var(--main);
   margin:0;
+  font-size:22px;
 }
+
 .sub{
   text-align:center;
   font-size:14px;
-  margin:10px 0;
-  color:#555;
+  color:#444;
+  margin-bottom:16px;
 }
+
 label{
   display:block;
+  margin-top:12px;
   font-weight:bold;
-  margin-top:14px;
+  font-size:15px;
 }
-input,textarea,button{
+
+input, select, textarea, button{
   width:100%;
   padding:10px;
   margin-top:6px;
   font-size:15px;
+  border-radius:8px;
+  border:1px solid #ccc;
   direction:rtl;
 }
-textarea{
-  resize:vertical;
+
+textarea{resize:vertical}
+
+.hint{
+  margin-top:6px;
+  background:var(--hint);
+  padding:8px;
+  border-radius:8px;
+  font-size:13.5px;
+  color:#7f6000;
 }
-button{
+
+.section{
+  margin-top:20px;
+  padding-top:14px;
+  border-top:1px dashed #ccc;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
   margin-top:14px;
-  background:#1565c0;
-  color:#fff;
+}
+
+button{
   border:none;
   cursor:pointer;
+  color:#fff;
 }
-.note{
-  margin-top:10px;
-  background:#faf6e8;
-  padding:10px;
-  border-radius:8px;
-  font-size:14px;
-  color:#7a5c00;
-}
+
+.primary{background:var(--main)}
+.gray{background:var(--gray)}
+.green{background:var(--green)}
+.yellow{background:var(--yellow); color:#000}
+.red{background:var(--red)}
+
 #output{
   margin-top:16px;
-  height:360px;
+  height:520px;
   background:#fafafa;
   white-space:pre-wrap;
-  line-height:1.8;
+  line-height:1.9;
+  font-size:14.5px;
+}
+
+#runPanel{
+  margin-top:22px;
+  background:var(--soft);
+  padding:16px;
+  border-radius:12px;
+}
+
+#log{
+  margin-top:12px;
+  background:#fafafa;
+  padding:10px;
+  min-height:160px;
+  white-space:pre-wrap;
+  font-size:14px;
+}
+
+@media (max-width:600px){
+  .actions{grid-template-columns:1fr}
+  #output{height:460px}
+}
+
+@media print{
+  input,select,button,textarea:not(#output),.hint,.sub,#runPanel{display:none}
+  #output{border:none;height:auto;font-size:14pt}
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
-<h1>الحِكمة في الحصّة</h1>
+<div class="container">
+
+<h1>النظام الحكيم للحصّة الصفّية</h1>
 <div class="sub">
-ليس المطلوب أن تملأ الوقت… بل أن تُنهيه في موضعه
+إطار تربوي عملي لإدارة حصّة عميقة بأقل تدخّل وبأثر أوضح
 </div>
 
-<label>سؤال الحصّة</label>
-<input id="q" placeholder="سؤال واحد يكفي">
+<!-- بيانات المنهاج -->
+<label>المادة</label>
+<input id="subject" placeholder="اللغة العربية / الرياضيات">
 
-<label>الكلمة التي إن نُطقت انتهى الدرس</label>
-<input id="c" placeholder="جملة صادقة من فم طفل">
+<label>الصف</label>
+<input id="grade" placeholder="الصف الأول / الثاني">
 
-<div class="note">
-🪶 حِكمة المعلّم:  
-إذا أردت أن تُعلِّم، فاصمت.  
-وإذا نطق الطفل، فتوقّف.
+<label>عنوان الدرس (مرجعي فقط)</label>
+<input id="lesson">
+
+<label>رفع ملف الكتاب (PDF أو صورة)</label>
+<input type="file" id="bookFile" accept=".pdf,image/*">
+<div id="bookInfo" class="hint">
+لم يتم رفع كتاب بعد — الكتاب يُعتمد مرجعًا للمنهاج فقط.
 </div>
 
-<button onclick="build()">اكتب الحكمة</button>
+<label>صفحة الكتاب المعتمدة</label>
+<input id="bookPage" placeholder="مثال: صفحة 12">
+<div class="hint">
+اختر صفحة واحدة فقط. مثال واحد فقط يُستخدم منها.
+</div>
 
-<textarea id="output" readonly placeholder="ستظهر هنا حكمة الحصّة…"></textarea>
+<!-- جوهر الحصّة -->
+<div class="section">
+<label>الهدف السلوكي القابل للرصد</label>
+<input id="goal" placeholder="أن ينطق التلميذ الفكرة بوضوح">
+
+<label>سؤال الحصّة الواحد 🔒</label>
+<input id="question" placeholder="سؤال يُدار حوله الدرس كاملًا">
+
+<label>الفكرة المقفولة 🔒</label>
+<input id="concept" placeholder="جملة قصيرة ينطقها تلميذ">
+<div class="hint">
+هذا النطق هو شرط الإغلاق، لا الزمن ولا كثرة الأنشطة.
+</div>
+</div>
+
+<!-- أزرار التحضير والمحاكاة -->
+<div class="section actions">
+  <button class="primary" onclick="build()">✅ توليد التحضير</button>
+  <button class="gray" onclick="simulate()">🎭 محاكاة حصّة واقعية</button>
+  <button class="gray" onclick="window.print()">🖨️ طباعة</button>
+</div>
+
+<textarea id="output" readonly placeholder="سيظهر التحضير والمحاكاة هنا..."></textarea>
+
+<!-- التشغيل الصفّي -->
+<div id="runPanel">
+  <div class="hint">
+أثناء الحصّة: النظام لا يشرح، بل يضبط الإيقاع ويُعينك على التوقّف في اللحظة الصحيحة.
+  </div>
+
+  <div class="actions">
+    <button class="primary" onclick="logAct('طُرح السؤال كما هو من المثال')">🟦 طرح السؤال</button>
+    <button class="gray" onclick="logAct('صمت مقصود — تفكير جارٍ')">🔇 صمت تربوي</button>
+    <button class="yellow" onclick="logAct('إعادة توجيه: ارجع للسؤال')">↩️ رجوع</button>
+    <button class="green" onclick="closeLesson()">✅ نُطقت الفكرة</button>
+  </div>
+
+  <div id="log">سجلّ التنفيذ (لتوثيق مهني فقط):</div>
+</div>
+
 </div>
 
 <script>
-function build(){
-  const q=document.getElementById("q").value.trim();
-  const c=document.getElementById("c").value.trim();
-  if(!q||!c){
-    alert("الحكمة لا تُستعجل");
+"use strict";
+const $ = id => document.getElementById(id);
+const out = $("output");
+const log = $("log");
+let closed = false;
+
+/* اعتماد الكتاب */
+$("bookFile").addEventListener("change",()=>{
+  const f = $("bookFile").files[0];
+  if(!f){
+    $("bookInfo").textContent="لم يتم رفع كتاب بعد.";
     return;
   }
+  $("bookInfo").textContent =
+    `✅ تم اعتماد الكتاب: ${f.name} (مرجع المنهاج لهذه الحصّة)`;
+});
 
-  document.getElementById("output").value=
-`حِكمة هذه الحصّة:
+/* تحقق الأساس */
+function coreReady(){
+  if(!$("question").value.trim() || !$("concept").value.trim()){
+    alert("سؤال الحصّة والفكرة المقفولة عنصران إلزاميان.");
+    return false;
+  }
+  return true;
+}
 
-سأطرح سؤالاً واحدًا:
-«${q}»
+/* بناء التحضير */
+function build(){
+  if(!coreReady()) return;
 
-ثم سأنتظر.
-لأن الانتظار تربية.
+  out.value =
+`تحضير حصّة صفّية – إطار حكيم
 
-وعندما يقول طفل:
-«${c}»
+المادة: ${$("subject").value || "—"}
+الصف: ${$("grade").value || "—"}
+الدرس: ${$("lesson").value || "—"}
 
-سأتوقف.
-لأن التوقّف حكمة.
+المنهاج المعتمد:
+الكتاب المدرسي الرسمي
+الملف: ${$("bookFile").files[0]?.name || "غير مرفق"}
+الصفحة: ${$("bookPage").value || "—"}
 
-فالدرس الذي انتهى في وقته،
-أبقى أثرًا من درسٍ طال شرحه.`;
+الهدف السلوكي:
+«${$("goal").value || "—"}»
+
+سؤال الحصّة الواحد:
+«${$("question").value.trim()}»
+
+الفكرة المقفولة:
+«${$("concept").value.trim()}»
+
+بنية التنفيذ المعتمدة:
+1) طرح السؤال فقط من المثال
+2) مثال واحد من الصفحة المحددة
+3) صمت مقصود للتفكير
+4) نطق تلميذ واحد للفكرة
+5) إغلاق الحصّة فور النطق
+
+مبدأ الخبير:
+الإكثار لا يُعمّق.
+التوقّف في وقته يُثبّت الفهم.
+`;
+}
+
+/* محاكاة واقعية */
+function simulate(){
+  if(!coreReady()) return;
+
+  out.value +=
+`\n\n—— محاكاة حصّة واقعية قابلة للتنفيذ ——
+
+الدقيقة الأولى:
+المعلّم يطرح السؤال:
+«${$("question").value.trim()}»
+
+الدقائق التالية:
+الطلاب ينظرون إلى المثال في الكتاب.
+لا شرح إضافي.
+صمت محسوب.
+
+إعادة توجيه واحدة فقط:
+«ارجع للسؤال.»
+
+اللحظة الحاسمة:
+ينطق أحد التلاميذ:
+«${$("concept").value.trim()}»
+
+الإجراء المهني:
+✅ إغلاق الحصّة فورًا.
+التعلّم حدث، ولا يحتاج استكمالًا.
+
+—— انتهت المحاكاة ——
+`;
+}
+
+/* سجل التنفيذ */
+function time(){
+  return new Date().toLocaleTimeString("ar-EG");
+}
+function logAct(msg){
+  if(closed) return;
+  log.textContent += `\n[${time()}] ${msg}`;
+}
+function closeLesson(){
+  if(closed) return;
+  closed=true;
+  logAct("نُطقت الفكرة المستهدفة.");
+  logAct("أُغلقت الحصّة مهنيًا دون شرح إضافي.");
 }
 </script>
 
