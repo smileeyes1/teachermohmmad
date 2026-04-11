@@ -4,14 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>التحضير السيادي للحصة</title>
+<title>نظام التحضير الصفي – وزارة التربية والتعليم</title>
+
+<meta name="description" content="نظام تحضير صفي حكومي مؤسسي، يعتمد التعلم الهادئ والتفكير المنظّم.">
 
 <style>
 :root{
-  --main:#3b82f6;
-  --main-soft:#e8f0fe;
-  --accent:#22c55e;
-  --bg:#f7f8fa;
+  --gov-blue:#1f4b99;
+  --gov-blue-soft:#eef3fb;
+  --edu-green:#2e7d32;
+  --bg:#f6f7f9;
   --card:#ffffff;
   --text:#1f2933;
   --muted:#6b7280;
@@ -30,8 +32,41 @@ body{
   line-height:١.٦;
 }
 
+/* الشريط الحكومي */
+.gov-header{
+  background:var(--gov-blue);
+  color:#fff;
+  padding:١٢px ٢٠px;
+}
+
+.gov-header-inner{
+  max-width:٨٠٠px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  gap:١٢px;
+}
+
+.gov-logo{
+  width:٤٨px;
+  height:٤٨px;
+  background:#fff;
+  border-radius:٨px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  color:var(--gov-blue);
+  font-size:١٤px;
+}
+
+.gov-title{
+  font-size:١٦px;
+  font-weight:bold;
+}
+
 .container{
-  max-width:٧٤٠px;
+  max-width:٧٦٠px;
   margin:٣٠px auto;
   background:var(--card);
   padding:٢٤px;
@@ -43,16 +78,16 @@ h1{
   text-align:center;
   margin-top:٠;
   margin-bottom:٢٠px;
-  color:#١f٢٩٣٣;
+  font-size:٢٠px;
 }
 
 .section-note{
-  background:var(--main-soft);
+  background:var(--gov-blue-soft);
   padding:١٢px ١٤px;
   border-radius:١٠px;
-  color:#١e٣a٨a;
   font-size:١٤px;
   margin-bottom:٢٠px;
+  color:#١f٣a٦d;
 }
 
 label{
@@ -73,8 +108,8 @@ input,textarea{
 
 input:focus,textarea:focus{
   outline:none;
-  border-color:var(--main);
-  box-shadow:٠ ٠ ٠ ٣px rgba(٥٩,١٣٠,٢٤٦,٠.١٥);
+  border-color:var(--gov-blue);
+  box-shadow:٠ ٠ ٠ ٣px rgba(٣١,٧٥,١٥٣,٠.١٥);
 }
 
 textarea{
@@ -94,7 +129,7 @@ textarea{
 button{
   margin-top:٢٤px;
   width:١٠٠٪;
-  background:var(--main);
+  background:var(--gov-blue);
   color:#fff;
   border:none;
   padding:١٤px;
@@ -105,7 +140,7 @@ button{
 }
 
 button:hover{
-  background:#٢٥٦٣eb;
+  background:#١٦٣c٧٧;
 }
 
 #err{
@@ -119,20 +154,28 @@ button:hover{
   background:#f9fafb;
   font-family:"Courier New",monospace;
   border:١px dashed #d1d5db;
+  height:٢٨٠px;
 }
 
-.footer-note{
-  margin-top:١٦px;
+/* التذييل المؤسسي */
+.gov-footer{
+  margin-top:٢٠px;
+  padding-top:١٢px;
+  border-top:١px solid #e5e7eb;
   text-align:center;
   font-size:١٣px;
   color:var(--muted);
 }
 
-/* موبايل */
+/* تكيّف الهاتف */
 @media (max-width:٦٠٠px){
   .container{
     margin:١٢px;
     padding:١٨px;
+  }
+  .gov-header-inner{
+    flex-direction:column;
+    align-items:flex-start;
   }
 }
 </style>
@@ -140,11 +183,21 @@ button:hover{
 
 <body>
 
+<div class="gov-header">
+  <div class="gov-header-inner">
+    <div class="gov-logo">LOGO</div>
+    <div class="gov-title">
+      وزارة التربية والتعليم<br>
+      نظام التحضير الصفي المؤسسي
+    </div>
+  </div>
+</div>
+
 <div class="container">
-<h1>التحضير السيادي للحصة</h1>
+<h1>التحضير الصفي السيادي</h1>
 
 <div class="section-note">
-هذا النموذج مصمَّم ليكون هادئًا، بسيطًا، ويخدم التفكير قبل أي شيء.
+يُستخدم هذا النموذج لأغراض التحضير الرسمي للحصص الصفية ضمن الإطار التربوي الحكومي، مع اعتماد التعلم الهادئ المنظّم.
 </div>
 
 <label>المادة</label>
@@ -165,47 +218,57 @@ button:hover{
 <label>الفكرة المقفولة *</label>
 <input id="concept">
 
-<label>ملف الكتاب (اختياري)</label>
+<label>ملف الكتاب (PDF أو صورة)</label>
 <input type="file" id="bookFile" accept=".pdf,image/*">
 <div id="fileName" class="file-box">لم يتم إرفاق ملف</div>
 
 <div id="err"></div>
 
-<button onclick="build()">بناء التحضير بهدوء</button>
+<button onclick="build()">اعتماد التحضير</button>
 
-<textarea id="output" readonly placeholder="سيظهر التحضير هنا…"></textarea>
+<textarea id="output" readonly placeholder="سيظهر التحضير هنا..."></textarea>
 
-<div class="footer-note">
-الهدوء يحمي العقل — والعقل هو أداة التعلّم.
+<div class="gov-footer">
+إعداد لأغراض تعليمية رسمية • وزارة التربية والتعليم<br>
+الصمت أداة – التفكير غاية – النطق دليل
 </div>
 </div>
 
 <script>
 "use strict";
-
 const $=id=>document.getElementById(id);
 const safe=t=>t.replace(/[<>]/g,"");
 
 $("bookFile").addEventListener("change",()=>{
   const f=$("bookFile").files[٠];
-  $("fileName").textContent=f?`📘 ${f.name}`:"لم يتم إرفاق ملف";
+  $("fileName").textContent=f?`📘 ${safe(f.name)}`:"لم يتم إرفاق ملف";
 });
 
 function build(){
   $("err").textContent="";
   const q=safe($("question").value.trim());
   const c=safe($("concept").value.trim());
+
   if(!q||!c){
-    $("err").textContent="❌ السؤال والفكرة المقفولة مطلوبان";
+    $("err").textContent="❌ سؤال الحصة والفكرة المقفولة إلزاميان";
     return;
   }
+
+  const file=$("bookFile").files[٠];
+
   $("output").value=`
-تحضير حصة سيادية
+تحضير حصة صفّية – نموذج حكومي
+
+المدرسة: عاطوف المختلطة
+المعلّم: محمد وجيه
 
 المادة: ${safe($("subject").value)||"—"}
 الصف: ${safe($("grade").value)||"—"}
 الدرس: ${safe($("lesson").value)||"—"}
 المدة: ${safe($("duration").value)||"—"} دقيقة
+
+ملف الكتاب:
+${file ? safe(file.name) : "غير مرفق"}
 
 سؤال الحصة:
 «${q}»
@@ -217,7 +280,7 @@ function build(){
 ١) سؤال واحد
 ٢) مثال واحد
 ٣) صمت مقصود
-٤) نطق طفل واحد
+٤) نطق طالب واحد
 ٥) تثبيت وإغلاق
 `.trim();
 }
