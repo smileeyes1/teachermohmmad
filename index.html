@@ -1,216 +1,181 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دعم المعلّم – الإصدار النهائي</title>
-
-<!-- تحميل OCR عند توفر إنترنت فقط -->
-<script>
-(function(){
-  try{
-    const s=document.createElement("script");
-    s.src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js";
-    s.onload=()=>window.OCR_READY=true;
-    s.onerror=()=>window.OCR_READY=false;
-    document.head.appendChild(s);
-  }catch(e){
-    window.OCR_READY=false;
-  }
-})();
-</script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>دعم المعلّم – تصميم متقدّم (بدون OCR / API)</title>
 
 <style>
+:root{
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --primary:#١٥٦٥c٠;
+  --accent:#455a64;
+  --muted:#6b7280;
+}
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:Tahoma, Arial, sans-serif;
-  background:#f4f6f8;
-  padding:12px;
-  line-height:1.8;
+  background:var(--bg);
+  padding:١٢px;
+  line-height:١.٨;
 }
 .card{
-  background:#fff;
-  padding:14px;
-  border-radius:12px;
-  margin-bottom:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,.12);
+  background:var(--card);
+  padding:١٤px;
+  border-radius:١٢px;
+  box-shadow:٠ ٤px ١٢px rgba(٠,٠,٠,.١٢);
+  margin-bottom:١٢px;
 }
-video,canvas{
-  width:100%;
-  border-radius:10px;
+header{
+  display:flex;gap:٨px;align-items:center;justify-content:space-between
 }
+h1{font-size:١٦px;margin:٠}
+small{color:var(--muted)}
+video,canvas,img{width:١٠٠%;border-radius:١٠px}
 button,input[type=file]{
-  width:100%;
-  padding:10px;
+  width:١٠٠%;
+  padding:١٠px;
   border:none;
-  border-radius:8px;
-  margin-top:8px;
-  font-size:14px;
+  border-radius:٨px;
+  margin-top:٨px;
+  font-size:١٤px;
 }
-button{background:#1565c0;color:#fff}
-.actions button{background:#455a64}
-#lessonTitle{font-weight:bold;margin-bottom:6px}
-#hint{font-size:13px;color:#555}
+button.primary{background:#1565c0;color:#fff}
+button.secondary{background:var(--accent);color:#fff}
+.actions button{background:var(--accent)}
+hr{border:none;border-top:١px solid #e٥e٧eb;margin:١٢px ٠}
+#lessonTitle{font-weight:bold;margin:٦px ٠}
+#status{color:var(--muted);font-size:١٣px}
+.hidden{display:none}
+.layout{display:grid;grid-template-columns:١fr;gap:١٢px}
+@media(min-width:٨٠٠px){
+  .layout{grid-template-columns:١fr ١fr}
+}
 </style>
 </head>
 
 <body>
 
-<!-- إدخال الدرس -->
 <div class="card">
-  <h3>📘 إدخال صفحة الدرس</h3>
-  <button onclick="startCamera()">📸 استخدام الكاميرا الخلفية</button>
-  <input type="file" accept="image/*" onchange="loadImage(event)">
-  <div id="hint">
-    • النظام يدعم الإنترنت وبدونه<br>
-    • OCR يُستَخدم داخليًا ولا يُعرض النص الخام
+  <header>
+    <h1>📘 دعم المعلّم</h1>
+    <small>واجهة صفّية هادئة</small>
+  </header>
+  <p id="status">اختر طريقة إدخال صفحة الدرس.</p>
+</div>
+
+<div class="layout">
+
+  <!-- الإدخال -->
+  <div class="card">
+    <button class="primary" onclick="startCamera()">📸 استخدام الكاميرا الخلفية</button>
+    <input type="file" accept="image/*" onchange="loadImage(event)" />
+    <p id="note" style="color:#6b7280;font-size:١٣px;margin:٨px ٠ ٠">
+      لا يُعرض أي نص آلي. الصورة مرجع بصري فقط.
+    </p>
   </div>
-</div>
 
-<!-- الكاميرا -->
-<div class="card" id="cameraBox" style="display:none">
-  <video id="video" autoplay playsinline></video>
-  <button onclick="capture()">التقاط الصورة</button>
-</div>
+  <!-- العرض -->
+  <div class="card">
+    <div id="cameraBox" class="hidden">
+      <video id="video" autoplay playsinline></video>
+      <button class="secondary" onclick="capture()">التقاط الصورة</button>
+    </div>
+    <canvas id="canvas" class="hidden"></canvas>
+    <div id="lessonTitle">— هذا الدرس —</div>
+    <small>جاهز لتقديم الدعم دون تشويش.</small>
+  </div>
 
-<!-- المعالجة -->
-<div class="card">
-  <canvas id="canvas"></canvas>
-  <div id="lessonTitle">— لم يتم تحديد الدرس بعد —</div>
 </div>
 
 <!-- الأفعال -->
-<div class="card actions" id="actions" style="display:none">
+<div class="card actions hidden" id="actions">
   <button onclick="prep()">📘 تحضير</button>
-  <button onclick="sim()">🧪 محاكاة</button>
-  <button onclick="obs()">📋 رصد</button>
+  <button onclick="sim()">🧪 محاكاة صفّية</button>
+  <button onclick="obs()">📋 قوائم رصد</button>
 </div>
 
 <script>
 const video=document.getElementById("video");
 const canvas=document.getElementById("canvas");
 const ctx=canvas.getContext("2d");
-const lessonTitle=document.getElementById("lessonTitle");
+const cameraBox=document.getElementById("cameraBox");
 const actions=document.getElementById("actions");
+const lessonTitle=document.getElementById("lessonTitle");
+const status=document.getElementById("status");
 
-let lessonName="اسم الدرس";
+let lessonName="هذا الدرس";
 
+// تشغيل الكاميرا الخلفية
 function startCamera(){
-  document.getElementById("cameraBox").style.display="block";
+  cameraBox.classList.remove("hidden");
   navigator.mediaDevices.getUserMedia({
     video:{facingMode:{ideal:"environment"}},
     audio:false
-  }).then(s=>video.srcObject=s)
-    .catch(()=>alert("تعذّر تشغيل الكاميرا الخلفية"));
+  }).then(s=>{
+    video.srcObject=s;
+    status.textContent="تم تشغيل الكاميرا الخلفية.";
+  }).catch(()=>{
+    status.textContent="تعذّر تشغيل الكاميرا. يمكنك رفع صورة.";
+  });
 }
 
+// التقاط صورة
 function capture(){
+  canvas.classList.remove("hidden");
   canvas.width=video.videoWidth;
   canvas.height=video.videoHeight;
   ctx.drawImage(video,0,0);
-  processImage();
+  finalize();
 }
 
+// تحميل صورة
 function loadImage(e){
   const img=new Image();
   img.onload=()=>{
+    canvas.classList.remove("hidden");
     canvas.width=img.width;
     canvas.height=img.height;
     ctx.drawImage(img,0,0);
-    processImage();
+    finalize();
   };
   img.src=URL.createObjectURL(e.target.files[0]);
 }
 
-/* ===== الحاكم (Gatekeeper) ===== */
-
-function gatekeeper(raw){
-  if(!raw) return false;
-
-  // طول غير منطقي
-  if(raw.length > 40) return false;
-
-  // تكرار حروف مبالغ فيه
-  if(/(.)\1\1/.test(raw)) return false;
-
-  // كثرة رموز غير عربية
-  const clean = raw.replace(/[\u0600-\u06FF0-9\s]/g,"");
-  if(clean.length > raw.length * 0.3) return false;
-
-  return true;
+function finalize(){
+  // ✅ حاكم بصري: لا OCR، اسم عام ثابت
+  lessonName="هذا الدرس";
+  lessonTitle.textContent="📘 "+lessonName;
+  actions.classList.remove("hidden");
+  status.textContent="تم تثبيت سياق الدرس. اختر نوع الدعم.";
 }
 
-function cleanTitle(t){
-  return t.replace(/[^\u0600-\u06FF0-9\s]/g,"").trim();
-}
-
-function processImage(){
-  actions.style.display="none";
-  lessonTitle.textContent="⏳ تحديد اسم الدرس...";
-
-  // قص أعلى 25% فقط
-  const cropH=Math.floor(canvas.height*0.25);
-  const crop=document.createElement("canvas");
-  crop.width=canvas.width;
-  crop.height=cropH;
-  crop.getContext("2d").drawImage(
-    canvas,0,0,canvas.width,cropH,0,0,canvas.width,cropH
-  );
-
-  // بدون إنترنت → اسم عام
-  if(!window.OCR_READY || !window.Tesseract){
-    lessonName="هذا الدرس";
-    lessonTitle.textContent="📘 "+lessonName;
-    actions.style.display="block";
-    return;
-  }
-
-  // OCR انتقائي
-  Tesseract.recognize(crop,"ara").then(res=>{
-    const raw = (res.data.text || "").split("\n")[0] || "";
-    const cleaned = cleanTitle(raw);
-
-    if(gatekeeper(cleaned)){
-      lessonName=cleaned;
-    }else{
-      lessonName="هذا الدرس";
-    }
-
-    lessonTitle.textContent="📘 "+lessonName;
-    actions.style.display="block";
-  }).catch(()=>{
-    lessonName="هذا الدرس";
-    lessonTitle.textContent="📘 "+lessonName;
-    actions.style.display="block";
-  });
-}
-
-/* ===== الدعم ===== */
+// الدعم
 function prep(){
   alert(
 `تحضير مختصر – ${lessonName}
-• بداية من المثال الأول
-• مشاركة طالب واحد
-• توقّف عند الفهم`
+• ابدأ بالمثال الأوّل.
+• مشاركة قصيرة لطالب واحد.
+• توقّف عند الفهم.`
   );
 }
-
 function sim(){
   alert(
 `محاكاة صفّية – ${lessonName}
-1) عرض المثال
-2) صمت
-3) محاولة
-4) انتهِ`
+١) عرض سريع
+٢) صمت
+٣) محاولة طالب
+٤) انتهِ`
   );
 }
-
 function obs(){
   alert(
 `قوائم رصد – ${lessonName}
 ☐ حاول
 ☐ شارك
-☐ نطق الفكرة`
+☐ احتاج دعم`
   );
 }
 </script>
