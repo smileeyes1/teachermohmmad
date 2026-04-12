@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الخبير التربوي المرافق — النسخة السيادية النهائية</title>
+<title>الخبير التربوي المرافق — النسخة السيادية المُحسّنة</title>
 
-<!-- ✅ تحميل Tesseract.js v5 بشكل صحيح ومباشر -->
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <style>
@@ -17,81 +16,25 @@
   --card:#ffffff;
   --ink:#222;
   --soft:#e3f2fd;
-  --muted:#6b7280;
 }
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Tahoma,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-  line-height:1.85;
-}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.85}
 .app{max-width:1000px;margin:auto;padding:16px}
-.header{
-  background:var(--card);
-  padding:24px 20px;
-  border-radius:16px;
-  box-shadow:0 8px 24px rgba(0,0,0,.08);
-  text-align:center;
-  margin-bottom:20px;
-}
-.card{
-  background:var(--card);
-  padding:20px;
-  border-radius:16px;
-  box-shadow:0 8px 24px rgba(0,0,0,.08);
-  margin-bottom:20px;
-}
-h1,h2,h3{margin:0 0 12px;text-align:center;color:var(--main)}
-input,button{
-  width:100%;
-  padding:16px;
-  margin-top:12px;
-  border:none;
-  border-radius:14px;
-  font-size:17px;
-}
+.header{background:var(--card);padding:24px 20px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08);text-align:center;margin-bottom:20px}
+.card{background:var(--card);padding:20px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08);margin-bottom:20px}
+h1,h3{margin:0 0 12px;text-align:center;color:var(--main)}
+input,button{width:100%;padding:16px;margin-top:12px;border:none;border-radius:14px;font-size:17px}
 button{background:var(--main);color:#fff;cursor:pointer}
 button.ok{background:var(--ok)}
 button.warn{background:var(--warn)}
 button.ghost{background:#eef2f7;color:#111}
 button:disabled{opacity:.6;cursor:not-allowed}
-.box{
-  background:var(--soft);
-  padding:16px;
-  border-radius:14px;
-  margin-top:12px;
-  white-space:pre-wrap;
-  font-size:15.5px;
-}
-.progress{
-  height:10px;
-  background:#ddd;
-  border-radius:8px;
-  overflow:hidden;
-  margin:16px 0;
-}
-.progress span{
-  display:block;
-  height:100%;
-  width:0%;
-  background:var(--main);
-  transition:.4s ease;
-}
+.box{background:var(--soft);padding:16px;border-radius:14px;margin-top:12px;white-space:pre-wrap;font-size:15.5px}
+.progress{height:10px;background:#ddd;border-radius:8px;overflow:hidden;margin:16px 0}
+.progress span{display:block;height:100%;width:0%;background:var(--main);transition:.4s}
 .badges{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.badges span{
-  background:#eef2f7;
-  border-radius:999px;
-  padding:8px 14px;
-  font-size:14px;
-}
-.small{font-size:13.5px;color:var(--muted);text-align:center}
-@media print{
-  button,input,.progress,.badges,#radar{display:none!important}
-  .card{box-shadow:none;border:1px solid #ddd}
-  body{background:#fff}
-}
+.badges span{background:#eef2f7;border-radius:999px;padding:8px 14px;font-size:14px}
+.small{font-size:13.5px;color:#6b7280;text-align:center}
 </style>
 </head>
 <body>
@@ -100,79 +43,109 @@ button:disabled{opacity:.6;cursor:not-allowed}
 <div class="header">
   <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
   <h1>الخبير التربوي المرافق</h1>
-  <p class="small">Camera-First • حد أقصى ٣ صور • فكرة واحدة • سؤال واحد • صمت • إغلاق</p>
+  <p class="small">Camera-First • تصوير مباشر • فكرة واحدة • سؤال واحد</p>
 </div>
 
-<!-- الإدخال الرئيسي -->
 <div class="card">
-  <h3>📷 تصوير أو اختيار صورة من الملفات</h3>
-  <input id="fileInput" type="file" accept="image/*" multiple capture="environment">
-  <p class="small">حد أقصى: ٣ صور فقط — يتم ضغطها تلقائياً</p>
+  <h3>📷 التصوير المباشر بالكاميرا</h3>
+  
+  <!-- زر التصوير المباشر (الأساسي) -->
+  <button id="cameraBtn" class="ok">📸 افتح الكاميرا وصوّر</button>
+  
+  <!-- خيار إضافي لاختيار من المعرض (للحالات التي لا يعمل فيها الـ capture) -->
+  <input id="fileInput" type="file" accept="image/*" style="display:none">
+  <button id="galleryBtn" class="ghost">📁 اختيار صورة من المعرض</button>
+  
+  <p class="small">حد أقصى: ٣ صور — يتم ضغطها تلقائياً</p>
   
   <div class="badges" id="pages"></div>
   <div class="progress"><span id="bar"></span></div>
-  <div id="status" class="box">— بانتظار الصور —</div>
+  <div id="status" class="box">— بانتظار التصوير —</div>
   
   <button id="startBtn" class="ok" disabled>ابدأ القراءة والتحليل</button>
 </div>
 
-<!-- التحضير -->
 <div class="card">
   <h3>🧭 التحضير التنفيذي</h3>
-  <div id="idea" class="box">🔹 الفكرة ستظهر هنا بعد التحليل</div>
+  <div id="idea" class="box">🔹 الفكرة ستظهر هنا</div>
   <div id="question" class="box">❓ السؤال سيظهر هنا</div>
   <div id="prep" class="box"></div>
-  <button id="buildBtn" class="ok" disabled>أنشئ التحضير التنفيذي</button>
+  <button id="buildBtn" class="ok" disabled>أنشئ التحضير</button>
 </div>
 
-<!-- الرادار الصفي -->
-<div class="card" id="radar">
+<div class="card">
   <h3>🎛️ الرادار الصفّي</h3>
   <button class="warn" onclick="support('🛑 صمت مهني مُدار')">صمت مهني</button>
   <button class="ghost" onclick="support('🔁 ارجع للسؤال الواحد')">ارجع للسؤال</button>
   <button class="ok" onclick="closeSession()">✅ أُغلِقت الحصة</button>
-  <button class="ghost" onclick="toggleClassMode()">🎯 وضع الصف</button>
-  <button class="ghost" onclick="window.print()">🖨️ طباعة التحضير</button>
+  <button class="ghost" onclick="window.print()">🖨️ طباعة</button>
   <div id="support" class="box"></div>
 </div>
 
 </div>
 
 <script>
-// ================== المتغيرات السيادية ==================
+// ================== متغيرات ==================
+const cameraBtn = document.getElementById("cameraBtn");
+const galleryBtn = document.getElementById("galleryBtn");
 const fileInput = document.getElementById("fileInput");
 const bar = document.getElementById("bar");
 const statusBox = document.getElementById("status");
 const pagesContainer = document.getElementById("pages");
 const startBtn = document.getElementById("startBtn");
 const buildBtn = document.getElementById("buildBtn");
-const ideaBox = document.getElementById("idea");
-const questionBox = document.getElementById("question");
-const prepBox = document.getElementById("prep");
-const supportBox = document.getElementById("support");
 
 let images = [];
 let ocrText = "";
-let currentIdea = "";
-let currentQuestion = "";
 let worker = null;
 let isClosed = false;
 
-// ================== تهيئة Tesseract ==================
-async function initWorker() {
-  if (worker) return;
-  statusBox.textContent = "⏳ جارٍ تحميل محرك القراءة...";
-  worker = await Tesseract.createWorker('ara', 1, {
-    logger: m => {
-      if (m.status === 'recognizing text') {
-        bar.style.width = Math.round(m.progress * 95) + "%";
-      }
+// ================== فتح الكاميرا مباشرة ==================
+cameraBtn.onclick = () => {
+  if (isClosed) return;
+  // إنشاء input مؤقت للتصوير فقط
+  const tempInput = document.createElement("input");
+  tempInput.type = "file";
+  tempInput.accept = "image/*";
+  tempInput.capture = "environment";   // الكاميرا الخلفية
+  tempInput.style.display = "none";
+  
+  tempInput.onchange = (e) => {
+    if (e.target.files.length > 0) {
+      images = Array.from(e.target.files).slice(0, 3);
+      updateUI();
     }
+  };
+  
+  tempInput.click();
+};
+
+// ================== اختيار من المعرض ==================
+galleryBtn.onclick = () => {
+  if (isClosed) return;
+  fileInput.click();
+};
+
+fileInput.onchange = () => {
+  if (fileInput.files.length > 0) {
+    images = Array.from(fileInput.files).slice(0, 3);
+    updateUI();
+  }
+};
+
+function updateUI() {
+  pagesContainer.innerHTML = "";
+  images.forEach((_, i) => {
+    const span = document.createElement("span");
+    span.textContent = `صورة ${i+1}`;
+    pagesContainer.appendChild(span);
   });
+  statusBox.textContent = `✅ تم اختيار ${images.length} صورة`;
+  startBtn.disabled = false;
 }
 
-// ================== ضغط الصورة ==================
-function compressImage(file) {
+// ================== باقي الكود (ضغط + OCR + تحليل + تحضير) نفس النسخة السابقة مع تحسين بسيط ==================
+async function compressImage(file) {
   return new Promise(resolve => {
     const img = new Image();
     img.onload = () => {
@@ -181,133 +154,78 @@ function compressImage(file) {
       canvas.width = img.width * scale;
       canvas.height = img.height * scale;
       canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(blob => resolve(blob), "image/jpeg", 0.72);
+      canvas.toBlob(b => resolve(b), "image/jpeg", 0.72);
     };
     img.src = URL.createObjectURL(file);
   });
 }
 
-// ================== اختيار الملفات ==================
-fileInput.onchange = () => {
-  if (isClosed) return;
-  images = Array.from(fileInput.files).slice(0, 3);
-  pagesContainer.innerHTML = "";
-  
-  if (images.length === 0) {
-    statusBox.textContent = "— بانتظار الصور —";
-    startBtn.disabled = true;
-    return;
-  }
-  
-  images.forEach((_, i) => {
-    const span = document.createElement("span");
-    span.textContent = `صورة ${i+1}`;
-    pagesContainer.appendChild(span);
-  });
-  
-  statusBox.textContent = `✅ تم اختيار ${images.length} صورة (سيتم ضغطها تلقائياً)`;
-  startBtn.disabled = false;
-};
+async function initWorker() {
+  if (worker) return;
+  statusBox.textContent = "⏳ جارٍ تحميل محرك القراءة...";
+  worker = await Tesseract.createWorker('ara', 1);
+}
 
-// ================== بدء القراءة والتحليل ==================
 startBtn.onclick = async () => {
   if (images.length === 0 || isClosed) return;
-  
   bar.style.width = "5%";
-  statusBox.textContent = "🔍 جارٍ قراءة الصور واستخراج النص...";
+  statusBox.textContent = "🔍 جارٍ قراءة الصور...";
   startBtn.disabled = true;
-  
+
   await initWorker();
   ocrText = "";
 
   for (let i = 0; i < images.length; i++) {
-    const compressedBlob = await compressImage(images[i]);
-    try {
-      const result = await worker.recognize(compressedBlob);
-      ocrText += result.data.text + "\n\n";
-      bar.style.width = Math.round(((i + 1) / images.length) * 100) + "%";
-    } catch (e) {}
+    const blob = await compressImage(images[i]);
+    const result = await worker.recognize(blob);
+    ocrText += result.data.text + "\n\n";
+    bar.style.width = Math.round(((i+1)/images.length)*100) + "%";
   }
-  
+
   bar.style.width = "100%";
-  statusBox.textContent = "✅ انتهى تحليل الصور بنجاح";
+  statusBox.textContent = "✅ انتهت القراءة — اضغط أنشئ التحضير";
   buildBtn.disabled = false;
-  
-  // تحليل أولي فوري للفكرة والسؤال
   analyzeContent();
 };
 
-// ================== التحليل التربوي (فكرة واحدة + سؤال واحد فقط) ==================
 function analyzeContent() {
-  const text = ocrText.trim().toLowerCase();
-  let idea = "ربط المحتوى المرئي بالفهم";
-  let q = "ماذا تلاحظ في الصورة؟";
+  const text = ocrText.toLowerCase();
+  let idea = "استكشاف المحتوى المرئي في الصور";
+  let q = "ماذا ترى في الصور التي أمامك؟";
 
-  if (text.length < 30) {
-    idea = "استكشاف ما نراه في الصور";
-    q = "ما الذي تراه أولاً في هذه الصور؟";
-  } 
-  else if (/جمع|طرح|ضرب|قسم|احسب|عدد|رقم/.test(text)) {
-    idea = "ربط العمليات الحسابية بالصور المرئية";
-    q = "كيف يمكننا حساب هذا باستخدام ما نراه؟";
-  } 
-  else if (/حرف|كلمة|جملة|قصة|نص/.test(text)) {
-    idea = "فهم النص من خلال الملاحظة البصرية";
-    q = "ما الفكرة الرئيسية التي تراها في النص؟";
-  } 
-  else if (/شكل|دائرة|مربع|مثلث|لون/.test(text)) {
-    idea = "استكشاف الأشكال والألوان";
-    q = "كيف وصفت هذا الشكل؟";
+  if (/جمع|طرح|ضرب|احسب/.test(text)) {
+    idea = "ربط العمليات الحسابية بالصور";
+    q = "كيف نحل هذه المسألة باستخدام ما نراه؟";
+  } else if (/حرف|كلمة|قصة/.test(text)) {
+    idea = "فهم النص من خلال الملاحظة";
+    q = "ما الفكرة الرئيسية في هذا النص؟";
   }
 
-  currentIdea = idea;
-  currentQuestion = q;
-
-  ideaBox.textContent = `🔹 الفكرة: ${idea}`;
-  questionBox.textContent = `❓ السؤال: ${q}`;
+  document.getElementById("idea").textContent = `🔹 الفكرة: ${idea}`;
+  document.getElementById("question").textContent = `❓ السؤال: ${q}`;
 }
 
-// ================== إنشاء التحضير التنفيذي ==================
 buildBtn.onclick = () => {
   if (isClosed) return;
+  const idea = document.getElementById("idea").textContent.replace("🔹 الفكرة: ", "");
+  const q = document.getElementById("question").textContent.replace("❓ السؤال: ", "");
   
-  prepBox.innerHTML = `
-<strong>ما يقوله المعلم حرفياً:</strong><br><br>
-"انظروا جيداً إلى الصور أمامكم..."<br><br>
-${currentQuestion}<br><br>
-[ صمت واعٍ — ١٥ إلى ٢٥ ثانية ]<br><br>
-دعوا الطالب يحاول مرة واحدة.<br>
-عندما ينطق الفكرة الصحيحة: نغلق الحصة بهدوء.
+  document.getElementById("prep").innerHTML = `
+<strong>ما يقوله المعلم:</strong><br><br>
+"انظروا جيداً إلى الصور..."<br><br>
+${q}<br><br>
+[ صمت واعٍ ١٥-٢٥ ثانية ]<br><br>
+محاولة واحدة من الطالب.<br>
+عند نطق الفكرة: نغلق الحصة بهدوء.
   `;
-  
-  statusBox.textContent = "✅ تم إنشاء التحضير التنفيذي";
 };
 
-// ================== الرادار الصفي ==================
-function support(msg) {
-  if (isClosed) return;
-  supportBox.textContent = msg;
-}
-
+function support(msg) { document.getElementById("support").textContent = msg; }
 function closeSession() {
   isClosed = true;
-  supportBox.textContent = "✅ تم إغلاق الحصة — لا يمكن إضافة محتوى جديد";
-  startBtn.disabled = true;
-  buildBtn.disabled = true;
-  fileInput.disabled = true;
+  statusBox.textContent = "✅ تم إغلاق الحصة";
+  startBtn.disabled = buildBtn.disabled = true;
 }
-
-function toggleClassMode() {
-  document.body.classList.toggle("class-mode");
-}
-
-// ================== وضع الصف (Class Mode) ==================
-const style = document.createElement('style');
-style.innerHTML = `
-  body.class-mode .card:not(#radar) { display: none !important; }
-  body.class-mode #radar h3 { display: none; }
-`;
-document.head.appendChild(style);
 </script>
 </body>
 </html>
