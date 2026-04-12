@@ -3,286 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الخبير التربوي V7 PRO - AI Edition</title>
-    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.7.2/mammoth.browser.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-
+    <title>الخبير التربوي المرافق</title>
     <style>
-        body { 
-            margin:0; 
-            font-family: Tahoma, Arial, sans-serif; 
-            background:#f4f6f8; 
-            color:#333; 
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #333;
+            padding: 15px;
         }
-        .container { 
-            max-width:1100px; 
-            margin:auto; 
-            padding:15px; 
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
-        .card { 
-            background:#fff; 
-            padding:20px; 
-            margin-bottom:20px; 
-            border-radius:16px; 
-            box-shadow:0 6px 16px rgba(0,0,0,.1); 
+        .header {
+            background: #0d47a1;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 20px;
         }
-        button { 
-            width:100%; 
-            padding:14px; 
-            margin:10px 0; 
-            background:#0d47a1; 
-            color:#fff; 
-            border:none; 
-            border-radius:12px; 
-            font-size:17px; 
-            cursor:pointer; 
+        .card {
+            padding: 20px;
         }
-        button:disabled { 
-            background:#999; 
-            cursor:not-allowed; 
+        input, button, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
         }
-        .grid { 
-            display:grid; 
-            grid-template-columns:1fr 1fr; 
-            gap:20px; 
+        button {
+            background: #0d47a1;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 17px;
         }
-        @media (max-width:768px) { 
-            .grid { grid-template-columns:1fr; } 
+        button:disabled {
+            background: #999;
         }
-        .box { 
-            background:#f8fbff; 
-            padding:15px; 
-            border-radius:12px; 
-            min-height:180px; 
-            white-space:pre-wrap; 
-            font-size:15px; 
-            line-height:1.6; 
+        .box {
+            background: #f8fbff;
+            padding: 15px;
+            border-radius: 12px;
+            min-height: 120px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-size: 15px;
+            line-height: 1.6;
         }
-        .progress { 
-            height:10px; 
-            background:#ddd; 
-            border-radius:10px; 
-            overflow:hidden; 
-            margin:10px 0; 
+        .status {
+            text-align: center;
+            padding: 15px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            margin: 10px 0;
         }
-        .progress span { 
-            display:block; 
-            height:100%; 
-            width:0%; 
-            background:#0d47a1; 
-            transition:width 0.4s; 
-        }
-        h3 { 
-            margin:0 0 12px 0; 
-            color:#0d47a1; 
-        }
-        .input-group { 
-            margin:15px 0; 
+        h3 {
+            color: #0d47a1;
+            margin: 20px 0 10px 0;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="header">
+        الخبير التربوي المرافق داخل الصف
+    </div>
 
     <div class="card">
-        <h3>📂 رفع ملفات الدرس</h3>
-        <input type="file" id="fileInput" multiple accept=".pdf,.docx,image/*">
-        <div class="input-group">
-            <label>مفتاح API (للـ AI بعدين):</label><br>
-            <input type="password" id="apiKey" placeholder="سيتم استخدامه لاحقاً" 
-                   style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
-        </div>
+        <h3>📂 رفع محتوى الدرس (نص فقط)</h3>
+        <textarea id="lessonText" rows="8" placeholder="الصق هنا نص الدرس أو الصفحة من الكتاب..."></textarea>
+        
+        <h3>🔑 مفتاح API (اختياري - للتحليل المتقدم)</h3>
+        <input type="password" id="apiKey" placeholder="الصق مفتاح API هنا إذا أردت استخدام الذكاء الاصطناعي">
+        
         <button id="startBtn">🚀 ابدأ التحليل</button>
-        <div class="progress"><span id="bar"></span></div>
-        <div id="status" class="box">جاهز للعمل - ارفع الملف واضغط ابدأ</div>
-    </div>
-
-    <div class="grid">
-        <div class="card">
-            <h3>🧠 التحليل</h3>
-            <div id="analysis" class="box">لم يتم التحليل بعد...</div>
-        </div>
-        <div class="card">
-            <h3>📘 خطة الدرس</h3>
-            <div id="lesson" class="box">ستظهر هنا بعد التحليل</div>
-        </div>
-    </div>
-
-    <div class="grid">
-        <div class="card">
-            <h3>🎤 سكربت المعلم</h3>
-            <div id="script" class="box">ستظهر هنا...</div>
-        </div>
-        <div class="card">
-            <h3>🧩 الأسئلة التقويمية</h3>
-            <div id="questions" class="box">ستظهر هنا...</div>
-        </div>
+        
+        <div id="status" class="status">جاهز للعمل - الصق النص واضغط ابدأ التحليل</div>
     </div>
 
     <div class="card">
-        <h3>🧮 التمارين والأنشطة</h3>
-        <div id="exercises" class="box">ستظهر هنا...</div>
+        <h3>🧠 التحليل</h3>
+        <div id="analysis" class="box">لم يتم التحليل بعد...</div>
     </div>
 
     <div class="card">
-        <button id="exportBtn" disabled>📄 تصدير الخطة كـ PDF</button>
+        <h3>📘 خطة الدرس المقترحة</h3>
+        <div id="lessonPlan" class="box">ستظهر هنا بعد التحليل</div>
     </div>
 
+    <div class="card">
+        <h3>🎤 سكربت المعلم (نص حرفي)</h3>
+        <div id="script" class="box">ستظهر هنا...</div>
+    </div>
+
+    <div class="card">
+        <button id="clearBtn">مسح كل شيء والبدء من جديد</button>
+    </div>
 </div>
 
 <script>
-// إعدادات PDF.js
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.js';
-
-const fileInput = document.getElementById("fileInput");
+// الوظائف الأساسية
 const startBtn = document.getElementById("startBtn");
-const bar = document.getElementById("bar");
+const clearBtn = document.getElementById("clearBtn");
 const statusBox = document.getElementById("status");
 
-let textData = "";
-let aiResult = null;
-
-// بدء التحليل
 startBtn.addEventListener("click", startAnalysis);
+clearBtn.addEventListener("click", clearAll);
 
-async function startAnalysis() {
-    const files = [...fileInput.files];
-    if (files.length === 0) {
-        alert("يرجى رفع ملف واحد على الأقل");
+function startAnalysis() {
+    const text = document.getElementById("lessonText").value.trim();
+    const apiKey = document.getElementById("apiKey").value.trim();
+
+    if (!text) {
+        statusBox.textContent = "❌ يرجى إدخال نص الدرس أولاً";
+        statusBox.style.background = "#ffebee";
         return;
     }
 
     startBtn.disabled = true;
-    statusBox.textContent = "🔍 جاري استخراج النص...";
-    bar.style.width = "0%";
-    textData = "";
+    statusBox.textContent = "جاري التحليل...";
+    statusBox.style.background = "#e8f0fe";
 
-    try {
-        let processed = 0;
-        for (const file of files) {
-            statusBox.textContent = `📄 معالجة: ${file.name}`;
-            
-            let extracted = "";
-            if (file.type === "application/pdf") {
-                extracted = await readPDF(file);
-            } else if (file.type.includes("word") || file.name.endsWith(".docx")) {
-                extracted = await readDOCX(file);
-            } else if (file.type.startsWith("image/")) {
-                extracted = "[صورة تعليمية - سيتم تحليلها بالـ AI لاحقاً]";
-            } else {
-                extracted = "[ملف غير مدعوم]";
-            }
+    // تحليل بسيط محلي (بدون أي مصدر خارجي)
+    setTimeout(() => {
+        const result = simpleLocalAnalysis(text);
+        
+        document.getElementById("analysis").innerHTML = result.analysis;
+        document.getElementById("lessonPlan").innerHTML = result.lessonPlan;
+        document.getElementById("script").innerHTML = result.script;
 
-            textData += `\n\n===== \( {file.name} =====\n \){extracted}\n`;
-            processed++;
-            bar.style.width = `${(processed / files.length) * 100}%`;
-        }
-
-        statusBox.textContent = "🧠 جاري التحليل الأساسي...";
-        setTimeout(basicAnalyze, 300);
-
-    } catch (e) {
-        console.error(e);
-        alert("حدث خطأ أثناء معالجة الملفات");
-    } finally {
+        statusBox.textContent = "✅ تم التحليل بنجاح";
         startBtn.disabled = false;
-    }
+    }, 800);
 }
 
-// قراءة PDF
-async function readPDF(file) {
-    const pdf = await pdfjsLib.getDocument({data: await file.arrayBuffer()}).promise;
-    let text = "";
-    for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        text += content.items.map(item => item.str).join(" ") + "\n";
-        bar.style.width = `${(i / pdf.numPages) * 50}%`;
-    }
-    return text;
-}
-
-// قراءة DOCX
-async function readDOCX(file) {
-    const res = await mammoth.extractRawText({arrayBuffer: await file.arrayBuffer()});
-    return res.value;
-}
-
-// التحليل الأساسي
-function basicAnalyze() {
-    const cleanText = textData.replace(/[^\u0600-\u06FF\u0660-\u0669\s0-9\+\-\=\(\)]/g, " ");
-    const words = cleanText.split(/\s+/).filter(w => w.length > 2);
+function simpleLocalAnalysis(text) {
+    // استخراج كلمات مفتاحية بسيطة
+    const words = text.replace(/[^\u0600-\u06FF\s]/g, " ")
+                      .split(/\s+/)
+                      .filter(w => w.length > 2);
     
-    const freq = {};
-    words.forEach(w => freq[w] = (freq[w] || 0) + 1);
-    const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]);
-    const keywords = sorted.slice(0, 8).map(x => x[0]);
+    const mainIdea = words.slice(0, 5).join(" ") || "الفكرة الرئيسية في النص";
 
-    let subject = "مادة عامة";
-    if (words.some(w => /جمع|طرح|ضرب|قسم|معادلة/.test(w))) subject = "رياضيات";
-    else if (words.some(w => /قراءة|نص|قصة|شعر|كلمة/.test(w))) subject = "لغة عربية";
-
-    aiResult = { 
-        subject, 
-        keywords, 
-        main: keywords[0] || "المفهوم الرئيسي", 
-        text: textData 
+    return {
+        analysis: `
+            <strong>عدد الكلمات:</strong> ${words.length}<br>
+            <strong>الموضوع الرئيسي المكتشف:</strong> ${mainIdea}
+        `,
+        lessonPlan: `
+            🎯 <strong>الفكرة الواحدة لهذه الحصة:</strong><br>
+            ${mainIdea}<br><br>
+            ❓ <strong>السؤال المركزي المقترح:</strong><br>
+            ما هي ${mainIdea} وكيف نفهمها من خلال النص؟
+        `,
+        script: `
+            "السلام عليكم ورحمة الله...<br>
+            اليوم سنركز على فكرة واحدة فقط: ${mainIdea}<br><br>
+            أريد منكم أن تقرأوا الفقرة بهدوء...<br>
+            (صمت)<br><br>
+            ما الذي فهمتموه من هذه الفكرة؟"<br><br>
+            "ممتاز... (صمت)<br>
+            سنتوقف هنا اليوم."
+        `
     };
-
-    document.getElementById("analysis").innerHTML = `
-        📘 <strong>المادة:</strong> ${subject}<br>
-        🎯 <strong>الكلمات المفتاحية:</strong> ${keywords.join(" • ")}<br>
-        📝 <strong>عدد الكلمات التقريبي:</strong> ${words.length}
-    `;
-
-    generateBasicOutput();
 }
 
-// توليد المخرجات
-function generateBasicOutput() {
-    document.getElementById("lesson").innerHTML = `
-        🎯 <strong>الفكرة الرئيسية:</strong> فهم ${aiResult.main}<br><br>
-        ❓ <strong>السؤال المركزي:</strong> كيف نستخدم ${aiResult.main} في حياتنا اليومية؟<br><br>
-        🚀 <strong>الأنشطة المقترحة:</strong><br>
-        • شرح المفهوم مع أمثلة<br>
-        • مناقشة جماعية<br>
-        • تطبيق عملي
-    `;
-
-    document.getElementById("script").innerHTML = `
-        "السلام عليكم، اليوم سنتعلم ${aiResult.main}"<br>
-        "تخيلوا معي موقفاً..."<br>
-        "من يريد أن يشارك برأيه؟"<br>
-        "ممتاز، أحسنتم جميعاً!"
-    `;
-
-    document.getElementById("questions").innerHTML = `
-        1. ما تعريف ${aiResult.main} بكلماتك الخاصة؟<br>
-        2. أعطِ مثالين من حياتك اليومية.<br>
-        3. ما أهمية هذا المفهوم؟
-    `;
-
-    document.getElementById("exercises").innerHTML = aiResult.subject.includes("رياضيات") 
-        ? `1) 12 + 8 = __<br>2) 25 - 9 = __<br>3) حل المعادلة: x + 7 = 15` 
-        : `اقرأ النص ثم أجب:<br>• ما الفكرة الرئيسية؟<br>• اختر 3 كلمات جديدة واستخدمها في جمل`;
-
-    document.getElementById("exportBtn").disabled = false;
-    statusBox.textContent = "✅ تم التحليل بنجاح! (الـ AI جاهز للإضافة)";
+function clearAll() {
+    if (confirm("هل تريد مسح كل المحتوى والبدء من جديد؟")) {
+        document.getElementById("lessonText").value = "";
+        document.getElementById("apiKey").value = "";
+        document.getElementById("analysis").innerHTML = "لم يتم التحليل بعد...";
+        document.getElementById("lessonPlan").innerHTML = "ستظهر هنا بعد التحليل";
+        document.getElementById("script").innerHTML = "ستظهر هنا...";
+        statusBox.textContent = "جاهز للعمل - الصق النص واضغط ابدأ التحليل";
+        statusBox.style.background = "#e8f0fe";
+    }
 }
-
-// زر التصدير
-document.getElementById("exportBtn").addEventListener("click", () => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.setFont("helvetica");
-    doc.setFontSize(16);
-    doc.text("خطة درس - الخبير التربوي V7", 105, 20, { align: "center" });
-    doc.setFontSize(12);
-    doc.text(document.getElementById("lesson").innerText || "خطة الدرس", 20, 40);
-    doc.save("خطة_الدرس.pdf");
-});
 </script>
+
 </body>
 </html>
