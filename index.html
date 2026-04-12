@@ -1,176 +1,94 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>نظام الدعم السيادي للمعلّم — نسخة محسّنة متكيفة</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام الدعم التربوي الخبير — نسخة سيادية</title>
 
 <style>
-/* =====================================================
-   الهوية السيادية — محسّنة ومحمية
-===================================================== */
 :root{
-  --primary:#1565c0;
-  --primary-soft:#e3f2fd;
+  --main:#1565c0;
   --bg:#f4f6f8;
   --card:#ffffff;
-  --ink:#1f2937;
+  --ink:#222;
   --muted:#6b7280;
-  --success:#2e7d32;
-  --warning:#f9a825;
-  --border:#e5e7eb;
-  --radius:16px;
-  --shadow:0 8px 24px rgba(0,0,0,.08);
+  --ok:#2e7d32;
+  --alt:#455a64;
+  --expert:#6a1b9a;
+  --soft:#eef2f6;
 }
-
 *{box-sizing:border-box}
-
-html{font-size:16px}
-
 body{
   margin:0;
-  font-family:Tahoma, "Segoe UI", Arial, sans-serif;
+  font-family:Tahoma,Arial,sans-serif;
   background:var(--bg);
   color:var(--ink);
   line-height:1.9;
 }
-
-/* =====================================================
-   التكيّف مع الأجهزة
-===================================================== */
 .app{
   max-width:1200px;
   margin:auto;
   padding:16px;
 }
-
-@media (max-width:900px){
-  .app{padding:12px}
-}
-
 .card{
   background:var(--card);
   padding:20px;
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
+  border-radius:16px;
+  box-shadow:0 8px 24px rgba(0,0,0,.08);
   margin-bottom:16px;
 }
+.header{text-align:center}
+.header h1{margin:0;color:var(--main)}
+.header p{margin-top:6px;color:var(--muted);font-size:14px}
 
-/* =====================================================
-   الرأس
-===================================================== */
-.header{
-  text-align:center;
-}
-.header h1{
-  margin:0;
-  font-size:1.4rem;
-  color:var(--primary);
-}
-.header p{
-  margin:.4rem 0 0;
-  font-size:.95rem;
-  color:var(--muted);
-}
-
-/* =====================================================
-   عناصر الإدخال والتفاعل
-===================================================== */
-button{
+button,input[type=file],select{
   width:100%;
   padding:14px;
   margin-top:10px;
   border:none;
   border-radius:14px;
-  font-size:.95rem;
-  cursor:pointer;
-  background:var(--primary);
-  color:#fff;
-  transition:.2s ease;
+  font-size:15px;
 }
-button.secondary{background:#455a64}
-button.success{background:var(--success)}
-button.warning{background:var(--warning);color:#000}
-
-button:hover{opacity:.9}
+button{background:var(--main);color:#fff;cursor:pointer}
+button.alt{background:var(--alt)}
+button.ok{background:var(--ok)}
+button.expert{background:var(--expert)}
 
 .buttons{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
   gap:12px;
-  margin-top:14px;
-}
-
-/* =====================================================
-   الكاميرا والمعالجة
-===================================================== */
-video,canvas{
-  width:100%;
-  border-radius:14px;
-}
-
-/* =====================================================
-   الإخراج
-===================================================== */
-.output{
-  background:#fafafa;
-  padding:18px;
-  border-radius:14px;
-  white-space:pre-wrap;
-  font-size:.95rem;
-  margin-top:14px;
-}
-
-.log{
-  background:#fafafa;
-  border-radius:14px;
-  padding:14px;
   margin-top:12px;
+}
+
+.output,.log,.expertBox{
+  background:#fafafa;
+  padding:16px;
+  border-radius:14px;
   white-space:pre-wrap;
-  font-size:.9rem;
+  margin-top:12px;
+  font-size:14px;
+}
+.expertBox{
+  border-right:5px solid var(--expert);
 }
 
-/* =====================================================
-   الشريط البصري للاكتمال
-===================================================== */
-.progress{
-  margin-top:10px;
-  height:10px;
-  background:#e5e7eb;
-  border-radius:10px;
-  overflow:hidden;
+.badge{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:12px;
+  font-size:13px;
 }
-.progress span{
-  display:block;
-  height:100%;
-  width:0%;
-  background:var(--primary);
-  transition:width .3s ease;
-}
+.b-before{background:#eee}
+.b-mid{background:#fff3cd}
+.b-ok{background:#e8f5e9;color:var(--ok)}
 
-/* =====================================================
-   إخفاء ذكي
-===================================================== */
 .hidden{display:none}
 
-/* =====================================================
-   الطباعة الورقية (تعزيز ورقي)
-===================================================== */
 @media print{
-  button,video,.buttons,.footer{display:none}
+  button,input,select,.buttons{display:none}
   body{background:#fff}
-  .card{box-shadow:none;border:1px solid #ccc}
-  .output,.log{font-size:14pt}
-}
-
-/* =====================================================
-   التذييل
-===================================================== */
-.footer{
-  text-align:center;
-  font-size:.8rem;
-  color:var(--muted);
-  margin-top:16px;
+  .output,.log,.expertBox{font-size:14pt}
 }
 </style>
 </head>
@@ -179,148 +97,128 @@ video,canvas{
 
 <div class="app">
 
-<!-- ============================= -->
-<!-- الرأس -->
-<!-- ============================= -->
 <div class="card header">
-  <h1>نظام الدعم السيادي للمعلّم</h1>
-  <p>نسخة متكيّفة — هاتف / لابتوب — محمية نفسيًا ومهنيًا</p>
+  <h1>نظام الدعم التربوي الخبير</h1>
+  <p>خبير صامت — تدخّل محسوب — حماية المعلّم قبل الإنجاز</p>
 </div>
 
-<!-- ============================= -->
-<!-- خطوة التصوير -->
-<!-- ============================= -->
-<div class="card" id="cameraStep">
-  <h2>📸 تصوير صفحة الدرس</h2>
-  <button onclick="startCamera()">تشغيل الكاميرا الخلفية</button>
-  <video id="video" autoplay playsinline class="hidden"></video>
-  <button id="captureBtn" class="secondary hidden" onclick="capture()">التقاط الصفحة</button>
-
-  <div class="progress"><span id="progressBar"></span></div>
+<!-- إدخال الدرس -->
+<div class="card">
+  <h2>📘 إدخال صفحة الدرس</h2>
+  <input type="file" accept="image/*">
+  <select id="level">
+    <option>الصف الأوّل</option>
+    <option>الصف الثاني</option>
+    <option>الصف الثالث</option>
+  </select>
 </div>
 
-<!-- ============================= -->
-<!-- المعالجة والدعم -->
-<!-- ============================= -->
-<div class="card hidden" id="supportStep">
-  <h2 id="lessonTitle">📘 الدرس وفق الصفحة</h2>
+<!-- الدعم -->
+<div class="card">
+  <div id="status" class="badge b-before">❌ لم تبدأ الحصّة</div>
 
   <div class="buttons">
-    <button onclick="prep()">تحضير مختصر</button>
-    <button onclick="simulate()">محاكاة واقعية</button>
-    <button onclick="observe()">قائمة رصد</button>
-    <button class="success" onclick="startLesson()">▶ الحصّة المباشرة</button>
+    <button onclick="prep()">📘 تحضير</button>
+    <button onclick="simulate()">🧪 محاكاة</button>
+    <button class="ok" onclick="startLesson()">▶ بدء الحصّة</button>
+    <button class="expert" onclick="expert()">🧠 استشارة خبير تربوي</button>
   </div>
 
   <div id="output" class="output hidden"></div>
+  <div id="expertBox" class="expertBox hidden"></div>
 </div>
 
-<!-- ============================= -->
-<!-- وضع الحصّة -->
-<!-- ============================= -->
-<div class="card hidden" id="liveLesson">
-  <h2>🧭 وضع الحصّة المباشرة</h2>
+<!-- الحصّة -->
+<div class="card hidden" id="live">
+  <h2>🧭 الحصّة المباشرة</h2>
 
   <div class="buttons">
     <button onclick="act('طُرح السؤال')">اطرح السؤال</button>
-    <button class="secondary" onclick="silent()">صمت ٣٠ ثانية</button>
-    <button onclick="act('محاولة تلميذ واحد')">محاولة</button>
-    <button class="success" onclick="finish()">✅ نُطقت الفكرة</button>
+    <button class="alt" onclick="act('صمت')">صمت</button>
+    <button onclick="act('محاولة')">محاولة</button>
+    <button class="ok" onclick="finish()">✅ نُطقت الفكرة</button>
   </div>
 
-  <div class="log" id="log">سجل الحصّة:</div>
-</div>
-
-<div class="footer">
-  نسخة محسّنة • متكيفة • داعمة • لا تُحاسب
+  <div id="log" class="log">سجل الحصّة:</div>
 </div>
 
 </div>
 
 <script>
-const video=document.getElementById("video");
-const canvas=document.createElement("canvas");
-const ctx=canvas.getContext("2d");
-const progressBar=document.getElementById("progressBar");
 const output=document.getElementById("output");
-const supportStep=document.getElementById("supportStep");
-const liveLesson=document.getElementById("liveLesson");
+const expertBox=document.getElementById("expertBox");
+const live=document.getElementById("live");
 const log=document.getElementById("log");
+const status=document.getElementById("status");
+const level=document.getElementById("level");
 
 let closed=false;
+let expertIndex=0;
 
-/* تشغيل الكاميرا */
-function startCamera(){
-  video.classList.remove("hidden");
-  document.getElementById("captureBtn").classList.remove("hidden");
-  progressBar.style.width="25%";
-  navigator.mediaDevices.getUserMedia({
-    video:{facingMode:{ideal:"environment"}},
-    audio:false
-  }).then(s=>video.srcObject=s)
-   .catch(()=>alert("تعذّر تشغيل الكاميرا"));
-}
+const expertMessages={
+  قبل:[
+    "ركّز على فكرة واحدة فقط. هذا كافٍ تربويًا.",
+    "إن شعرت أن التحضير طويل، قصّه للنصف.",
+    "الوضوح أهم من الكم، خصوصًا في " // يُستكمل بالصف
+  ],
+  أثناء:[
+    "اترك التلميذ يحاول دون تصويب فوري.",
+    "الصمت هنا يعمل لصالح التعلّم.",
+    "محاولة واحدة صادقة أفضل من ثلاث مكرّرة."
+  ],
+  بعد:[
+    "ما تحقق اليوم كافٍ. التوقّف قرار مهني.",
+    "ما لم يكتمل يُؤجَّل دون قلق.",
+    "استقرارك أهم من إكمال النشاط."
+  ]
+};
 
-/* التقاط الصفحة */
-function capture(){
-  canvas.width=video.videoWidth;
-  canvas.height=video.videoHeight;
-  ctx.drawImage(video,0,0);
-  video.srcObject.getTracks().forEach(t=>t.stop());
-  progressBar.style.width="50%";
-  supportStep.classList.remove("hidden");
-  progressBar.style.width="75%";
-}
-
-/* مخرجات الدعم */
 function show(text){
   output.textContent=text;
   output.classList.remove("hidden");
 }
 
 function prep(){
-  show(
-`تحضير حصّة:
-• مثال واحد من الصفحة
-• سؤال واحد
-• محاولة واحدة
-• توقّف مهني`
-  );
-}
-function simulate(){
-  show(
-`محاكاة:
-عرض المثال → صمت → محاولة → تثبيت → نهاية`
-  );
-}
-function observe(){
-  show(
-`قائمة رصد:
-☐ حاول
-☐ تردّد
-☐ نطق الفكرة
-☐ احتاج دعم`
-  );
+  show("تحضير مختصر:\n• فكرة واحدة\n• سؤال واحد\n• محاولة واحدة\n• توقّف عند الفهم");
 }
 
-/* وضع الحصّة */
-function startLesson(){
-  liveLesson.classList.remove("hidden");
-  log.textContent="سجل الحصّة:";
-  progressBar.style.width="90%";
+function simulate(){
+  show("محاكاة:\nعرض → صمت → محاولة → تثبيت → نهاية");
 }
+
+function startLesson(){
+  live.classList.remove("hidden");
+  log.textContent="سجل الحصّة:";
+  status.className="badge b-mid";
+  status.textContent="🟡 الحصّة قائمة";
+}
+
 function act(t){
-  if(closed) return;
+  if(closed)return;
   log.textContent+="\n• "+t;
 }
-function silent(){
-  act("صمت (٣٠ ثانية)");
-}
+
 function finish(){
-  if(closed) return;
+  if(closed)return;
   closed=true;
+  status.className="badge b-ok";
+  status.textContent="✅ نُطقت الفكرة";
   log.textContent+="\n• نُطقت الفكرة — انتهت الحصّة";
-  progressBar.style.width="100%";
+  expertBox.classList.remove("hidden");
+  expertBox.textContent="🧠 الخبير التربوي:\n"+expertMessages.بعد[Math.floor(Math.random()*expertMessages.بعد.length)];
+}
+
+function expert(){
+  const pool = !live.classList.contains("hidden")
+    ? expertMessages.أثناء
+    : expertMessages.قبل;
+
+  expertBox.classList.remove("hidden");
+  expertBox.textContent =
+    "🧠 الخبير التربوي:\n" +
+    (pool[expertIndex%pool.length] +
+     (expertIndex===0 ? (" "+level.value) : ""));
+  expertIndex++;
 }
 </script>
 
