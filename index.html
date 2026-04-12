@@ -3,110 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>الخبير التربوي المرافق — مساعد المعلّم (الكتاب هو المنهاج)</title>
+<title>الخبير التربوي المرافق — الكتاب هو المنهاج</title>
 
 <style>
 :root{
-  --bg:#f7f9fc;
-  --card:#ffffff;
-  --main:#1d4ed8;
-  --accent:#16a34a;
-  --soft:#eef2ff;
-  --text:#1f2937;
-  --muted:#6b7280;
-  --radius:18px;
+  --bg:#f7f9fc; --card:#fff; --main:#1d4ed8; --accent:#16a34a;
+  --soft:#eef2ff; --text:#1f2937; --muted:#6b7280; --radius:18px;
 }
 *{box-sizing:border-box}
-
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;
-  line-height:1.7;
-}
-
-.wrapper{
-  max-width:1000px;
-  margin:auto;
-  padding:1.2rem;
-}
-
-.card{
-  background:var(--card);
-  border-radius:var(--radius);
-  padding:1.6rem;
-  margin-bottom:1.3rem;
-  box-shadow:0 10px 28px rgba(0,0,0,.06);
-}
-
-h1,h2,h3{
-  margin:0 0 .6rem;
-  color:var(--main);
-}
-
-p{margin:.4rem 0;color:var(--muted)}
-
-.actions{
-  display:flex;
-  gap:.8rem;
-  flex-wrap:wrap;
-}
-
-button{
-  flex:1;
-  min-height:58px;
-  border:none;
-  border-radius:14px;
-  font-size:1rem;
-  cursor:pointer;
-}
-
-.primary{background:var(--main);color:#fff}
-.secondary{background:var(--accent);color:#fff}
-.ghost{background:var(--soft);color:var(--main)}
-
-label{font-weight:600;margin-top:1rem;display:block}
-input,textarea{
-  width:100%;
-  margin-top:.5rem;
-  padding:.8rem 1rem;
-  border-radius:12px;
-  border:1px solid #e5e7eb;
-  font-size:1rem;
-}
-
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:Tahoma,Arial,sans-serif;line-height:1.7}
+.wrapper{max-width:980px;margin:auto;padding:20px}
+.card{background:var(--card);border-radius:16px;padding:24px;
+  margin-bottom:20px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
+h1,h2,h3{color:var(--main);margin-top:0}
+.notice{background:#f8fafc;border-right:5px solid var(--accent);
+  padding:14px;border-radius:10px;margin:10px 0}
+button{width:100%;height:54px;border:none;border-radius:14px;
+  background:#eef2ff;color:#1d4ed8;font-size:16px;cursor:pointer;margin-top:10px}
+button.primary{background:var(--main);color:white}
+button.disabled{opacity:.4;pointer-events:none}
 .hidden{display:none}
-
-.quote{
-  background:#f8fafc;
-  border-right:5px solid var(--accent);
-  padding:.7rem .9rem;
-  border-radius:10px;
-  color:#334155;
-}
-
-.log{
-  margin-top:1rem;
-  padding:1rem;
-  border-radius:12px;
-  background:#f0fdf4;
-  color:#166534;
-  font-weight:700;
-  text-align:center;
-}
-
-.table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:.8rem;
-}
-.table th,.table td{
-  border:1px solid #e5e7eb;
-  padding:.6rem;
-  text-align:center;
-}
+.step{margin-top:8px;padding:12px;border-radius:10px;background:#f0fdf4}
 </style>
 </head>
 
@@ -117,140 +35,78 @@ input,textarea{
 <div class="card">
 <h1>الخبير التربوي المرافق</h1>
 <p>
-مساعد معلّم ذكي صامت،  
-يبني التدريس على الكتاب،  
-يحضّر الدروس والخطط،  
-ويرفع العبء الذهني والنفسي والمهني بالكامل.
+نظام إرشادي ضابط يعمل حرفيًا من الكتاب المدرسي،  
+يحترم تسلسله، ويعامل كل درس كحالة خاصة،  
+ويرفع العبء عن المعلّم دون طلب أي تعبئة.
 </p>
 </div>
 
 <!-- اعتماد الكتاب -->
 <div class="card">
-<h2>اعتماد الكتاب كمنهاج</h2>
-<div class="quote">
-الكتاب هو المرجع الوحيد.  
-لا تحضير ولا حصّة ولا خطة قبله.
+<h2>اعتماد الكتاب (مرجع حاكم)</h2>
+<div class="notice">
+افتح الكتاب أمامك.  
+النظام لا يقرأ المحتوى، بل يسير داخل تسلسله كما هو.
+</div>
+<button class="primary" onclick="showStructure()">تم اعتماد الكتاب</button>
 </div>
 
-<label>رفع ملف الكتاب (PDF أو صورة)</label>
-<input type="file" id="bookFile" accept=".pdf,image/*">
+<!-- تسلسل الكتاب -->
+<div id="structure" class="card hidden">
+<h2>تسلسل الكتاب (قراءة فقط)</h2>
+<div class="notice">الوحدات والدروس كما في الكتاب دون تعديل.</div>
 
-<label>بيانات الكتاب</label>
-<input id="bookInfo" placeholder="مثال: لغة عربية – صف ثاني – فصل أول">
-
-<div class="actions">
-<button class="secondary" onclick="adoptBook()">اعتماد الكتاب</button>
+<button onclick="openLesson('L1')">الوحدة ١ – الدرس ١</button>
+<button onclick="openLesson('L2')">الوحدة ١ – الدرس ٢</button>
+<button onclick="openLesson('L3')">الوحدة ٢ – الدرس ١</button>
 </div>
 
-<p id="bookStatus" class="hidden">✅ تم اعتماد الكتاب كمنهاج.</p>
+<!-- درس ١ -->
+<div id="L1" class="card hidden">
+<h2>الدرس الحالي: مفهوم بسيط</h2>
+<div class="notice">
+تحصين الدرس: منع الإطالة – السماح بالإغلاق المبكر.
+</div>
+<button>طرح سؤال مباشر</button>
+<button>صمت قصير</button>
+<button class="primary">إغلاق عند أول نطق صحيح</button>
 </div>
 
-<!-- تحضير الدرس -->
-<div class="card">
-<h2>تحضير الدرس (آلي ومخفّف)</h2>
-<div class="quote">
-فكرة واحدة + سؤال واحد = عبء صفر.
+<!-- درس ٢ -->
+<div id="L2" class="card hidden">
+<h2>الدرس الحالي: مفهوم متراكب</h2>
+<div class="notice">
+تحصين الدرس: منع الشرح المطوّل – إبطاء الإيقاع.
+</div>
+<button>سؤال جزئي</button>
+<button>العودة للنص</button>
+<button>صمت أطول (موصى به)</button>
+<button class="disabled">إغلاق (غير ناضج بعد)</button>
 </div>
 
-<label>مرجع الدرس (اسم/صفحة)</label>
-<input id="lessonRef">
-
-<label>الفكرة الواحدة من النص</label>
-<textarea id="idea" rows="3"></textarea>
-
-<label>سؤال يقود لنطق الفكرة</label>
-<textarea id="question" rows="2"></textarea>
-
-<div class="actions">
-<button class="secondary" onclick="lockPrep()">اعتماد التحضير</button>
+<!-- درس ٣ -->
+<div id="L3" class="card hidden">
+<h2>الدرس الحالي: نص / قراءة</h2>
+<div class="notice">
+تحصين الدرس: منع الاستنتاج المبكر – دعم الصمت.
 </div>
-
-<p id="prepStatus" class="hidden">✅ التحضير معتمد.</p>
-</div>
-
-<!-- الخطط -->
-<div class="card">
-<h2>إعداد الخطط (مرنة بلا ضغط)</h2>
-
-<h3>خطة أسبوعية</h3>
-<textarea rows="3" placeholder="عناوين دروس من الكتاب فقط — بلا تواريخ"></textarea>
-
-<h3>خطة فصلية</h3>
-<textarea rows="3" placeholder="وحدات الكتاب بالترتيب العام — بلا التزام زمني"></textarea>
-
-<div class="quote">
-لا خطط زمنية قسرية.  
-المدقّق يحظر الضغط الزمني.
-</div>
-</div>
-
-<!-- التكيّف الزمني -->
-<div class="card">
-<h2>التكيّف الزمني</h2>
-<p>
-الزمن غير محسوب.  
-الإغلاق عند نطق الفكرة فقط.
-</p>
-</div>
-
-<!-- الرصد -->
-<div class="card">
-<h2>قائمة رصد وصفي</h2>
-<table class="table">
-<tr><th>المؤشر</th><th>✔</th></tr>
-<tr><td>حاول</td><td><input type="checkbox"></td></tr>
-<tr><td>تردّد</td><td><input type="checkbox"></td></tr>
-<tr><td>نطق</td><td><input type="checkbox"></td></tr>
-<tr><td>احتاج دعم</td><td><input type="checkbox"></td></tr>
-</table>
-<div class="quote">
-لا أرقام، لا مقارنة، لا حكم.
-</div>
-</div>
-
-<!-- بطاقات الدعم -->
-<div class="card">
-<h2>بطاقات الدعم التربوي</h2>
-<ul>
-<li>بطاقة صمت داعم</li>
-<li>بطاقة إعادة صياغة السؤال</li>
-<li>بطاقة تمهيد بصري من الكتاب</li>
-</ul>
-</div>
-
-<!-- الحصّة -->
-<div class="card">
-<h2>المرافقة الصفّية الصامتة</h2>
-<div class="actions">
-<button class="primary" onclick="act('اطرح السؤال')">اطرح السؤال</button>
-<button class="ghost" onclick="act('صمت')">صمت</button>
-<button class="ghost" onclick="act('ارجع للسؤال')">ارجع للسؤال</button>
-<button class="secondary" onclick="act('نُطقت الفكرة — أُغلقت الحصّة')">إغلاق</button>
-</div>
-<div id="log" class="log hidden"></div>
+<button>قراءة صامتة</button>
+<button>سؤال واحد عن المعنى</button>
+<button class="primary">إغلاق بدون شرح</button>
 </div>
 
 </div>
 
 <script>
-let book=false, prep=false;
-
-function adoptBook(){
- if(!bookFile.files.length || !bookInfo.value) return;
- book=true; prep=false;
- bookStatus.classList.remove('hidden');
+function showStructure(){
+  document.getElementById('structure').classList.remove('hidden');
 }
-
-function lockPrep(){
- if(!book || !idea.value || !question.value) return;
- prep=true;
- prepStatus.classList.remove('hidden');
-}
-
-function act(t){
- if(!book || !prep) return;
- log.textContent=t;
- log.classList.remove('hidden');
+function openLesson(id){
+  ['L1','L2','L3'].forEach(x=>{
+    const el=document.getElementById(x);
+    if(el) el.classList.add('hidden');
+  });
+  document.getElementById(id).classList.remove('hidden');
 }
 </script>
 
