@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>الخبير التربوي المرافق — النظام السيادي الشامل</title>
+<title>الخبير التربوي المرافق — الإصدار المستقر النهائي</title>
 
-<!-- ✅ تحميل صحيح ونهائي — لا يظهر كنص نهائيًا -->
-https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js</script>
+<!-- ✅ تحميل صحيح ونهائي لمكتبة OCR (لا يظهر كنص) -->
+https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
 <style>
 :root{
@@ -26,15 +26,15 @@ body{
   font-family:Tahoma,Arial,sans-serif;
   background:var(--bg);
   color:var(--ink);
-  line-height:1.8;
+  line-height:1.85;
 }
 .app{max-width:1000px;margin:auto;padding:16px}
 .header{
-  text-align:center;
   background:var(--card);
   padding:20px;
   border-radius:16px;
   box-shadow:0 6px 20px rgba(0,0,0,.08);
+  text-align:center;
   margin-bottom:16px;
 }
 .card{
@@ -44,7 +44,7 @@ body{
   box-shadow:0 6px 20px rgba(0,0,0,.08);
   margin-bottom:16px;
 }
-h1,h2,h3{text-align:center;color:var(--main);margin:0 0 10px}
+h1,h2,h3{margin:0 0 10px;text-align:center;color:var(--main)}
 input,button{
   width:100%;
   padding:14px;
@@ -78,7 +78,6 @@ button:disabled{opacity:.6;cursor:not-allowed}
   background:var(--main);
   transition:.2s;
 }
-.small{font-size:13px;color:var(--muted)}
 .badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .badges span{
   background:#eee;
@@ -86,6 +85,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
   padding:6px 10px;
   font-size:13px;
 }
+.small{font-size:13px;color:var(--muted)}
 body.class-mode .hide-in-class{display:none!important}
 @media print{
   button,input,.progress,.badges{display:none}
@@ -102,7 +102,7 @@ body.class-mode .hide-in-class{display:none!important}
   <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
   <h1>الخبير التربوي المرافق</h1>
   <p class="small">
-    Camera‑First • إرفاق من الجهاز • تحليل بصري • فكرة واحدة • رصد وصفي
+    Camera‑First • إرفاق من الجهاز • تحليل بصري • فكرة واحدة • سؤال واحد • رصد وصفي
   </p>
 </div>
 
@@ -118,8 +118,7 @@ body.class-mode .hide-in-class{display:none!important}
 >
 
 <p class="small">
-يمكنك التصوير بالكاميرا أو اختيار الصور من الجهاز
-(حد أقصى ٣ صور).
+يمكنك التصوير بالكاميرا أو اختيار الصور من الجهاز (حد أقصى ٣ صور).
 </p>
 
 <div class="progress"><span id="bar"></span></div>
