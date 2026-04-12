@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مُعين المعلّم — Teacher Companion</title>
+<title>مُعين المعلّم — عبء صفر</title>
 
 <style>
 :root{
   --main:#0d47a1;
-  --accent:#2e7d32;
+  --ok:#2e7d32;
   --bg:#f4f6f8;
   --card:#ffffff;
   --soft:#e3f2fd;
@@ -21,14 +21,14 @@ body{
   line-height:1.9;
 }
 .app{
-  max-width:960px;
+  max-width:900px;
   margin:auto;
   padding:20px;
 }
 .card{
   background:var(--card);
+  padding:22px;
   border-radius:16px;
-  padding:24px;
   box-shadow:0 8px 24px rgba(0,0,0,.08);
   margin-bottom:20px;
 }
@@ -37,7 +37,7 @@ h1,h2{
   color:var(--main);
   margin:0 0 12px;
 }
-input,textarea,button{
+input,button{
   width:100%;
   padding:14px;
   margin-top:12px;
@@ -49,11 +49,8 @@ button{
   background:var(--main);
   color:#fff;
   border:none;
-  cursor:pointer;
 }
-button.ok{
-  background:var(--accent);
-}
+button.ok{background:var(--ok)}
 .box{
   background:var(--soft);
   padding:16px;
@@ -61,15 +58,9 @@ button.ok{
   white-space:pre-wrap;
 }
 .small{
-  font-size:13.5px;
+  font-size:13px;
   color:#555;
   text-align:center;
-  margin-top:8px;
-}
-.checklist label{
-  display:block;
-  margin:8px 0;
-  font-size:15px;
 }
 </style>
 </head>
@@ -79,90 +70,79 @@ button.ok{
 
 <div class="card">
 <h1>📘 مُعين المعلّم</h1>
-<p class="small">أداة مهنية لتنظيم الدرس وإغلاقه بهدوء</p>
+<p class="small">أداة تخفّف التفكير، لا تضيفه</p>
 </div>
 
 <div class="card">
 <h2>اسم الدرس</h2>
 <input id="lesson" placeholder="مثال: الجمع حتى ١٠">
+<button class="ok" onclick="autoBuild()">ابدأ الحصّة</button>
 </div>
 
 <div class="card">
-<h2>الفكرة المركزية</h2>
-<input id="idea" placeholder="ما الفكرة الواحدة التي ستُبنى عليها الحصة؟">
-</div>
-
-<div class="card">
-<h2>السؤال المحوري</h2>
-<input id="question" placeholder="سؤال واحد يفتح الفكرة">
-</div>
-
-<div class="card">
-<h2>🧭 التحضير التنفيذي</h2>
-<button class="ok" onclick="buildPrep()">إنشاء التحضير</button>
+<h2>🧭 التحضير الجاهز</h2>
 <div id="prep" class="box"></div>
 <button onclick="copyText('prep')">📋 نسخ التحضير</button>
 </div>
 
 <div class="card">
-<h2>🎭 محاكاة الحصة</h2>
-<button class="ok" onclick="buildSim()">تشغيل المحاكاة</button>
+<h2>🎭 سير الحصة</h2>
 <div id="sim" class="box"></div>
+<button class="ok" onclick="closeLesson()">نُطقت الفكرة — أُغلقت الحصة</button>
 </div>
 
 <div class="card">
-<h2>📋 قائمة رصد خفيفة</h2>
-<div class="checklist">
-<label><input type="checkbox"> حاول</label>
-<label><input type="checkbox"> تردّد</label>
-<label><input type="checkbox"> نطق الفكرة</label>
-<label><input type="checkbox"> احتاج دعم خفيف</label>
+<h2>📋 رصد مهني خفيف</h2>
+<div class="box">
+☐ حاول  
+☐ تردّد  
+☐ نطق الفكرة  
+☐ احتاج دعم خفيف
 </div>
-<p class="small">⚠️ للاستخدام المهني فقط — بلا تقييم أو مقارنة</p>
+<p class="small">للتوثيق المهني فقط — بلا تقييم</p>
 </div>
 
 </div>
 
 <script>
-function buildPrep(){
-  const l=document.getElementById("lesson").value;
-  const i=document.getElementById("idea").value;
-  const q=document.getElementById("question").value;
-  document.getElementById("prep").innerText=
+function autoBuild(){
+  const l = lesson.value || "—";
+  prep.innerText =
 `التحضير التنفيذي
 
 الدرس: ${l}
 
 الفكرة:
-${i}
+فهم الفكرة الأساسية للدرس من خلال مثال واحد فقط.
 
 السؤال:
-${q}
+ماذا نلاحظ هنا؟
 
 التسلسل:
 ١) عرض هادئ
-٢) سؤال واحد
+٢) طرح السؤال
 ٣) صمت واعٍ
 ٤) محاولة
-٥) تثبيت وإغلاق`;
-}
+٥) تثبيت
+٦) إغلاق`;
 
-function buildSim(){
-document.getElementById("sim").innerText=
-`المعلم يطرح السؤال.
+  sim.innerText =
+`المعلم يعرض المثال.
+يطرح السؤال.
 (صمت)
 
 طالب يحاول…
-المعلم ينتظر.
 
 عند نطق الفكرة:
-✅ تُغلق الحصة بهدوء.`;
+✅ تُغلق الحصة فورًا دون شرح إضافي.`;
+}
+
+function closeLesson(){
+  sim.innerText += "\n\n⛔ تم الإغلاق المهني — لا يُستكمل الشرح.";
 }
 
 function copyText(id){
-  navigator.clipboard.writeText(
-    document.getElementById(id).innerText
-  );
+  navigator.clipboard.writeText(document.getElementById(id).innerText);
 }
 </script>
 
