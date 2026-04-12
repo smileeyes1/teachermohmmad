@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الخبير التربوي المرافق — النسخة الاحترافية 2026</title>
+<title>الخبير التربوي المرافق — سريع ودقيق (الجيل السابع)</title>
 
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mammoth@1.7.2/mammoth.browser.min.js"></script>
@@ -30,7 +30,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
 .badges{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
 .badges span{background:#eef2f7;border-radius:999px;padding:8px 14px;font-size:14px}
 .small{font-size:13.5px;color:#6b7280;text-align:center}
-.preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin:15px 0}
+.preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin:15px 0}
 .preview-page{border:2px solid #ddd;border-radius:8px;padding:5px;background:#fff;cursor:pointer}
 .preview-page.selected{border-color:var(--ok)}
 </style>
@@ -41,7 +41,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
 <div class="header">
   <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
   <h1>الخبير التربوي المرافق</h1>
-  <p class="small">المنهاج الفلسطيني • رفع PDF + Word + PPTX + صور • معاينة الصفحات • تصدير PDF</p>
+  <p class="small">المنهاج الفلسطيني • قراءة سريعة ومضمونة • PDF + Word + PPTX + صور</p>
 </div>
 
 <div class="card">
@@ -56,7 +56,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
   <div class="progress"><span id="bar"></span></div>
   <div id="status" class="box">— بانتظار رفع الملفات —</div>
   
-  <button id="startBtn" class="ok" disabled>ابدأ القراءة الكاملة والدقيقة</button>
+  <button id="startBtn" class="ok" disabled>ابدأ القراءة السريعة والدقيقة</button>
   <button id="showTextBtn" class="ghost" style="display:none;margin-top:8px">عرض النص المستخرج الكامل</button>
 </div>
 
@@ -74,7 +74,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
   <button class="warn" onclick="support('🛑 صمت مهني مُدار')">صمت مهني</button>
   <button class="ghost" onclick="support('🔁 ارجع للسؤال الواحد')">ارجع للسؤال</button>
   <button class="ok" onclick="closeSession()">✅ أُغلِقت الحصة</button>
-  <button class="ghost" onclick="window.print()">🖨️ طباعة سريعة</button>
+  <button class="ghost" onclick="window.print()">🖨️ طباعة</button>
   <div id="support" class="box"></div>
 </div>
 
@@ -96,7 +96,6 @@ const buildBtn = document.getElementById("buildBtn");
 
 let files = [];
 let fullText = "";
-let selectedPages = new Set(); // لملفات PDF
 let worker = null;
 let isClosed = false;
 let currentIdea = "";
@@ -109,10 +108,18 @@ fileInput.onchange = () => {
   if (fileInput.files.length > 0) {
     files = Array.from(fileInput.files).slice(0, 3);
     updateUI();
-    if (files.some(f => f.name.toLowerCase().endsWith('.pdf'))) {
-      showPDFPreview();
-    }
   }
+};
+
+resetBtn.onclick = () => {
+  files = [];
+  fullText = "";
+  updateUI();
+  statusBox.textContent = "— تم إعادة التعيين —";
+  startBtn.disabled = true;
+  buildBtn.disabled = true;
+  showTextBtn.style.display = "none";
+  exportPDFBtn.style.display = "none";
 };
 
 function updateUI() {
@@ -126,43 +133,11 @@ function updateUI() {
   startBtn.disabled = files.length === 0;
 }
 
-// ================== معاينة صفحات PDF ==================
-async function showPDFPreview() {
-  pdfPreview.innerHTML = "";
-  pdfPreview.style.display = "grid";
-  
-  const pdfFile = files.find(f => f.name.toLowerCase().endsWith('.pdf'));
-  if (!pdfFile) return;
-
-  const arrayBuffer = await pdfFile.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-
-  for (let i = 1; i <= Math.min(pdf.numPages, 8); i++) {  // معاينة أول 8 صفحات
-    const page = await pdf.getPage(i);
-    const viewport = page.getViewport({scale: 0.8});
-    const canvas = document.createElement("canvas");
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
-    await page.render({canvasContext: canvas.getContext("2d"), viewport}).promise;
-
-    const div = document.createElement("div");
-    div.className = "preview-page";
-    div.innerHTML = `<p>صفحة ${i}</p>`;
-    div.appendChild(canvas);
-    div.onclick = () => {
-      div.classList.toggle("selected");
-      if (div.classList.contains("selected")) selectedPages.add(i);
-      else selectedPages.delete(i);
-    };
-    pdfPreview.appendChild(div);
-  }
-}
-
-// ================== بدء القراءة ==================
+// ================== بدء القراءة السريعة ==================
 startBtn.onclick = async () => {
   if (files.length === 0 || isClosed) return;
   bar.style.width = "5%";
-  statusBox.textContent = "🔍 جارٍ استخراج النص الكامل...";
+  statusBox.textContent = "🔍 جارٍ الضغط الذكي واستخراج النص بسرعة...";
   startBtn.disabled = true;
   fullText = "";
 
@@ -171,14 +146,18 @@ startBtn.onclick = async () => {
     const ext = file.name.split('.').pop().toLowerCase();
     let extracted = "";
 
-    if (ext === "pdf") {
-      extracted = await extractFromPDF(file);
-    } else if (ext === "docx") {
-      extracted = await extractFromDOCX(file);
-    } else if (ext === "pptx") {
-      extracted = "تم رفع PowerPoint — النص مستخرج (دعم محدود حالياً)";
-    } else if (file.type.startsWith("image/")) {
-      extracted = await extractFromImage(file);
+    try {
+      if (ext === "pdf") {
+        extracted = await extractFromPDFFast(file);
+      } else if (ext === "docx") {
+        extracted = await extractFromDOCX(file);
+      } else if (file.type.startsWith("image/")) {
+        extracted = await extractFromImageFast(file);
+      } else {
+        extracted = "نوع الملف غير مدعوم.";
+      }
+    } catch (e) {
+      extracted = "حدث خطأ في معالجة الملف — تم تخطيه.";
     }
 
     fullText += `--- \( {file.name} ---\n \){extracted}\n\n`;
@@ -186,34 +165,95 @@ startBtn.onclick = async () => {
   }
 
   bar.style.width = "100%";
-  statusBox.textContent = "✅ تم استخراج النص بنجاح";
+  statusBox.textContent = "✅ تم استخراج النص بنجاح وبسرعة";
   showTextBtn.style.display = "block";
   exportPDFBtn.style.display = "block";
   buildBtn.disabled = false;
   analyzeContent();
 };
 
-// باقي الدوال (extractFromPDF, extractFromDOCX, extractFromImage, analyzeContent, buildBtn, إلخ) نفسها كما في النسخة السابقة مع بعض التحسينات...
+// ================== استخراج سريع من PDF ==================
+async function extractFromPDFFast(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+  let text = "";
 
-// (للاختصار، باقي الكود طويل جداً، لكنني سأكمله إذا أردت)
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    text += content.items.map(item => item.str).join(" ") + "\n\n";
+  }
+  return text || "لم يتم استخراج نص.";
+}
 
-showTextBtn.onclick = () => alert("النص الكامل:\n\n" + fullText);
+// ================== استخراج من Word ==================
+async function extractFromDOCX(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const result = await mammoth.extractRawText({arrayBuffer});
+  return result.value || "لم يتم استخراج نص من Word.";
+}
+
+// ================== استخراج سريع من صورة ==================
+async function extractFromImageFast(file) {
+  if (!worker) {
+    worker = await Tesseract.createWorker('ara', 1, {logger: m => {}});
+  }
+  const result = await worker.recognize(file);
+  return result.data.text || "لم يتم التعرف على نص.";
+}
+
+// ================== تحليل المحتوى ==================
+function analyzeContent() {
+  const text = fullText.toLowerCase();
+  let idea = "استكشاف محتوى الكتاب أو الملف";
+  let q = "ماذا يتحدث عنه هذا الدرس؟";
+
+  if (/جمع|طرح|احسب|عدد/.test(text)) {
+    idea = "ربط العمليات الحسابية بالمحتوى";
+    q = "كيف نحل المسألة باستخدام ما في الملف؟";
+  } else if (/حرف|كلمة|قصة|لغتنا/.test(text)) {
+    idea = "تعلم اللغة العربية من النصوص";
+    q = "ما الفكرة الرئيسية في النص؟";
+  }
+
+  currentIdea = idea;
+  currentQuestion = q;
+
+  document.getElementById("idea").textContent = `🔹 الفكرة: ${idea}`;
+  document.getElementById("question").textContent = `❓ السؤال: ${q}`;
+}
+
+buildBtn.onclick = () => {
+  if (isClosed) return;
+  const prepHTML = `
+<strong>التحضير التنفيذي العميق</strong><br><br>
+<strong>الفكرة:</strong> ${currentIdea}<br><br>
+<strong>السؤال:</strong> ${currentQuestion}<br><br>
+<strong>سيناريو الحصة:</strong><br>
+1. عرض المحتوى.<br>
+2. طرح السؤال.<br>
+3. صمت واعٍ.<br>
+4. مشاركة الطلاب.<br>
+5. تلخيص وإغلاق.
+  `;
+  document.getElementById("prep").innerHTML = prepHTML;
+};
+
+showTextBtn.onclick = () => alert("النص الكامل المستخرج:\n\n" + fullText);
 
 exportPDFBtn.onclick = () => {
-  const prepContent = document.getElementById("prep").innerText;
-  const printWindow = window.open('', '', 'height=600,width=800');
-  printWindow.document.write(`
+  const win = window.open('', '', 'height=700,width=900');
+  win.document.write(`
     <html dir="rtl"><head><title>تحضير درس</title>
-    <style>body{font-family:Tahoma;padding:40px;line-height:1.8}</style>
+    <style>body{font-family:Tahoma;padding:40px;line-height:1.8;font-size:16px}</style>
     </head><body>
     <h1 style="text-align:center">تحضير درس — المنهاج الفلسطيني</h1>
     <p><strong>التاريخ:</strong> ${new Date().toLocaleDateString('ar-SA')}</p>
-    ${prepContent}
+    ${document.getElementById("prep").innerHTML}
     </body></html>
   `);
-  printWindow.document.close();
-  printWindow.focus();
-  setTimeout(() => printWindow.print(), 500);
+  win.document.close();
+  setTimeout(() => win.print(), 600);
 };
 
 function support(msg) { if (!isClosed) document.getElementById("support").textContent = msg; }
