@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>النظام السيادي الذكي الشامل</title>
+<title>الخبير التربوي المرافق — النسخة النهائية المعتمدة</title>
 
-<!-- ✅ تحميل صحيح لـ Tesseract.js -->
-https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js</script>
+<!-- ✅ تحميل صحيح ومفحوص لـ Tesseract.js -->
+https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
-<!-- ✅ سياسة أمان متوافقة مع OCR -->
+<!-- ✅ سياسة أمان مدروسة (CSP) -->
 <meta http-equiv="Content-Security-Policy"
 content="
 default-src 'self';
@@ -25,228 +25,229 @@ base-uri 'none';
   --main:#0d47a1;
   --bg:#f4f6f8;
   --card:#ffffff;
-  --ink:#222;
-  --ok:#2e7d32;
-  --warn:#777;
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --ok:#166534;
+  --warn:#6b7280;
+  --soft:#e3f2fd;
 }
-
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:Tahoma,Arial,sans-serif;
   background:var(--bg);
   color:var(--ink);
+  line-height:1.8;
 }
-
-.app{
-  max-width:900px;
-  margin:auto;
-  padding:16px;
-}
-
-.card{
+.app{max-width:1200px;margin:auto;padding:16px}
+.header{
   background:var(--card);
-  padding:20px;
+  padding:18px;
   border-radius:16px;
   box-shadow:0 6px 20px rgba(0,0,0,.08);
   margin-bottom:16px;
+  text-align:center;
 }
+.header p{margin:0}
+.header h1{margin:6px 0;color:var(--main);font-size:1.4em}
 
-h1{text-align:center;color:var(--main)}
-
-button,input,select{
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  border:none;
+.card{
+  background:var(--card);
+  padding:16px;
   border-radius:14px;
-  font-size:16px;
+  box-shadow:0 6px 20px rgba(0,0,0,.08);
+  margin-bottom:16px;
 }
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
 
+button,input,select,textarea{
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  border-radius:12px;
+  border:none;
+  font-size:15px;
+}
 button{background:var(--main);color:#fff;cursor:pointer}
 button.ok{background:var(--ok)}
 button.warn{background:var(--warn)}
+button.ghost{background:#eef2f7;color:#111}
 button:disabled{opacity:.6}
 
 .box{
-  background:#fafafa;
-  padding:16px;
-  border-radius:14px;
-  margin-top:12px;
+  background:var(--soft);
+  border-radius:12px;
+  padding:12px;
+  margin-top:10px;
   white-space:pre-wrap;
 }
 
-.progress{
-  height:8px;
-  background:#ddd;
-  border-radius:8px;
-  overflow:hidden;
-  margin-top:10px;
-}
-.progress span{
-  display:block;
-  height:100%;
-  width:0%;
-  background:var(--main);
-}
+.progress{height:8px;background:#e5e7eb;border-radius:8px;overflow:hidden}
+.progress span{display:block;height:100%;width:0%;background:var(--main);transition:width .2s}
 
-.hidden{display:none}
+.small{font-size:13px;color:var(--muted)}
+
+@media print{
+  button,input,select,.progress{display:none}
+  body{background:#fff}
+  .card{box-shadow:none}
+}
 
 body.class-mode{
   background:#fff;
 }
-body.class-mode .card:not(#lessonCard){display:none}
-body.class-mode h1{display:none}
+body.class-mode .card:not(#liveCard){display:none}
+body.class-mode .header{display:none}
 </style>
 </head>
 
 <body>
-
 <div class="app">
-<h1>النظام السيادي الذكي الشامل</h1>
+  <div class="header">
+    <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
+    <h1>الخبير التربوي المرافق — دعم سيادي للمعلم</h1>
+    <p class="small">نسخة نهائية معتمدة • مستقرة • قابلة للتنفيذ الواقعي</p>
+  </div>
 
-<div class="card">
-<h3>📘 إدراج صفحة الدرس</h3>
-<input type="file" id="fileInput" accept="image/*">
-<div class="progress"><span id="bar"></span></div>
-<div id="status" class="box">— بانتظار اختيار صورة —</div>
-</div>
+  <div class="grid">
+    <div class="card">
+      <h3>📷 إدخال صور الدرس</h3>
+      <input type="file" id="fileInput" accept="image/*" multiple>
+      <div class="progress"><span id="bar"></span></div>
+      <div id="imgStatus" class="box">— بانتظار الصور —</div>
 
-<div class="card hidden" id="lessonCard">
+      <button class="ok" id="startOCR" disabled>ابدأ القراءة</button>
+      <button class="ghost" id="retryOCR" disabled>إعادة التحسين</button>
 
-<label>مدة الحصة</label>
-<select id="duration">
-  <option value="30">٣٠ دقيقة</option>
-  <option value="40">٤٠ دقيقة</option>
-  <option value="45">٤٥ دقيقة</option>
-</select>
+      <div id="ocrStatus" class="box"></div>
+    </div>
 
-<button class="ok" id="startBtn" disabled>▶ ابدأ الحصة</button>
-<button class="warn" onclick="enterClassMode()">🎯 وضع الصف</button>
-<button class="warn" onclick="smartSilence()">🛑 صمت ذكي</button>
+    <div class="card">
+      <h3>🧭 التحضير والمحاكاة</h3>
 
-<div id="prep" class="box"></div>
-<div id="sim" class="box"></div>
-<div id="support" class="box"></div>
+      <select id="mode">
+        <option>وجاهية</option>
+        <option>تيمز</option>
+      </select>
 
-</div>
+      <select id="duration">
+        <option>٣٠ دقيقة</option>
+        <option>٤٠ دقيقة</option>
+        <option>٤٥ دقيقة</option>
+      </select>
+
+      <button class="ok" id="buildPrep" disabled>إنشاء التحضير</button>
+
+      <div id="prep" class="box"></div>
+      <div id="sim" class="box"></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>📋 قوائم الرصد والطلاب</h3>
+      <input id="studentName" placeholder="اسم الطالب">
+      <button class="ok" id="addStudent">إضافة</button>
+      <div id="students" class="box"></div>
+      <p class="small">
+        الرصد وصفي لحظي غير تشخيصي.
+      </p>
+    </div>
+
+    <div class="card" id="liveCard">
+      <h3>🖨️ الدعم والطباعة</h3>
+      <button class="ok" onclick="window.print()">طباعة</button>
+      <button class="warn" onclick="smartSilence()">صمت مهني</button>
+      <button class="ghost" onclick="closeIdea()">أُغلِقت الفكرة</button>
+      <button class="ghost" onclick="toggleClass()">وضع الصف</button>
+      <div id="support" class="box"></div>
+    </div>
+  </div>
 </div>
 
 <script>
 const $=id=>document.getElementById(id);
-
-const state={
-  text:"",
-  type:"استكشاف",
-  question:"ماذا ترى في الصفحة؟"
-};
-
 const fileInput=$("fileInput");
-const status=$("status");
 const bar=$("bar");
-const lessonCard=$("lessonCard");
-const startBtn=$("startBtn");
-const duration=$("duration");
+const imgStatus=$("imgStatus");
+const startOCR=$("startOCR");
+const retryOCR=$("retryOCR");
+const ocrStatus=$("ocrStatus");
 const prep=$("prep");
 const sim=$("sim");
-const support=$("support");
+const studentsBox=$("students");
 
-fileInput.addEventListener("change",handleImage);
-startBtn.addEventListener("click",startLesson);
+let images=[], text="";
 
-function normalizeArabic(t){
-  return (t||"")
-  .replace(/[^\u0600-\u06FF\s]/g,"")
-  .replace(/\s+/g," ")
-  .trim();
-}
+fileInput.onchange=()=>{
+  images=[...fileInput.files].filter(f=>f.type.startsWith("image/")&&f.size<=2*1024*1024);
+  imgStatus.textContent=images.length?`✅ تم إدخال ${images.length} صورة.`:"⚠️ صور غير صالحة.";
+  startOCR.disabled=!images.length;
+};
 
-function validImage(f){
-  return f && f.type.startsWith("image/") && f.size<=5*1024*1024;
-}
-
-async function handleImage(){
-  const file=fileInput.files[0];
-  if(!validImage(file)){
-    status.textContent="⚠️ يرجى اختيار صورة صالحة بحجم آمن.";
-    return;
-  }
-
-  status.textContent="🔍 جارٍ قراءة الصفحة...";
-  bar.style.width="10%";
-  startBtn.disabled=true;
-
-  try{
-    const res=await Tesseract.recognize(file,"ara",{
-      logger:m=>{
+async function runOCR(){
+  text="";
+  bar.style.width="5%";
+  for(let i=0;i<images.length;i++){
+    try{
+      const res=await Tesseract.recognize(images[i],"ara",{logger:m=>{
         if(m.progress!=null){
-          bar.style.width=Math.round(m.progress*80+10)+"%";
+          bar.style.width=Math.round((i+m.progress)/images.length*90)+"%";
         }
-      }
-    });
-    state.text=normalizeArabic(res.data.text);
-    analyze();
-    status.textContent="✅ تم استخراج النص.";
-  }catch{
-    state.text="";
-    analyze();
-    status.textContent="✅ تعذّر الاستخراج — سنعمل مباشرة.";
+      }});
+      text+=res.data.text+" ";
+    }catch(e){}
   }
-
   bar.style.width="100%";
-  lessonCard.classList.remove("hidden");
-  startBtn.disabled=false;
+  text=text.trim();
+  ocrStatus.textContent=text? "✅ تمت القراءة." : "⚠️ تعذّر الاستخراج — العمل من الصورة.";
+  $("buildPrep").disabled=false;
+  retryOCR.disabled=false;
+}
+startOCR.onclick=runOCR;
+retryOCR.onclick=runOCR;
+
+function analyze(t){
+  if(/جمع|طرح|احسب/.test(t)) return ["رياضيات","كيف توصّلت للحل؟"];
+  if(/اقرأ|نص|كلمة/.test(t)) return ["لغة عربية","ماذا فهمت من النص؟"];
+  return ["استكشاف","ماذا ترى في الصفحة؟"];
 }
 
-function analyze(){
-  const t=state.text;
-
-  if(/جمع|طرح|يساوي|احسب/.test(t)){
-    state.type="رياضيات";
-    state.question="كيف توصلت للإجابة؟";
-  }
-  else if(/اقرأ|كلمة|نص|جملة/.test(t)){
-    state.type="لغة عربية";
-    state.question="ماذا فهمت من النص؟";
-  }
-  else{
-    state.type="استكشاف";
-    state.question="ماذا ترى في الصفحة؟";
-  }
-}
-
-function startLesson(){
+$("buildPrep").onclick=()=>{
+  const [type,q]=analyze(text);
   prep.textContent=
-`📘 نوع الدرس: ${state.type}
-ما سيقوله المعلم:
+`📘 نوع الدرس: ${type}
+النص الحرفي:
 "انظروا إلى الصفحة."
-«${state.question}»
-صمت.`
-
+«${q}»
+صمت.
+النمط: ${$("mode").value} | المدة: ${$("duration").value}`;
   sim.textContent=
-`🎬 التنفيذ:
-عرض الصفحة.
-سؤال واحد.
-محاولة واحدة.
-الإنهاء المبكر مقبول.`
+`🎬 سيناريو واقعي:
+بداية → صمت → تردد → محاولة → نطق → إغلاق.`;
+};
 
-  support.textContent=
-`⏱️ المدة المختارة: ${duration.value} دقيقة
-القاعدة:
-القليل المتقن خير من الكثير المربك.`
-
-  startBtn.disabled=true;
-}
+$("addStudent").onclick=()=>{
+  const n=$("studentName").value.trim();
+  if(!n) return;
+  studentsBox.textContent+=`• ${n} : حاول □ | تردد □ | نطق □ | احتاج دعم □\n`;
+  $("studentName").value="";
+};
 
 function smartSilence(){
-  prep.textContent="✅ الصف يعمل.";
-  sim.textContent="";
-  support.textContent="";
+  $("support").textContent="🛑 صمت مهني مُدار.";
 }
-
-function enterClassMode(){
+function closeIdea(){
+  $("support").textContent="✅ نُطقت الفكرة — أُغلقت الحصة.";
+}
+function toggleClass(){
   document.body.classList.toggle("class-mode");
 }
 </script>
-
 </body>
 </html>
