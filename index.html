@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>النظام السيادي الذكي الشامل لدعم المعلّم</title>
 
-<!-- OCR: Tesseract.js -->
+<!-- ✅ تحميل OCR بشكل صحيح -->
 https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
 <style>
@@ -17,52 +17,81 @@ https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
   --muted:#6b7280;
   --ok:#2e7d32;
   --warn:#f9a825;
-  --danger:#c62828;
   --expert:#6a1b9a;
 }
-*{box-sizing:border-box}
-body{
-  margin:0;font-family:Tahoma,Arial,sans-serif;
-  background:var(--bg);color:var(--ink);line-height:1.9
-}
-.app{max-width:1200px;margin:auto;padding:16px}
-.card{
-  background:var(--card);padding:20px;border-radius:16px;
-  box-shadow:0 8px 24px rgba(0,0,0,.08);margin-bottom:16px
-}
-.header{text-align:center}
-.header h1{margin:0;color:var(--main)}
-.header p{margin-top:6px;color:var(--muted);font-size:14px}
 
-label{display:block;margin-top:10px;font-size:14px}
-button,input,select{
-  width:100%;padding:14px;margin-top:8px;border:none;border-radius:14px;font-size:15px
+*{box-sizing:border-box}
+
+body{
+  margin:٠;
+  font-family:Tahoma, Arial, sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:١.٩;
 }
+
+.app{
+  max-width:١٢٠٠px;
+  margin:auto;
+  padding:١٦px;
+}
+
+.card{
+  background:var(--card);
+  padding:٢٠px;
+  border-radius:١٦px;
+  box-shadow:٠ ٨px ٢٤px rgba(٠,٠,٠,.٠٨);
+  margin-bottom:١٦px;
+}
+
+.header{text-align:center}
+.header h١{margin:٠;color:var(--main);font-size:٢٢px}
+.header p{margin-top:٩px;color:var(--muted);font-size:١٤px}
+
+label{display:block;margin-top:١٠px;font-size:١٤px}
+
+button,input,select{
+  width:١٠٠%;
+  padding:١٤px;
+  margin-top:٨px;
+  border:none;
+  border-radius:١٤px;
+  font-size:١٥px;
+}
+
 button{background:var(--main);color:#fff;cursor:pointer}
 button.ok{background:var(--ok)}
 button.warn{background:var(--warn);color:#000}
-button.danger{background:var(--danger)}
 button.expert{background:var(--expert)}
 
 .buttons{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-  gap:12px;margin-top:12px
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(١٨٠px,١fr));
+  gap:١٢px;
+  margin-top:١٢px;
 }
 
-video,canvas{width:100%;border-radius:14px}
+video,canvas{width:١٠٠%;border-radius:١٤px}
 
-.output,.log,.expertBox,.radar{
-  background:#fafafa;padding:16px;border-radius:14px;
-  white-space:pre-wrap;margin-top:12px;font-size:14px
+.output,.expertBox,.radar,.status,.log{
+  background:#fafafa;
+  padding:١٦px;
+  border-radius:١٤px;
+  white-space:pre-wrap;
+  margin-top:١٢px;
+  font-size:١٤px;
 }
-.expertBox{border-right:6px solid var(--expert)}
-.radar{border-right:6px solid var(--warn)}
+
+.expertBox{border-right:٦px solid var(--expert)}
+.radar{border-right:٦px solid var(--warn)}
+.status{background:#eef٣ff}
+
 .hidden{display:none}
 
 @media print{
   button,input,select,video{display:none}
   body{background:#fff}
-  .output,.log,.expertBox,.radar{font-size:14pt}
+  .output,.expertBox,.radar,.status,.log{font-size:١٤pt}
 }
 </style>
 </head>
@@ -71,37 +100,37 @@ video,canvas{width:100%;border-radius:14px}
 
 <div class="app">
 
-<!-- ===== العنوان ===== -->
 <div class="card header">
-  <h1>النظام السيادي الذكي الشامل</h1>
+  <h١>النظام السيادي الذكي الشامل</h١>
   <p>
-    إدراج صفحة الدرس • قراءة الصورة • تحضير حرفي • محاكاة واقعية  
+    إدراج صفحة الدرس • قراءة الصورة • تحضير ومحاكاة تلقائيًا<br>
     خبير تربوي • دعم سلوكي ومادّي • رادار • أقل جهد للمعلم
   </p>
 </div>
 
-<!-- ===== إدراج الصفحة ===== -->
+<!-- إدراج صفحة الدرس -->
 <div class="card">
-  <h2>📘 إدراج صفحة الدرس</h2>
+  <h٢>📘 إدراج صفحة الدرس</h٢>
   <button onclick="startCamera()">📸 تصوير بالكاميرا الخلفية</button>
   <input type="file" accept="image/*" onchange="loadImage(event)">
   <video id="video" autoplay playsinline class="hidden"></video>
   <button id="captureBtn" class="warn hidden" onclick="capture()">التقاط الصفحة</button>
 </div>
 
-<!-- ===== الإعدادات ===== -->
-<div class="card hidden" id="settings">
+<!-- الإعدادات -->
+<div class="card hidden" id="controls">
   <label>مدة الحصّة</label>
   <select id="time">
-    <option value="30">٣٠ دقيقة</option>
-    <option value="40">٤٠ دقيقة</option>
-    <option value="45">٤٥ دقيقة</option>
+    <option value="٣٠">٣٠ دقيقة</option>
+    <option value="٤٠">٤٠ دقيقة</option>
+    <option value="٤٥">٤٥ دقيقة</option>
   </select>
 
   <!-- زر أقل جهد -->
   <button class="ok" onclick="oneClick()">▶ ابدأ الحصّة الآن (أقل جهد)</button>
 
-  <!-- أزرار التفاصيل عند الحاجة -->
+  <div id="status" class="status">— بانتظار رفع الصورة —</div>
+
   <div class="buttons">
     <button onclick="showPrep()">📘 التحضير التنفيذي الحرفي</button>
     <button onclick="showSim()">🎬 المحاكاة الصفّية الواقعية</button>
@@ -116,9 +145,9 @@ video,canvas{width:100%;border-radius:14px}
   <div id="expertBox" class="expertBox hidden"></div>
 </div>
 
-<!-- ===== الحصّة المباشرة ===== -->
+<!-- الحصّة المباشرة -->
 <div class="card hidden" id="live">
-  <h2>🧭 الحصّة المباشرة</h2>
+  <h٢>🧭 الحصّة المباشرة</h٢>
   <div class="buttons">
     <button onclick="act('طُرح السؤال')">اطرح السؤال</button>
     <button onclick="act('صمت واعٍ')">صمت</button>
@@ -128,72 +157,77 @@ video,canvas{width:100%;border-radius:14px}
   <div id="log" class="log">سجل الحصّة:</div>
 </div>
 
-<!-- ===== الرادار ===== -->
+<!-- الرادار -->
 <div class="card hidden" id="radarBox">
-  <h2>🛡️ الرادار التربوي</h2>
+  <h٢>🛡️ الرادار التربوي</h٢>
   <div class="radar">
 ⚠️ إذا تجاوز الكلام ٣ جمل → توقّف  
 ⚠️ إذا ارتفع الصوت → صمت ١٠ ثوانٍ  
 ⚠️ إذا ظهر الإنهاك → الإنهاء صحيح  
-✅ إذا نُطقت الفكرة بوضوح → التوقّف قرار مهني
+✅ نطق الفكرة بوضوح = قرار توقّف مهني
   </div>
 </div>
 
 </div>
 
 <script>
-/* ================== حالة عامة ================== */
 let imageBlob=null;
 let extractedText="";
 let coreQuestion="ماذا لاحظت؟";
 
-/* ================== عناصر ================== */
 const video=document.getElementById("video");
 const captureBtn=document.getElementById("captureBtn");
-const settings=document.getElementById("settings");
+const controls=document.getElementById("controls");
 const radarBox=document.getElementById("radarBox");
 const live=document.getElementById("live");
 const prepEl=document.getElementById("prep");
 const simEl=document.getElementById("sim");
-const expertBox=document.getElementById("expertBox");
-const log=document.getElementById("log");
+const expertEl=document.getElementById("expertBox");
+const statusEl=document.getElementById("status");
+const logEl=document.getElementById("log");
+const timeSel=document.getElementById("time");
 
-/* ================== إدراج الصورة ================== */
+/* إدراج الصفحة */
 function startCamera(){
   video.classList.remove("hidden");
   captureBtn.classList.remove("hidden");
   navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false})
-    .then(stream=>video.srcObject=stream);
+    .then(s=>video.srcObject=s)
+    .catch(()=>alert("تعذّر تشغيل الكاميرا"));
 }
+
 function capture(){
   const c=document.createElement("canvas");
   c.width=video.videoWidth;c.height=video.videoHeight;
-  c.getContext("2d").drawImage(video,0,0);
+  c.getContext("٢d").drawImage(video,٠,٠);
   video.srcObject.getTracks().forEach(t=>t.stop());
   imageBlob=dataURLtoBlob(c.toDataURL("image/png"));
   activate();
 }
+
 function loadImage(e){
-  imageBlob=e.target.files[0];
+  imageBlob=e.target.files[٠];
   activate();
 }
+
 function dataURLtoBlob(dataurl){
-  const arr=dataurl.split(","), mime=arr[0].match(/:(.*?);/)[1];
-  const bstr=atob(arr[1]);
-  let n=bstr.length, u8arr=new Uint8Array(n);
-  while(n--) u8arr[n]=bstr.charCodeAt(n);
-  return new Blob([u8arr],{type:mime});
+  const arr=dataurl.split(","), mime=arr[٠].match(/:(.*?);/)[١];
+  const bstr=atob(arr[١]); let n=bstr.length, u8=new Uint8Array(n);
+  while(n--) u8[n]=bstr.charCodeAt(n);
+  return new Blob([u8],{type:mime});
 }
 
-/* ================== تفعيل النظام ================== */
+/* تفعيل */
 async function activate(){
-  settings.classList.remove("hidden");
+  controls.classList.remove("hidden");
   radarBox.classList.remove("hidden");
+  statusEl.textContent="🔍 جارٍ قراءة الصفحة…";
   await readImage();
   analyzeText();
+  statusEl.textContent= extractedText ? "✅ تم استخراج النص" : "⚠️ تعذّر الاستخراج — استخدام خطة آمنة";
 }
 
-/* ================== OCR ================== */
+/* OCR */
 async function readImage(){
   try{
     const res=await Tesseract.recognize(imageBlob,"ara");
@@ -203,7 +237,7 @@ async function readImage(){
   }
 }
 
-/* ================== استنتاج تربوي ================== */
+/* استنتاج السؤال */
 function analyzeText(){
   if(/جمع|طرح|احسب|عدد|يساوي/.test(extractedText)){
     coreQuestion="كيف توصلت إلى الناتج؟";
@@ -214,33 +248,34 @@ function analyzeText(){
   }
 }
 
-/* ================== التحضير ================== */
+/* التحضير */
 function showPrep(){
-  const m=parseInt(time.value);
+  const m=parseInt(timeSel.value,١٠);
   prepEl.textContent=
-`التحضير التنفيذي الحرفي (مبني على الصفحة):
+`التحضير التنفيذي الحرفي:
 
-• السؤال المركزي:
+السؤال المركزي:
 «${coreQuestion}»
 
 الدقيقة ٠–٥:
 "افتحوا الصفحة."
 "انظروا فقط."
+(لا شرح)
 
 الدقيقة ٥–١٠:
 طرح السؤال.
 صمت ٣٠ ثانية.
 
-الدقيقة ١٠–${Math.min(15,m)}:
+الدقيقة ١٠–${Math.min(١٥,m)}:
 محاولة تلميذ واحد.
-جملة تثبيت واحدة.
+جملة تثبيت واحدة فقط.
 
 ✅ عند أول فهم:
-التوقّف قرار مهني صحيح.`;
+التوقّف مهني وصحيح.`;
   prepEl.classList.remove("hidden");
 }
 
-/* ================== المحاكاة ================== */
+/* المحاكاة */
 function showSim(){
   simEl.textContent=
 `المحاكاة الصفّية الواقعية:
@@ -251,57 +286,50 @@ function showSim(){
 → إنهاء عند الفهم
 
 في الوجاهي أو تيمز:
-القاعدة نفسها: القِصر = جودة.`;
+القِصر = جودة.`;
   simEl.classList.remove("hidden");
 }
 
-/* ================== الخبير ================== */
+/* الخبير */
 function expert(){
-  expertBox.textContent=
+  expertEl.textContent=
 `🧠 الخبير التربوي:
-الصمت هنا يعمل.
+الصمت الآن يعمل.
 لا تُنقذ بسرعة.
 ما اكتمل كافٍ اليوم.`;
-  expertBox.classList.remove("hidden");
+  expertEl.classList.remove("hidden");
 }
 
-/* ================== الدعم السلوكي والمادّي ================== */
+/* الدعم */
 function behavior(){
   prepEl.textContent=
-`الدعم السلوكي اللحظي:
-• جملة واحدة رحيمة
-• تغيير مكان أو دور
-• احتواء دون توبيخ`;
+`الدعم السلوكي:
+• جملة رحيمة واحدة
+• تغيير دور/مكان
+• احتواء بلا توبيخ`;
   prepEl.classList.remove("hidden");
 }
 function material(){
   prepEl.textContent=
-`الدعم المادّي الذكي:
-• أداة واحدة فقط
+`الدعم المادّي:
+• أداة واحدة مشتركة
 • لا مكافآت
 • لا سحب أو تهديد`;
   prepEl.classList.remove("hidden");
 }
 
-/* ================== زر أقل جهد ================== */
+/* زر أقل جهد */
 function oneClick(){
-  showPrep();
-  showSim();
-  expert();
-  startLesson();
+  showPrep(); showSim(); expert(); startLesson();
 }
 
-/* ================== الحصّة المباشرة ================== */
+/* الحصّة */
 function startLesson(){
   live.classList.remove("hidden");
-  log.textContent="سجل الحصّة:";
+  logEl.textContent="سجل الحصّة:";
 }
-function act(t){
-  log.textContent+="\n• "+t;
-}
-function finish(){
-  log.textContent+="\n• نُطقت الفكرة — انتهت الحصّة";
-}
+function act(t){ logEl.textContent+="\n• "+t; }
+function finish(){ logEl.textContent+="\n• نُطقت الفكرة — انتهت الحصّة"; }
 </script>
 
 </body>
