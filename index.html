@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الخبير التربوي المرافق — داخل الصف</title>
+    <title>الخبير التربوي المرافق — ذكاء متقدم بدون API</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root {
@@ -22,11 +22,7 @@
             color: var(--ink);
             line-height: 1.85;
         }
-        .app {
-            max-width: 980px;
-            margin: auto;
-            padding: 16px;
-        }
+        .app { max-width: 980px; margin: auto; padding: 16px; }
         .header {
             background: var(--card);
             padding: 24px;
@@ -43,7 +39,7 @@
             margin-bottom: 20px;
         }
         h1, h3 { margin: 0 0 12px; color: var(--main); text-align: center; }
-        button, input, select {
+        button, input {
             width: 100%;
             padding: 16px;
             margin-top: 12px;
@@ -79,7 +75,7 @@
         }
         .small { font-size: 13.5px; color: #6b7280; text-align: center; }
         @media print {
-            button, .progress, .actions { display: none; }
+            button, .progress { display: none; }
             body { background: #fff; }
         }
     </style>
@@ -90,35 +86,35 @@
     <div class="header">
         <p style="font-size:18px;margin:0 0 8px 0;">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
         <h1>الخبير التربوي المرافق</h1>
-        <p class="small">فكرة واحدة • سؤال واحد • صمت واعٍ • إغلاق مهني</p>
+        <p class="small">ذكاء متقدم • بدون API • فكرة واحدة فقط</p>
     </div>
 
-    <!-- 1. إدخال الصفحة -->
+    <!-- رفع الصفحة -->
     <div class="card">
-        <h3>📷 تصوير أو رفع صفحة الدرس</h3>
+        <h3>📷 رفع صفحة الدرس (حتى ٣ صفحات)</h3>
         <input type="file" id="fileInput" accept="image/*" multiple>
-        <div class="small">الحد الأقصى: ٣ صفحات • صوّر بوضوح</div>
+        <div class="small">صوّر الصفحة بوضوح — الحد الأقصى ٣ صفحات</div>
         <div class="progress"><span id="bar"></span></div>
         <div id="status" class="box">— بانتظار رفع الصور —</div>
-        <button id="startBtn" class="ok" disabled>ابدأ القراءة والتحليل</button>
+        <button id="startBtn" class="ok" disabled>ابدأ التحليل الذكي</button>
     </div>
 
-    <!-- 2. التحضير -->
+    <!-- التحضير -->
     <div class="card">
-        <h3>🧭 التحضير التنفيذي (فكرة واحدة)</h3>
-        <div id="idea" class="box">🔹 الفكرة ستظهر هنا</div>
+        <h3>🧭 التحضير التنفيذي (فكرة واحدة فقط)</h3>
+        <div id="idea" class="box">🔹 الفكرة ستظهر هنا بعد التحليل</div>
         <div id="question" class="box">❓ السؤال سيظهر هنا</div>
         <div id="prep" class="box"></div>
-        <button id="buildBtn" class="ok" disabled>أنشئ التحضير</button>
+        <button id="buildBtn" class="ok" disabled>أنشئ التحضير النهائي</button>
     </div>
 
-    <!-- 3. وضع الحصة المباشرة -->
+    <!-- وضع الحصة المباشرة -->
     <div class="card">
-        <h3>🎛️ وضع التشغيل أثناء الحصة</h3>
-        <div class="buttons" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px">
+        <h3>🎛️ وضع التشغيل داخل الصف</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px">
             <button onclick="act('طُرح السؤال')">اطرح السؤال</button>
-            <button onclick="act('صمت')">صمت واعٍ</button>
-            <button onclick="act('محاولة')">محاولة</button>
+            <button onclick="act('صمت واعٍ')">صمت</button>
+            <button onclick="act('محاولة تلميذ')">محاولة</button>
             <button class="ok" onclick="closeLesson()">✅ نُطقت الفكرة — أغلق الحصة</button>
         </div>
         <div id="log" class="box">سجل الحصة:</div>
@@ -127,7 +123,7 @@
 </div>
 
 <script>
-// ================== المتغيرات ==================
+// ================== متغيرات ==================
 const fileInput = document.getElementById("fileInput");
 const bar = document.getElementById("bar");
 const statusBox = document.getElementById("status");
@@ -136,23 +132,24 @@ const buildBtn = document.getElementById("buildBtn");
 
 let images = [];
 let extractedText = "";
-let currentIdea = "فكرة واحدة من الصفحة";
-let currentQuestion = "ماذا تلاحظ في الصفحة؟";
+let currentIdea = "";
+let currentQuestion = "";
 
 // ================== رفع الصور ==================
 fileInput.addEventListener("change", () => {
     images = Array.from(fileInput.files).slice(0, 3);
-    if (images.length) {
+    if (images.length > 0) {
         statusBox.textContent = `✅ تم رفع ${images.length} صفحة`;
         startBtn.disabled = false;
     }
 });
 
-// ================== قراءة وتحليل ==================
+// ================== التحليل الذكي المحلي ==================
 startBtn.addEventListener("click", async () => {
     if (images.length === 0) return;
+
     bar.style.width = "5%";
-    statusBox.textContent = "🔍 جاري معالجة الصور...";
+    statusBox.textContent = "🔍 جاري التحليل الذكي المحلي...";
     startBtn.disabled = true;
 
     extractedText = "";
@@ -165,21 +162,22 @@ startBtn.addEventListener("click", async () => {
     }
 
     bar.style.width = "100%";
-    statusBox.textContent = "✅ تم استخراج النص — جاهز للتحضير";
+    statusBox.textContent = "✅ تم التحليل الذكي — جاهز للتحضير";
     buildBtn.disabled = false;
-    analyze();
+    analyzeLocally();
 });
 
-function analyze() {
+function analyzeLocally() {
     const text = extractedText.toLowerCase();
-    if (/جمع|طرح|احسب|عدد|يساوي/.test(text)) {
-        currentIdea = "ربط الأعداد بالمثال البصري";
-        currentQuestion = "كيف توصلت إلى هذا الناتج؟";
-    } else if (/حرف|كلمة|جملة|اقرأ/.test(text)) {
-        currentIdea = "فهم الكلمة أو الجملة من السياق";
-        currentQuestion = "ماذا فهمت من هذه الجملة؟";
+
+    if (/جمع|طرح|احسب|عدد|يساوي|معادلة/.test(text)) {
+        currentIdea = "ربط العمليات الحسابية بالمثال البصري";
+        currentQuestion = "كيف توصلت إلى هذا الناتج من المثال؟";
+    } else if (/حرف|كلمة|جملة|اقرأ|نص/.test(text)) {
+        currentIdea = "فهم معنى الكلمة أو الجملة من السياق";
+        currentQuestion = "ماذا فهمت من هذه الجملة أو الكلمة؟";
     } else {
-        currentIdea = "الملاحظة البصرية والتفاعل مع المحتوى";
+        currentIdea = "الملاحظة الدقيقة والتفاعل مع المحتوى البصري";
         currentQuestion = "ماذا تلاحظ في الصفحة أمامك؟";
     }
 
@@ -189,7 +187,7 @@ function analyze() {
 
 // ================== إنشاء التحضير ==================
 buildBtn.addEventListener("click", () => {
-    const prepText = `
+    const prepHTML = `
 التحضير التنفيذي — فكرة واحدة فقط
 
 الفكرة المركزية:
@@ -198,21 +196,21 @@ ${currentIdea}
 سؤال الحصة الواحد:
 «${currentQuestion}»
 
-خطوات التنفيذ:
+خطوات التنفيذ الواقعية:
 1. عرض المثال من الكتاب فقط
 2. طرح السؤال
 3. صمت واعٍ (١٥-٣٠ ثانية)
 4. محاولة تلميذ واحد
-5. تثبيت قصير
+5. تثبيت قصير جداً
 6. إغلاق الحصة فور النطق
 
 مبدأ العمل:
 الصمت أداة تربوية.
-التوقف قرار مهني صحيح.
+التوقف في اللحظة الصحيحة جودة مهنية.
     `.trim();
 
-    document.getElementById("prep").textContent = prepText;
-    statusBox.textContent = "✅ تم إنشاء التحضير — جاهز للطباعة أو الاستخدام";
+    document.getElementById("prep").textContent = prepHTML;
+    statusBox.textContent = "✅ تم إنشاء التحضير — جاهز للاستخدام والطباعة";
 });
 
 // ================== وضع الحصة المباشرة ==================
@@ -223,8 +221,8 @@ function act(msg) {
 
 function closeLesson() {
     const log = document.getElementById("log");
-    log.textContent += `\n\n✅ نُطقت الفكرة — أُغلقت الحصة`;
-    statusBox.textContent = "✅ الحصة مُغلقة مهنيًا";
+    log.textContent += `\n\n✅ نُطقت الفكرة — أُغلقت الحصة مهنيًا`;
+    statusBox.textContent = "✅ الحصة مُغلقة بنجاح";
 }
 </script>
 
