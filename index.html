@@ -5,10 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>النظام الشامل لدعم المعلّم — قراءة الكتاب وتشغيل الدروس</title>
 
+<!-- ✅ تحميل صحيح للمكتبات -->
+
 <!-- PDF.js -->
 https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.jsscript>
 
-<!-- Tesseract.js -->
+<!-- Tesseract.js (OCR) -->
 https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
 <style>
@@ -23,8 +25,6 @@ https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 }
 
 *{box-sizing:border-box}
-
-html{font-size:16px}
 
 body{
   margin:0;
@@ -91,15 +91,12 @@ button.lesson{background:#546e7a}
   background:#fafafa;
   padding:.75rem;
   border-radius:.75rem;
-  max-height:220px;
+  max-height:240px;
   overflow:auto;
 }
 
-.lesson-box{
-  background:#eceff1;
-  padding:.75rem;
-  border-radius:.75rem;
-  margin-bottom:.5rem;
+.lesson-container button{
+  margin:.25rem;
 }
 
 @media(max-width:600px){
@@ -115,7 +112,7 @@ button.lesson{background:#546e7a}
 <!-- العنوان -->
 <div class="card">
   <h1>النظام الشامل لدعم المعلّم</h1>
-  <p>قراءة الكتاب فعليًا → اختيار الدرس → تحضير / محاكاة / رصد</p>
+  <p>قراءة الكتاب فعليًا → استخراج الدروس → تحضير / محاكاة / رصد</p>
 </div>
 
 <!-- ١) إدراج الكتاب -->
@@ -128,7 +125,7 @@ button.lesson{background:#546e7a}
   <div id="status"></div>
 </div>
 
-<!-- ٢) النص الخام -->
+<!-- ٢) النص المستخرج -->
 <div class="card">
   <h2>٢) النص المستخرج من الكتاب (كما هو)</h2>
   <div id="rawText">— لم يتم استخراج نص بعد —</div>
@@ -136,8 +133,10 @@ button.lesson{background:#546e7a}
 
 <!-- ٣) أسماء الدروس -->
 <div class="card">
-  <h2>٣) أسماء الدروس كما ظهرت في الكتاب</h2>
-  <div id="lessonList">— لم يتم التعرف على دروس بعد —</div>
+  <h2>٣) أسماء الدروس كما وجدت في الكتاب</h2>
+  <div id="lessonList" class="lesson-container">
+    — لم يتم التعرف على دروس بعد —
+  </div>
 </div>
 
 <!-- ٤) خيارات الدرس -->
@@ -159,104 +158,103 @@ button.lesson{background:#546e7a}
 </div>
 
 <script>
-let extractedText="";
-let currentLesson="";
+let extractedText = "";
+let currentLesson = "";
 
 /* قراءة الكتاب */
 async function readBook(){
-  const file=document.getElementById("fileInput").files[0];
+  const file = document.getElementById("fileInput").files[0];
   if(!file){ alert("اختر ملف الكتاب"); return; }
 
-  const status=document.getElementById("status");
-  status.textContent="جارٍ قراءة الكتاب...";
+  const status = document.getElementById("status");
+  status.textContent = "⏳ جارٍ قراءة الكتاب...";
 
-  if(file.type==="application/pdf"){
-    const buffer=await file.arrayBuffer();
-    const pdf=await pdfjsLib.getDocument({data:buffer}).promise;
-    let text="";
+  if(file.type === "application/pdf"){
+    const buffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({data:buffer}).promise;
+    let text = "";
 
     for(let i=1;i<=pdf.numPages;i++){
-      const page=await pdf.getPage(i);
-      const content=await page.getTextContent();
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
       content.items.forEach(item=>{
-        text+=item.str+" ";
+        text += item.str + " ";
       });
-      text+="\n";
+      text += "\n";
     }
 
-    extractedText=text;
+    extractedText = text;
     processText(text);
-  }else{
-    const result=await Tesseract.recognize(file,"ara");
-    extractedText=result.data.text;
+  } else {
+    const result = await Tesseract.recognize(file,"ara");
+    extractedText = result.data.text;
     processText(extractedText);
   }
 
-  status.textContent="✅ تم استخراج النص من الكتاب";
+  status.textContent = "✅ تم استخراج النص من الكتاب";
 }
 
 /* معالجة النص */
 function processText(text){
   document.getElementById("rawText").textContent =
-    text.substring(0,4000)+"…";
-
+    text.substring(0,4000) + "…";
   extractLessons(text);
 }
 
-/* محاولة استخراج أسماء الدروس حرفيًا */
+/* استخراج أسماء الدروس حرفيًا */
 function extractLessons(text){
-  const lines=text.split("\n");
-  const box=document.getElementById("lessonList");
-  box.innerHTML="";
-  let found=false;
+  const lines = text.split("\n");
+  const box = document.getElementById("lessonList");
+  box.innerHTML = "";
+  let found = false;
 
   lines.forEach(line=>{
-    const clean=line.trim();
-    if(clean.length>2 && clean.length<25){
+    const clean = line.trim();
+    if(clean.length > 2 && clean.length < 30){
       if(
-        clean.includes("الواحد")||
-        clean.includes("الاثنان")||
-        clean.includes("الثلاثة")||
-        clean.includes("العدد")||
-        clean.includes("الدرس")
+        clean.includes("الدرس") ||
+        clean.includes("العدد") ||
+        clean.includes("الواحد") ||
+        clean.includes("الاثنان") ||
+        clean.includes("الثلاثة") ||
+        clean.includes("الجمع") ||
+        clean.includes("الطرح")
       ){
-        const btn=document.createElement("button");
-        btn.textContent=clean;
-        btn.className="lesson";
-        btn.onclick=()=>{
-          currentLesson=clean;
-        };
+        const btn = document.createElement("button");
+        btn.textContent = clean;
+        btn.className = "lesson";
+        btn.onclick = ()=>{ currentLesson = clean; };
         box.appendChild(btn);
-        found=true;
+        found = true;
       }
     }
   });
 
   if(!found){
-    box.innerHTML="<em>لم تُكتشف عناوين دروس واضحة — اختر يدويًا من النص</em>";
+    box.innerHTML = "<em>لم يتمكن النظام من تحديد عناوين واضحة — اختر يدويًا من النص</em>";
   }
 }
 
 /* تحضير */
 function showPrep(){
   if(!currentLesson){ alert("اختر درسًا أولًا"); return; }
-  document.getElementById("output").textContent=
+  document.getElementById("output").textContent =
 `تحضير مختصر للدرس: ${currentLesson}
 
-• بداية الدرس من مثال الكتاب
+• بداية الدرس من أول مثال في الكتاب
 • مشاركة طالب واحد
-• تثبيت المفهوم
+• تثبيت الفكرة
 • توقّف مهني عند الفهم`;
 }
 
 /* محاكاة */
 function showSim(){
   if(!currentLesson){ alert("اختر درسًا أولًا"); return; }
-  document.getElementById("output").textContent=
+  document.getElementById("output").textContent =
 `محاكاة صفّية قابلة للتنفيذ:
 
 ١) افتح صفحة الدرس
-٢) اعرض مثالًا واحدًا فقط
+٢) مثال واحد فقط
 ٣) صمت
 ٤) محاولة تلميذ
 ٥) انتهِ عند الفهم`;
@@ -265,7 +263,7 @@ function showSim(){
 /* قوائم رصد */
 function showObs(){
   if(!currentLesson){ alert("اختر درسًا أولًا"); return; }
-  document.getElementById("output").textContent=
+  document.getElementById("output").textContent =
 `قوائم رصد — ${currentLesson}
 
 ☐ حاول
