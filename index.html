@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تحضير الدرس من الكتاب</title>
+<title>تحضير ذكي من الكتاب — فكرة واحدة</title>
 
+<!-- OCR -->
 https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
 <style>
@@ -13,6 +14,7 @@ body{
   background:#f4f6f8;
   margin:0;
   padding:20px;
+  line-height:1.9;
 }
 .card{
   background:#fff;
@@ -24,6 +26,7 @@ body{
 h1,h3{
   color:#0d47a1;
   text-align:center;
+  margin:0 0 12px;
 }
 input,button{
   width:100%;
@@ -36,6 +39,7 @@ button{
   color:#fff;
   border:none;
   border-radius:10px;
+  cursor:pointer;
 }
 .box{
   background:#e3f2fd;
@@ -48,14 +52,18 @@ button{
   color:#555;
   text-align:center;
 }
+.progress{
+  height:10px;background:#ddd;border-radius:8px;overflow:hidden;margin-top:10px
+}
+.progress span{display:block;height:100%;width:0;background:#0d47a1}
 </style>
 </head>
 
 <body>
 
 <div class="card">
-<h1>تحضير الدرس من الكتاب</h1>
-<p class="small">يركّز على النص الأصلي — بلا افتراضات</p>
+<h1>تحضير ذكي من الكتاب</h1>
+<p class="small">فكرة واحدة حقيقية • بلا افتراض • بلا عبء</p>
 </div>
 
 <div class="card">
@@ -64,9 +72,11 @@ button{
 </div>
 
 <div class="card">
-<h3>صفحة الدرس (صورة أفضل)</h3>
-<input type="file" id="pageFile" accept="image/*">
+<h3>صفحة الدرس (صورة أو PDF صفحة واحدة)</h3>
+<input type="file" id="pageFile" accept="image/*,.pdf">
+<div class="progress"><span id="bar"></span></div>
 <button onclick="readPage()">أنشئ التحضير من الكتاب</button>
+<p class="small">📌 لنتائج أدق: ارفع صورة الصفحة</p>
 </div>
 
 <div class="card">
@@ -77,49 +87,80 @@ button{
 <div class="card">
 <h3>التحضير الناتج</h3>
 <div id="prep" class="box">—</div>
-<button onclick="copyPrep()">نسخ التحضير</button>
+<button onclick="copyPrep()">📋 نسخ التحضير</button>
 </div>
 
 <script>
+const teachingVerbs = [
+  "نعد","نقرأ","نكتب","نلاحظ","نقارن","نحسب","نرتب",
+  "نستخرج","نميّز","نحدّد","نحل"
+];
+
 async function readPage(){
   const file = document.getElementById("pageFile").files[0];
-  if(!file) return;
+  if(!file){ return; }
 
-  extracted.innerText = "جارٍ القراءة...";
-  const result = await Tesseract.recognize(file,"ara");
-  const text = result.data.text.trim();
-  extracted.innerText = text || "لم يُستخرج نص واضح.";
-
-  buildPrepFromText(text);
+  bar.style.width="5%";
+  extracted.innerText = "جارٍ قراءة الصفحة...";
+  try{
+    const result = await Tesseract.recognize(file,"ara");
+    bar.style.width="100%";
+    const text = (result.data.text||"").trim();
+    extracted.innerText = text || "لم يُستخرج نص واضح.";
+    buildPrepSmart(text);
+  }catch(e){
+    extracted.innerText = "تعذّر قراءة الصفحة.";
+    bar.style.width="0%";
+    prep.innerText = "لا يمكن بناء تحضير موثوق من هذه الصفحة.";
+  }
 }
 
-function buildPrepFromText(text){
-  if(text.length < 20){
+// استخراج فكرة واحدة أدق
+function extractIdea(text){
+  if(!text || text.length < 30) return "";
+
+  const lines = text.split("\n").map(l=>l.trim()).filter(l=>l.length>6);
+  // أولوية: سطر يحوي فعلًا تعليميًا
+  for(let v of teachingVerbs){
+    const hit = lines.find(l => l.includes(v));
+    if(hit) return hit;
+  }
+  // بديل: أقصر سطر إجرائي واضح
+  return lines.sort((a,b)=>a.length-b.length)[0] || "";
+}
+
+// بناء التحضير الذكي
+function buildPrepSmart(text){
+  const ideaLine = extractIdea(text);
+  if(!ideaLine){
     prep.innerText =
-"تعذّر بناء تحضير موثوق من الصفحة.\nيرجى اختيار صفحة أوضح.";
+"تعذّر تحديد فكرة واحدة موثوقة من الصفحة.\nيرجى اختيار صفحة أوضح.";
     return;
   }
 
-  const firstLine = text.split("\n").find(l => l.length > 10) || "";
-  const idea = firstLine.slice(0,60);
+  const question =
+    ideaLine.includes("نعد") ? "كم نعدّ في هذا المثال؟" :
+    ideaLine.includes("نقرأ") ? "ماذا نقرأ هنا؟" :
+    ideaLine.includes("نكتب") ? "ماذا سنكتب بعد الملاحظة؟" :
+    "ماذا نلاحظ في هذا المثال؟";
 
   prep.innerText =
-`التحضير التنفيذي
+`التحضير التنفيذي (مبني على الكتاب)
 
-الدرس: ${lessonName.value}
+الدرس: ${lessonName.value || "—"}
 
-الفكرة المستخلصة من الصفحة:
-${idea}
+الفكرة المستخلصة حرفيًا من الصفحة:
+${ideaLine}
 
 السؤال المحوري:
-ماذا نلاحظ في هذا المثال؟
+${question}
 
 خطوات التنفيذ:
-١) عرض الصفحة من الكتاب
-٢) صمت واعٍ
+١) عرض صفحة الكتاب فقط
+٢) صمت واعٍ (لا شرح)
 ٣) محاولة من الطلبة
-٤) تثبيت الفكرة
-٥) إغلاق الحصة عند النطق`;
+٤) تثبيت الفكرة عند النطق
+٥) إغلاق الحصة فورًا دون إضافة`;
 }
 
 function copyPrep(){
