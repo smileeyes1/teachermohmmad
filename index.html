@@ -3,56 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مُعين المعلّم — عبء صفر</title>
+<title>تحضير الدرس من الكتاب</title>
+
+https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
 <style>
-:root{
-  --main:#0d47a1;
-  --ok:#2e7d32;
-  --bg:#f4f6f8;
-  --card:#ffffff;
-  --soft:#e3f2fd;
-}
-*{box-sizing:border-box}
 body{
-  margin:0;
   font-family:Tahoma,Arial,sans-serif;
-  background:var(--bg);
-  line-height:1.9;
-}
-.app{
-  max-width:900px;
-  margin:auto;
+  background:#f4f6f8;
+  margin:0;
   padding:20px;
 }
 .card{
-  background:var(--card);
-  padding:22px;
-  border-radius:16px;
-  box-shadow:0 8px 24px rgba(0,0,0,.08);
+  background:#fff;
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
   margin-bottom:20px;
 }
-h1,h2{
+h1,h3{
+  color:#0d47a1;
   text-align:center;
-  color:var(--main);
-  margin:0 0 12px;
 }
 input,button{
   width:100%;
   padding:14px;
-  margin-top:12px;
-  border-radius:12px;
-  border:1px solid #ddd;
+  margin-top:10px;
   font-size:16px;
 }
 button{
-  background:var(--main);
+  background:#2e7d32;
   color:#fff;
   border:none;
+  border-radius:10px;
 }
-button.ok{background:var(--ok)}
 .box{
-  background:var(--soft);
+  background:#e3f2fd;
   padding:16px;
   border-radius:12px;
   white-space:pre-wrap;
@@ -66,83 +52,78 @@ button.ok{background:var(--ok)}
 </head>
 
 <body>
-<div class="app">
 
 <div class="card">
-<h1>📘 مُعين المعلّم</h1>
-<p class="small">أداة تخفّف التفكير، لا تضيفه</p>
-</div>
-
-<div class="card">
-<h2>اسم الدرس</h2>
-<input id="lesson" placeholder="مثال: الجمع حتى ١٠">
-<button class="ok" onclick="autoBuild()">ابدأ الحصّة</button>
+<h1>تحضير الدرس من الكتاب</h1>
+<p class="small">يركّز على النص الأصلي — بلا افتراضات</p>
 </div>
 
 <div class="card">
-<h2>🧭 التحضير الجاهز</h2>
-<div id="prep" class="box"></div>
-<button onclick="copyText('prep')">📋 نسخ التحضير</button>
+<h3>اسم الدرس</h3>
+<input id="lessonName" placeholder="مثال: الجمع حتى ١٠">
 </div>
 
 <div class="card">
-<h2>🎭 سير الحصة</h2>
-<div id="sim" class="box"></div>
-<button class="ok" onclick="closeLesson()">نُطقت الفكرة — أُغلقت الحصة</button>
+<h3>صفحة الدرس (صورة أفضل)</h3>
+<input type="file" id="pageFile" accept="image/*">
+<button onclick="readPage()">أنشئ التحضير من الكتاب</button>
 </div>
 
 <div class="card">
-<h2>📋 رصد مهني خفيف</h2>
-<div class="box">
-☐ حاول  
-☐ تردّد  
-☐ نطق الفكرة  
-☐ احتاج دعم خفيف
-</div>
-<p class="small">للتوثيق المهني فقط — بلا تقييم</p>
+<h3>النص المستخرج</h3>
+<div id="extracted" class="box">—</div>
 </div>
 
+<div class="card">
+<h3>التحضير الناتج</h3>
+<div id="prep" class="box">—</div>
+<button onclick="copyPrep()">نسخ التحضير</button>
 </div>
 
 <script>
-function autoBuild(){
-  const l = lesson.value || "—";
+async function readPage(){
+  const file = document.getElementById("pageFile").files[0];
+  if(!file) return;
+
+  extracted.innerText = "جارٍ القراءة...";
+  const result = await Tesseract.recognize(file,"ara");
+  const text = result.data.text.trim();
+  extracted.innerText = text || "لم يُستخرج نص واضح.";
+
+  buildPrepFromText(text);
+}
+
+function buildPrepFromText(text){
+  if(text.length < 20){
+    prep.innerText =
+"تعذّر بناء تحضير موثوق من الصفحة.\nيرجى اختيار صفحة أوضح.";
+    return;
+  }
+
+  const firstLine = text.split("\n").find(l => l.length > 10) || "";
+  const idea = firstLine.slice(0,60);
+
   prep.innerText =
 `التحضير التنفيذي
 
-الدرس: ${l}
+الدرس: ${lessonName.value}
 
-الفكرة:
-فهم الفكرة الأساسية للدرس من خلال مثال واحد فقط.
+الفكرة المستخلصة من الصفحة:
+${idea}
 
-السؤال:
-ماذا نلاحظ هنا؟
+السؤال المحوري:
+ماذا نلاحظ في هذا المثال؟
 
-التسلسل:
-١) عرض هادئ
-٢) طرح السؤال
-٣) صمت واعٍ
-٤) محاولة
-٥) تثبيت
-٦) إغلاق`;
-
-  sim.innerText =
-`المعلم يعرض المثال.
-يطرح السؤال.
-(صمت)
-
-طالب يحاول…
-
-عند نطق الفكرة:
-✅ تُغلق الحصة فورًا دون شرح إضافي.`;
+خطوات التنفيذ:
+١) عرض الصفحة من الكتاب
+٢) صمت واعٍ
+٣) محاولة من الطلبة
+٤) تثبيت الفكرة
+٥) إغلاق الحصة عند النطق`;
 }
 
-function closeLesson(){
-  sim.innerText += "\n\n⛔ تم الإغلاق المهني — لا يُستكمل الشرح.";
-}
-
-function copyText(id){
-  navigator.clipboard.writeText(document.getElementById(id).innerText);
+function copyPrep(){
+  navigator.clipboard.writeText(prep.innerText);
 }
 </script>
 
