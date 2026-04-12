@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>الخبير التربوي V4</title>
+<title>الخبير التربوي V6</title>
 
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mammoth@1.7.2/mammoth.browser.min.js"></script>
@@ -17,6 +16,9 @@ button{width:100%;padding:14px;margin-top:10px;background:#0d47a1;color:#fff;bor
 .box{background:#eef3ff;padding:10px;border-radius:10px;margin-top:10px;white-space:pre-wrap}
 .progress{height:8px;background:#ddd;border-radius:10px}
 .progress span{display:block;height:100%;width:0;background:#0d47a1}
+@media (min-width:768px){
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+}
 </style>
 </head>
 
@@ -28,13 +30,15 @@ button{width:100%;padding:14px;margin-top:10px;background:#0d47a1;color:#fff;bor
 <input type="file" id="file">
 <button id="analyzeBtn">تحليل</button>
 <div class="progress"><span id="bar"></span></div>
-<div id="status" class="box"></div>
+<div id="status" class="box">جاهز</div>
 </div>
+
+<div class="grid">
 
 <div class="card">
 <h3>🧠 التحليل</h3>
 <div id="analysis" class="box"></div>
-<button id="generateBtn" disabled>توليد التحضير الذكي</button>
+<button id="generateBtn" disabled>توليد التحضير</button>
 </div>
 
 <div class="card">
@@ -42,134 +46,165 @@ button{width:100%;padding:14px;margin-top:10px;background:#0d47a1;color:#fff;bor
 <div id="lesson" class="box"></div>
 </div>
 
+</div>
+
+<div class="grid">
+
 <div class="card">
-<h3>🎤 ماذا أقول للطلاب</h3>
+<h3>🎤 سكربت المعلم</h3>
 <div id="script" class="box"></div>
 </div>
 
 <div class="card">
-<h3>🧩 أسئلة للطلاب</h3>
+<h3>🧩 الأسئلة</h3>
 <div id="questions" class="box"></div>
+</div>
+
+</div>
+
+<div class="card">
+<h3>🧮 تمارين</h3>
+<div id="exercises" class="box"></div>
 </div>
 
 </div>
 
 <script>
 
-// ===== إعداد =====
 pdfjsLib.GlobalWorkerOptions.workerSrc =
 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.js';
 
-const analyzeBtn = document.getElementById("analyzeBtn");
-const generateBtn = document.getElementById("generateBtn");
-
 let textData = "";
-let analysisData = null;
+let ai = null;
 
-// ===== الأحداث =====
-analyzeBtn.addEventListener("click", start);
-generateBtn.addEventListener("click", generateAll);
+document.getElementById("analyzeBtn").addEventListener("click", start);
+document.getElementById("generateBtn").addEventListener("click", generate);
 
 // ===== قراءة =====
 async function start(){
   const file = document.getElementById("file").files[0];
   if(!file) return alert("اختر ملف");
 
-  update("🔍 قراءة الملف...");
+  update("📄 قراءة...");
+  textData = "";
 
   if(file.name.endsWith(".pdf")){
-    textData = await readPDF(file);
+    const pdf = await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
+
+    for(let i=1;i<=pdf.numPages;i++){
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      textData += content.items.map(i=>i.str).join(" ");
+      progress(i/pdf.numPages);
+    }
+
   }else if(file.name.endsWith(".docx")){
-    textData = await readDOCX(file);
+    const res = await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()});
+    textData = res.value;
   }
 
   update("🧠 تحليل...");
-  analysisData = analyzeText(textData);
+  ai = runAI(textData);
 
-  showAnalysis(analysisData);
-  generateBtn.disabled = false;
+  showAnalysis(ai);
+  document.getElementById("generateBtn").disabled = false;
 }
 
-// ===== PDF =====
-async function readPDF(file){
-  const pdf = await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
-  let text="";
-  for(let i=1;i<=pdf.numPages;i++){
-    const page=await pdf.getPage(i);
-    const content=await page.getTextContent();
-    text+=content.items.map(i=>i.str).join(" ");
-    progress(i/pdf.numPages);
-  }
-  return text;
-}
+// ===== AI =====
+function runAI(text){
 
-// ===== DOCX =====
-async function readDOCX(file){
-  const res = await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()});
-  return res.value;
-}
+  const clean = text.replace(/[^\u0600-\u06FF\s]/g,"");
+  const sentences = clean.split(/[.!؟\n]/).filter(s=>s.length>10);
+  const words = clean.split(/\s+/).filter(w=>w.length>2);
 
-// ===== تحليل =====
-function analyzeText(text){
+  // ===== تكرار =====
+  const freq = {};
+  words.forEach(w=>freq[w]=(freq[w]||0)+1);
 
-  const words = text.split(/\s+/).filter(w=>w.length>2);
+  const sorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]);
+  const keywords = sorted.slice(0,5).map(x=>x[0]);
 
+  // ===== تصنيف =====
   let subject="عام";
-  if(text.includes("جمع")) subject="رياضيات";
-  if(text.includes("نص")) subject="لغة عربية";
+  let skill="فهم";
+
+  if(words.includes("جمع")){subject="رياضيات";skill="الجمع";}
+  if(words.includes("طرح")){subject="رياضيات";skill="الطرح";}
+  if(words.includes("نص")||words.includes("قرأ")){subject="لغة عربية";skill="فهم المقروء";}
+
+  // ===== صف =====
+  let avg = words.reduce((a,b)=>a+b.length,0)/words.length;
+  let grade = avg<=4 ? "صف 1" : "صف 2";
+
+  // ===== فكرة من جملة =====
+  const mainSentence = sentences[0] || "";
+  const main = keywords[0] || "المفهوم";
+
+  // ===== تمارين =====
+  let exercises = "";
+
+  if(subject==="رياضيات"){
+    exercises = `
+1) 2 + 3 = __
+2) 5 + 1 = __
+3) 4 + 2 = __`;
+  }else{
+    exercises = `
+اقرأ الجملة:
+"${mainSentence}"
+
+ثم أجب:
+- ما الفكرة؟
+- اختر كلمة جديدة`;
+  }
 
   return {
-    subject,
-    wordCount: words.length,
-    keyword: words[0] || "مفهوم"
+    subject, skill, grade,
+    keywords,
+    main,
+    mainSentence,
+    exercises
   };
 }
 
-function showAnalysis(d){
+// ===== عرض =====
+function showAnalysis(r){
   document.getElementById("analysis").textContent =
-`📘 المادة: ${d.subject}
-📊 عدد الكلمات: ${d.wordCount}
-🧩 كلمة محورية: ${d.keyword}`;
+`📘 المادة: ${r.subject}
+🎯 المهارة: ${r.skill}
+👦 الصف: ${r.grade}
+🧩 كلمات: ${r.keywords.join(" - ")}`;
 }
 
 // ===== توليد =====
-async function generateAll(){
+function generate(){
 
-  // ===== بدون AI =====
-  const lesson = `
-🎯 الفكرة:
-فهم "${analysisData.keyword}"
+  document.getElementById("lesson").textContent =
+`🎯 الفكرة:
+فهم "${ai.main}"
 
 ❓ السؤال:
-كيف نستخدم "${analysisData.keyword}"؟
+كيف نستخدم "${ai.main}"؟
 
 🚀 النشاط:
-مثال بسيط ومشاركة
-`;
+مثال + مشاركة
 
-  const script = `
-👩‍🏫 المعلم يقول:
-"اليوم سنتعلم ${analysisData.keyword} بطريقة سهلة"
-"من يعرف مثالاً؟"
-`;
+🔚 الإغلاق:
+تعزيز إيجابي`;
 
-  const questions = `
-❓ سهل:
-ما معنى ${analysisData.keyword}؟
+  document.getElementById("script").textContent =
+`👩‍🏫
+"اليوم سنتعلم ${ai.main}"
+"فكروا قليلاً"
+"من يشارك؟"
+"أحسنتم"`;
 
-❓ متوسط:
-أعط مثالاً
+  document.getElementById("questions").textContent =
+`1) ما معنى ${ai.main}؟
+2) أعط مثالاً
+3) متى نستخدمه؟`;
 
-❓ متقدم:
-استخدمه في جملة
-`;
-
-  document.getElementById("lesson").textContent = lesson;
-  document.getElementById("script").textContent = script;
-  document.getElementById("questions").textContent = questions;
-
-  // ===== AI (اختياري) =====
-  // إذا أضفت API لاحقًا نربطه هنا
+  document.getElementById("exercises").textContent = ai.exercises;
 }
 
 // ===== مساعد =====
@@ -182,6 +217,5 @@ function progress(p){
 }
 
 </script>
-
 </body>
 </html>
