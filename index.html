@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>النظام السيادي الشامل الذكي — قراءة الصفحة وبناء الحصّة تلقائيًا</title>
+<title>النظام السيادي الذكي الشامل لدعم المعلّم</title>
 
-<!-- OCR library (يُحمَّل عند توفر إنترنت) -->
+<!-- OCR: Tesseract.js -->
 https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
 <style>
@@ -17,80 +17,52 @@ https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
   --muted:#6b7280;
   --ok:#2e7d32;
   --warn:#f9a825;
+  --danger:#c62828;
   --expert:#6a1b9a;
 }
-
 *{box-sizing:border-box}
-
 body{
-  margin:0;
-  font-family:Tahoma,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-  line-height:1.9;
+  margin:0;font-family:Tahoma,Arial,sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.9
 }
-
-.app{
-  max-width:1100px;
-  margin:auto;
-  padding:16px;
-}
-
+.app{max-width:1200px;margin:auto;padding:16px}
 .card{
-  background:var(--card);
-  padding:20px;
-  border-radius:16px;
-  box-shadow:0 8px 24px rgba(0,0,0,.08);
-  margin-bottom:16px;
+  background:var(--card);padding:20px;border-radius:16px;
+  box-shadow:0 8px 24px rgba(0,0,0,.08);margin-bottom:16px
 }
-
 .header{text-align:center}
 .header h1{margin:0;color:var(--main)}
 .header p{margin-top:6px;color:var(--muted);font-size:14px}
 
 label{display:block;margin-top:10px;font-size:14px}
-
 button,input,select{
-  width:100%;
-  padding:14px;
-  margin-top:8px;
-  border:none;
-  border-radius:14px;
-  font-size:15px;
+  width:100%;padding:14px;margin-top:8px;border:none;border-radius:14px;font-size:15px
 }
-
 button{background:var(--main);color:#fff;cursor:pointer}
 button.ok{background:var(--ok)}
 button.warn{background:var(--warn);color:#000}
+button.danger{background:var(--danger)}
 button.expert{background:var(--expert)}
 
 .buttons{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-  gap:12px;
-  margin-top:12px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:12px;margin-top:12px
 }
 
 video,canvas{width:100%;border-radius:14px}
 
-.output,.expertBox,.radar{
-  background:#fafafa;
-  padding:16px;
-  border-radius:14px;
-  white-space:pre-wrap;
-  margin-top:12px;
-  font-size:14px;
+.output,.log,.expertBox,.radar{
+  background:#fafafa;padding:16px;border-radius:14px;
+  white-space:pre-wrap;margin-top:12px;font-size:14px
 }
-
 .expertBox{border-right:6px solid var(--expert)}
 .radar{border-right:6px solid var(--warn)}
-
 .hidden{display:none}
 
 @media print{
   button,input,select,video{display:none}
   body{background:#fff}
-  .output,.expertBox,.radar{font-size:14pt}
+  .output,.log,.expertBox,.radar{font-size:14pt}
 }
 </style>
 </head>
@@ -101,9 +73,10 @@ video,canvas{width:100%;border-radius:14px}
 
 <!-- ===== العنوان ===== -->
 <div class="card header">
-  <h1>النظام السيادي الشامل الذكي</h1>
+  <h1>النظام السيادي الذكي الشامل</h1>
   <p>
-    يقرأ صفحة الدرس • يبني التحضير والمحاكاة تلقائيًا • أقل جهد للمعلم
+    إدراج صفحة الدرس • قراءة الصورة • تحضير حرفي • محاكاة واقعية  
+    خبير تربوي • دعم سلوكي ومادّي • رادار • أقل جهد للمعلم
   </p>
 </div>
 
@@ -116,7 +89,7 @@ video,canvas{width:100%;border-radius:14px}
   <button id="captureBtn" class="warn hidden" onclick="capture()">التقاط الصفحة</button>
 </div>
 
-<!-- ===== إعدادات بسيطة ===== -->
+<!-- ===== الإعدادات ===== -->
 <div class="card hidden" id="settings">
   <label>مدة الحصّة</label>
   <select id="time">
@@ -128,16 +101,31 @@ video,canvas{width:100%;border-radius:14px}
   <!-- زر أقل جهد -->
   <button class="ok" onclick="oneClick()">▶ ابدأ الحصّة الآن (أقل جهد)</button>
 
-  <!-- أزرار معرفة عند الحاجة -->
+  <!-- أزرار التفاصيل عند الحاجة -->
   <div class="buttons">
-    <button onclick="showPrep()">📘 التحضير التنفيذي</button>
-    <button onclick="showSim()">🎬 المحاكاة الصفّية</button>
+    <button onclick="showPrep()">📘 التحضير التنفيذي الحرفي</button>
+    <button onclick="showSim()">🎬 المحاكاة الصفّية الواقعية</button>
     <button class="expert" onclick="expert()">🧠 الخبير التربوي</button>
+    <button class="warn" onclick="behavior()">🧠 دعم سلوكي</button>
+    <button onclick="material()">🧱 دعم مادّي</button>
+    <button class="ok" onclick="startLesson()">▶ بدء الحصّة المباشرة</button>
   </div>
 
   <div id="prep" class="output hidden"></div>
   <div id="sim" class="output hidden"></div>
   <div id="expertBox" class="expertBox hidden"></div>
+</div>
+
+<!-- ===== الحصّة المباشرة ===== -->
+<div class="card hidden" id="live">
+  <h2>🧭 الحصّة المباشرة</h2>
+  <div class="buttons">
+    <button onclick="act('طُرح السؤال')">اطرح السؤال</button>
+    <button onclick="act('صمت واعٍ')">صمت</button>
+    <button onclick="act('محاولة تلميذ واحد')">محاولة</button>
+    <button class="ok" onclick="finish()">✅ نُطقت الفكرة</button>
+  </div>
+  <div id="log" class="log">سجل الحصّة:</div>
 </div>
 
 <!-- ===== الرادار ===== -->
@@ -154,13 +142,21 @@ video,canvas{width:100%;border-radius:14px}
 </div>
 
 <script>
-/* ================== متغيرات عامة ================== */
+/* ================== حالة عامة ================== */
 let imageBlob=null;
 let extractedText="";
 let coreQuestion="ماذا لاحظت؟";
 
+/* ================== عناصر ================== */
 const video=document.getElementById("video");
 const captureBtn=document.getElementById("captureBtn");
+const settings=document.getElementById("settings");
+const radarBox=document.getElementById("radarBox");
+const live=document.getElementById("live");
+const prepEl=document.getElementById("prep");
+const simEl=document.getElementById("sim");
+const expertBox=document.getElementById("expertBox");
+const log=document.getElementById("log");
 
 /* ================== إدراج الصورة ================== */
 function startCamera(){
@@ -169,22 +165,18 @@ function startCamera(){
   navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false})
     .then(stream=>video.srcObject=stream);
 }
-
 function capture(){
-  const canvas=document.createElement("canvas");
-  canvas.width=video.videoWidth;
-  canvas.height=video.videoHeight;
-  canvas.getContext("2d").drawImage(video,0,0);
+  const c=document.createElement("canvas");
+  c.width=video.videoWidth;c.height=video.videoHeight;
+  c.getContext("2d").drawImage(video,0,0);
   video.srcObject.getTracks().forEach(t=>t.stop());
-  imageBlob=dataURLtoBlob(canvas.toDataURL("image/png"));
+  imageBlob=dataURLtoBlob(c.toDataURL("image/png"));
   activate();
 }
-
 function loadImage(e){
   imageBlob=e.target.files[0];
   activate();
 }
-
 function dataURLtoBlob(dataurl){
   const arr=dataurl.split(","), mime=arr[0].match(/:(.*?);/)[1];
   const bstr=atob(arr[1]);
@@ -195,13 +187,13 @@ function dataURLtoBlob(dataurl){
 
 /* ================== تفعيل النظام ================== */
 async function activate(){
-  document.getElementById("settings").classList.remove("hidden");
-  document.getElementById("radarBox").classList.remove("hidden");
-  await readImage();       // OCR
-  analyzeText();           // استنتاج السؤال
+  settings.classList.remove("hidden");
+  radarBox.classList.remove("hidden");
+  await readImage();
+  analyzeText();
 }
 
-/* ================== قراءة الصفحة ================== */
+/* ================== OCR ================== */
 async function readImage(){
   try{
     const res=await Tesseract.recognize(imageBlob,"ara");
@@ -211,11 +203,11 @@ async function readImage(){
   }
 }
 
-/* ================== تحليل مبسّط ================== */
+/* ================== استنتاج تربوي ================== */
 function analyzeText(){
-  if(/جمع|طرح|احسب|يساوي|عدد/.test(extractedText)){
+  if(/جمع|طرح|احسب|عدد|يساوي/.test(extractedText)){
     coreQuestion="كيف توصلت إلى الناتج؟";
-  }else if(/اقرأ|نص|جملة|كلمة/.test(extractedText)){
+  }else if(/اقرأ|نص|كلمة|جملة/.test(extractedText)){
     coreQuestion="ماذا فهمت من هذه الجملة؟";
   }else{
     coreQuestion="ماذا لاحظت؟";
@@ -225,39 +217,42 @@ function analyzeText(){
 /* ================== التحضير ================== */
 function showPrep(){
   const m=parseInt(time.value);
-  prep.textContent=
-`التحضير التنفيذي (مبني على الصفحة):
+  prepEl.textContent=
+`التحضير التنفيذي الحرفي (مبني على الصفحة):
 
-• سؤال مركزي:
+• السؤال المركزي:
 «${coreQuestion}»
 
 الدقيقة ٠–٥:
-عرض الصفحة دون شرح.
+"افتحوا الصفحة."
+"انظروا فقط."
 
 الدقيقة ٥–١٠:
-طرح السؤال، صمت ٣٠ ثانية.
+طرح السؤال.
+صمت ٣٠ ثانية.
 
 الدقيقة ١٠–${Math.min(15,m)}:
-محاولة تلميذ واحد فقط.
+محاولة تلميذ واحد.
+جملة تثبيت واحدة.
 
-عند أول فهم:
-التوقّف مهني وصحيح.`;
-  prep.classList.remove("hidden");
+✅ عند أول فهم:
+التوقّف قرار مهني صحيح.`;
+  prepEl.classList.remove("hidden");
 }
 
 /* ================== المحاكاة ================== */
 function showSim(){
-  const m=parseInt(time.value);
-  sim.textContent=
+  simEl.textContent=
 `المحاكاة الصفّية الواقعية:
 
-عرض → صمت → محاولة
-→ تثبيت بجملة واحدة
-→ إنهاء عند الفهم.
+عرض الصفحة → صمت واعٍ
+→ محاولة تلميذ واحد فقط
+→ تثبيت بجملة قصيرة
+→ إنهاء عند الفهم
 
-إذا لم يظهر الفهم:
-الإنهاء المبكر صحيح تربويًا.`;
-  sim.classList.remove("hidden");
+في الوجاهي أو تيمز:
+القاعدة نفسها: القِصر = جودة.`;
+  simEl.classList.remove("hidden");
 }
 
 /* ================== الخبير ================== */
@@ -270,11 +265,42 @@ function expert(){
   expertBox.classList.remove("hidden");
 }
 
+/* ================== الدعم السلوكي والمادّي ================== */
+function behavior(){
+  prepEl.textContent=
+`الدعم السلوكي اللحظي:
+• جملة واحدة رحيمة
+• تغيير مكان أو دور
+• احتواء دون توبيخ`;
+  prepEl.classList.remove("hidden");
+}
+function material(){
+  prepEl.textContent=
+`الدعم المادّي الذكي:
+• أداة واحدة فقط
+• لا مكافآت
+• لا سحب أو تهديد`;
+  prepEl.classList.remove("hidden");
+}
+
 /* ================== زر أقل جهد ================== */
 function oneClick(){
   showPrep();
   showSim();
   expert();
+  startLesson();
+}
+
+/* ================== الحصّة المباشرة ================== */
+function startLesson(){
+  live.classList.remove("hidden");
+  log.textContent="سجل الحصّة:";
+}
+function act(t){
+  log.textContent+="\n• "+t;
+}
+function finish(){
+  log.textContent+="\n• نُطقت الفكرة — انتهت الحصّة";
 }
 </script>
 
