@@ -2,56 +2,55 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=١.٠">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>النظام السيادي الذكي الشامل لدعم المعلّم</title>
 
-<!-- ✅ تحميل OCR بالطريقة الصحيحة ١٠٠٪ -->
-https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js</script>
+<!-- ✅ تحميل OCR بالطريقة الصحيحة -->
+https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
 <style>
 :root{
-  --main:#٠d٤٧a١;
-  --bg:#f٤f٦f٨;
+  --main:#0d47a1;
+  --bg:#f4f6f8;
   --card:#ffffff;
-  --ink:#٢٢٢;
-  --ok:#٢e٧d٣٢;
-  --warn:#f٩a٨٢٥;
-  --expert:#٦a١b٩a;
+  --ink:#222;
+  --ok:#2e7d32;
+  --expert:#6a1b9a;
 }
 
 *{box-sizing:border-box}
 
 body{
-  margin:٠;
+  margin:0;
   font-family:Tahoma, Arial, sans-serif;
   background:var(--bg);
   color:var(--ink);
-  line-height:١.٩;
+  line-height:1.9;
 }
 
 .app{
-  max-width:٩٠٠px;
+  max-width:900px;
   margin:auto;
-  padding:١٦px;
+  padding:16px;
 }
 
 .card{
   background:var(--card);
-  padding:٢٠px;
-  border-radius:١٦px;
-  box-shadow:٠ ٦px ٢٠px rgba(٠,٠,٠,.١);
-  margin-bottom:١٦px;
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 6px 20px rgba(0,0,0,.1);
+  margin-bottom:16px;
 }
 
-h١{text-align:center;color:var(--main)}
+h1{text-align:center;color:var(--main)}
 
 button,input,select{
-  width:١٠٠%;
-  padding:١٤px;
-  margin-top:٨px;
+  width:100%;
+  padding:14px;
+  margin-top:8px;
   border:none;
-  border-radius:١٤px;
-  font-size:١٦px;
+  border-radius:14px;
+  font-size:16px;
 }
 
 button{
@@ -64,13 +63,13 @@ button.ok{background:var(--ok)}
 
 .box{
   background:#fafafa;
-  padding:١٦px;
-  border-radius:١٤px;
-  margin-top:١٢px;
+  padding:16px;
+  border-radius:14px;
+  margin-top:12px;
   white-space:pre-wrap;
 }
 
-.expert{border-right:٦px solid var(--expert)}
+.expert{border-right:6px solid var(--expert)}
 .hidden{display:none}
 </style>
 </head>
@@ -79,23 +78,23 @@ button.ok{background:var(--ok)}
 
 <div class="app">
 
-<h١>النظام السيادي الذكي الشامل</h١>
+<h1>النظام السيادي الذكي الشامل</h1>
 
 <div class="card">
-  <h٣>📘 إدراج صفحة الدرس</h٣>
-  <input type="file" accept="image/*" onchange="loadImage(event)">
+  <h3>📘 إدراج صفحة الدرس</h3>
+  <input type="file" accept="image/*" id="imageInput">
   <div id="status" class="box">— بانتظار رفع الصورة —</div>
 </div>
 
 <div class="card hidden" id="controls">
   <label>مدة الحصّة</label>
   <select id="duration">
-    <option value="٣٠">٣٠ دقيقة</option>
-    <option value="٤٠">٤٠ دقيقة</option>
-    <option value="٤٥">٤٥ دقيقة</option>
+    <option value="30">٣٠ دقيقة</option>
+    <option value="40">٤٠ دقيقة</option>
+    <option value="45">٤٥ دقيقة</option>
   </select>
 
-  <button class="ok" onclick="startLesson()">▶ ابدأ الحصّة الآن (أقل جهد)</button>
+  <button class="ok" id="startBtn">▶ ابدأ الحصّة الآن (أقل جهد)</button>
 
   <div id="prep" class="box"></div>
   <div id="sim" class="box"></div>
@@ -106,55 +105,64 @@ button.ok{background:var(--ok)}
 </div>
 
 <script>
-let imageFile=null;
-let extractedText="";
-let coreQuestion="ماذا لاحظت؟";
-let lessonType="عام";
-let attempts=٠;
-let startTime=٠;
+const statusBox = document.getElementById("status");
+const controls = document.getElementById("controls");
+const imageInput = document.getElementById("imageInput");
+const duration = document.getElementById("duration");
+const prep = document.getElementById("prep");
+const sim = document.getElementById("sim");
+const expertBox = document.getElementById("expertBox");
+const support = document.getElementById("support");
 
-/* تحميل الصورة */
+let imageFile = null;
+let extractedText = "";
+let coreQuestion = "ماذا لاحظت؟";
+let lessonType = "استكشاف";
+let attempts = 0;
+let startTime = 0;
+
+imageInput.addEventListener("change", loadImage);
+document.getElementById("startBtn").addEventListener("click", startLesson);
+
 function loadImage(e){
-  imageFile=e.target.files[٠];
-  status.textContent="🔍 جارٍ قراءة الصفحة…";
+  imageFile = e.target.files[0];
+  if(!imageFile) return;
+  statusBox.textContent = "🔍 جارٍ قراءة الصفحة…";
   readImage();
 }
 
-/* OCR */
 async function readImage(){
   try{
     const result = await Tesseract.recognize(imageFile,"ara");
-    extractedText=result.data.text||"";
-    status.textContent="✅ تم استخراج النص من الصفحة";
+    extractedText = result.data.text || "";
+    statusBox.textContent = "✅ تم استخراج النص من الصفحة";
   }catch(e){
-    extractedText="";
-    status.textContent="⚠️ تعذّر الاستخراج – استخدام خطة آمنة";
+    extractedText = "";
+    statusBox.textContent = "⚠️ تعذّر الاستخراج – استخدام خطة آمنة";
   }
   analyzeText();
   controls.classList.remove("hidden");
 }
 
-/* تحليل النص */
 function analyzeText(){
   if(/جمع|طرح|احسب|يساوي|عدد/.test(extractedText)){
-    lessonType="رياضيات";
-    coreQuestion="كيف توصلت إلى الناتج؟";
+    lessonType = "رياضيات";
+    coreQuestion = "كيف توصلت إلى الناتج؟";
   }else if(/اقرأ|نص|كلمة|جملة/.test(extractedText)){
-    lessonType="لغة عربية";
-    coreQuestion="ماذا فهمت من النص؟";
+    lessonType = "لغة عربية";
+    coreQuestion = "ماذا فهمت من النص؟";
   }else{
-    lessonType="استكشاف";
-    coreQuestion="ماذا لاحظت في الصفحة؟";
+    lessonType = "استكشاف";
+    coreQuestion = "ماذا لاحظت في الصفحة؟";
   }
 }
 
-/* تشغيل الحصّة */
 function startLesson(){
-  attempts=١;
-  startTime=Date.now();
-  const mins=parseInt(duration.value,١٠);
+  attempts = 1;
+  startTime = Date.now();
+  const mins = parseInt(duration.value,10);
 
-  prep.textContent=
+  prep.textContent =
 `📘 التحضير التنفيذي المبني على الصفحة:
 
 نوع الدرس: ${lessonType}
@@ -167,7 +175,7 @@ function startLesson(){
 محاولة طالب واحد فقط.
 توقّف عند الفهم.`;
 
-  sim.textContent=
+  sim.textContent =
 `🎬 المحاكاة الصفّية الواقعية:
 
 عرض المحتوى كما هو.
@@ -177,16 +185,16 @@ function startLesson(){
 تثبيت بجملة قصيرة.
 إنهاء.`;
 
-  expertBox.textContent=
+  expertBox.textContent =
 `🧠 الخبير التربوي:
 لا تُضِف شيئًا خارج الصفحة.
 الصمت هنا يعمل.
 الإنهاء المبكر جودة تربوية.`;
 
-  support.textContent=
+  support.textContent =
 `📊 الدعم الكمي والنوعي والسلوكي:
 عدد المحاولات: ${attempts}
-الزمن التقريبي: ${Math.round((Date.now()-startTime)/٦٠٠٠٠)} دقيقة
+الزمن التقريبي: ${Math.round((Date.now()-startTime)/60000)} دقيقة
 
 الوصف النوعي:
 "محاولة واحدة مستقلة – أداء مناسب."
