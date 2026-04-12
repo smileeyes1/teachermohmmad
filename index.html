@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الخبير التربوي المرافق — النسخة النهائية المعتمدة</title>
+<title>الخبير التربوي المرافق — النسخة النهائية المستقرة</title>
 
-<!-- ✅ تحميل صحيح ومفحوص لـ Tesseract.js -->
+<!-- ✅ تحميل صحيح لمكتبة OCR -->
 https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
-<!-- ✅ سياسة أمان (CSP) متوافقة مع OCR -->
 <meta http-equiv="Content-Security-Policy"
 content="
 default-src 'self';
@@ -22,47 +21,26 @@ base-uri 'none';
 
 <style>
 :root{
-  --main:#0d47a1;
-  --bg:#f4f6f8;
-  --card:#ffffff;
-  --ink:#1f2937;
-  --muted:#6b7280;
-  --ok:#166534;
-  --warn:#6b7280;
-  --soft:#e3f2fd;
+  --main:#0d47a1;--bg:#f4f6f8;--card:#fff;--ink:#1f2937;
+  --muted:#6b7280;--ok:#166534;--soft:#e3f2fd;
 }
 *{box-sizing:border-box}
-body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.8}
+body{margin:0;font-family:Tahoma,Arial;background:var(--bg);color:var(--ink);line-height:1.8}
 .app{max-width:1200px;margin:auto;padding:16px}
-.header{background:var(--card);padding:18px;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.08);margin-bottom:16px;text-align:center}
-.header p{margin:0}
-.header h1{margin:6px 0;color:var(--main);font-size:1.4em}
-
-.card{background:var(--card);padding:16px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.08);margin-bottom:16px}
+.header{background:var(--card);padding:18px;border-radius:16px;
+box-shadow:0 6px 20px rgba(0,0,0,.08);text-align:center;margin-bottom:16px}
+.card{background:var(--card);padding:16px;border-radius:14px;
+box-shadow:0 6px 20px rgba(0,0,0,.08);margin-bottom:16px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:900px){.grid{grid-template-columns:1fr}}
-
-button,input,select,textarea{width:100%;padding:12px;margin-top:8px;border-radius:12px;border:none;font-size:15px}
+button,input,select{width:100%;padding:12px;border:none;border-radius:12px;font-size:15px;margin-top:8px}
 button{background:var(--main);color:#fff;cursor:pointer}
 button.ok{background:var(--ok)}
-button.warn{background:var(--warn)}
-button.ghost{background:#eef2f7;color:#111}
 button:disabled{opacity:.6}
-
-.box{background:var(--soft);border-radius:12px;padding:12px;margin-top:10px;white-space:pre-wrap}
+.box{background:var(--soft);padding:12px;border-radius:12px;margin-top:10px;white-space:pre-wrap}
 .progress{height:8px;background:#e5e7eb;border-radius:8px;overflow:hidden}
-.progress span{display:block;height:100%;width:0%;background:var(--main);transition:width .2s}
+.progress span{display:block;height:100%;width:0%;background:var(--main);transition:.2s}
 .small{font-size:13px;color:var(--muted)}
-
-@media print{
-  button,input,select,.progress{display:none}
-  body{background:#fff}
-  .card{box-shadow:none}
-}
-
-body.class-mode{background:#fff}
-body.class-mode .card:not(#liveCard){display:none}
-body.class-mode .header{display:none}
 </style>
 </head>
 
@@ -70,123 +48,92 @@ body.class-mode .header{display:none}
 <div class="app">
   <div class="header">
     <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
-    <h1>الخبير التربوي المرافق — دعم سيادي للمعلم</h1>
-    <p class="small">نسخة نهائية معتمدة • مستقرة • قابلة للتنفيذ الواقعي</p>
+    <h2 style="color:var(--main)">الخبير التربوي المرافق — دعم سيادي للمعلم</h2>
+    <p class="small">نسخة مستقرة • حدّ أقصى ٣ صور • ضغط تلقائي</p>
   </div>
 
   <div class="grid">
     <div class="card">
-      <h3>📷 إدخال صور الدرس (صور فقط — حدّ أقصى ٢ م.ب للصورة)</h3>
-      <input type="file" id="fileInput" accept="image/*" multiple>
+      <h3>📷 إدخال صور الدرس (٣ صور كحد أقصى)</h3>
+      <input type="file" id="files" accept="image/*" multiple>
       <div class="progress"><span id="bar"></span></div>
-      <div id="imgStatus" class="box">— بانتظار الصور —</div>
-
-      <button class="ok" id="startOCR" disabled>ابدأ القراءة</button>
-      <button class="ghost" id="retryOCR" disabled>إعادة التحسين</button>
-
-      <div id="ocrStatus" class="box"></div>
+      <div id="status" class="box">— بانتظار الصور —</div>
+      <button class="ok" id="start" disabled>ابدأ القراءة</button>
     </div>
 
     <div class="card">
-      <h3>🧭 التحضير والمحاكاة</h3>
-
-      <select id="mode">
-        <option>وجاهية</option>
-        <option>تيمز</option>
-      </select>
-
-      <select id="duration">
-        <option>٣٠ دقيقة</option>
-        <option>٤٠ دقيقة</option>
-        <option>٤٥ دقيقة</option>
-      </select>
-
-      <button class="ok" id="buildPrep" disabled>إنشاء التحضير</button>
-
+      <h3>🧭 التحضير</h3>
+      <button id="prepBtn" disabled class="ok">إنشاء التحضير</button>
       <div id="prep" class="box"></div>
-      <div id="sim" class="box"></div>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <h3>📋 قوائم الرصد والطلاب</h3>
-      <input id="studentName" placeholder="اسم الطالب">
-      <button class="ok" id="addStudent">إضافة</button>
-      <div id="students" class="box"></div>
-      <p class="small">هذا الرصد وصفي لحظي غير تشخيصي.</p>
-    </div>
-
-    <div class="card" id="liveCard">
-      <h3>🖨️ الدعم والطباعة</h3>
-      <button class="ok" onclick="window.print()">طباعة</button>
-      <button class="warn" onclick="smartSilence()">🛑 صمت مهني</button>
-      <button class="ghost" onclick="closeIdea()">✅ أُغلِقت الفكرة</button>
-      <button class="ghost" onclick="toggleClass()">🎯 وضع الصف</button>
-      <div id="support" class="box"></div>
     </div>
   </div>
 </div>
 
 <script>
-const $=id=>document.getElementById(id);
-const fileInput=$("fileInput"), bar=$("bar"), imgStatus=$("imgStatus");
-const startOCR=$("startOCR"), retryOCR=$("retryOCR"), ocrStatus=$("ocrStatus");
-const prep=$("prep"), sim=$("sim"), studentsBox=$("students");
+const filesInput=document.getElementById("files");
+const statusBox=document.getElementById("status");
+const bar=document.getElementById("bar");
+const startBtn=document.getElementById("start");
+const prepBtn=document.getElementById("prepBtn");
+const prepBox=document.getElementById("prep");
 
-let images=[], text="";
+let images=[]; let extractedText="";
 
-fileInput.onchange=()=>{
-  images=[...fileInput.files].filter(f=>f.type.startsWith("image/") && f.size<=2*1024*1024);
-  imgStatus.textContent=images.length?`✅ تم إدخال ${images.length} صورة.`:"⚠️ صور غير صالحة.";
-  startOCR.disabled=!images.length;
+filesInput.onchange=async()=>{
+  images=[...filesInput.files].slice(0,3);
+  if(filesInput.files.length>3){
+    statusBox.textContent="⚠️ تم قبول أول ٣ صور فقط.";
+  }
+  if(!images.length){return}
+  statusBox.textContent=`✅ تم إدخال ${images.length} صورة.`;
+  startBtn.disabled=false;
 };
 
-async function runOCR(){
-  text=""; bar.style.width="5%";
+async function compressImage(file){
+  return new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement("canvas");
+      const scale=Math.min(1200/img.width,1);
+      canvas.width=img.width*scale;
+      canvas.height=img.height*scale;
+      const ctx=canvas.getContext("2d");
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      canvas.toBlob(b=>res(b),"image/jpeg",0.7);
+    };
+    img.src=URL.createObjectURL(file);
+  });
+}
+
+startBtn.onclick=async()=>{
+  extractedText="";
+  bar.style.width="5%";
   for(let i=0;i<images.length;i++){
+    const blob=await compressImage(images[i]);
     try{
-      const res=await Tesseract.recognize(images[i],"ara",{logger:m=>{
-        if(m.progress!=null){bar.style.width=Math.round((i+m.progress)/images.length*90)+"%";}
+      const r=await Tesseract.recognize(blob,"ara",{logger:m=>{
+        if(m.progress!=null){
+          bar.style.width=Math.round((i+m.progress)/images.length*90)+"%";
+        }
       }});
-      text+=res.data.text+" ";
+      extractedText+=r.data.text+" ";
     }catch(e){}
   }
   bar.style.width="100%";
-  text=text.trim();
-  ocrStatus.textContent=text? "✅ تمت القراءة بنجاح." : "⚠️ تعذّر الاستخراج — سيُدار الدرس من الصورة.";
-  $("buildPrep").disabled=false;
-  retryOCR.disabled=false;
-}
-startOCR.onclick=runOCR; retryOCR.onclick=runOCR;
+  statusBox.textContent=extractedText? "✅ تمت القراءة بنجاح."
+  :"⚠️ تعذّر الاستخراج — سيتم العمل من الصور.";
+  prepBtn.disabled=false;
+};
 
-function analyze(t){
-  if(/جمع|طرح|احسب/.test(t)) return ["رياضيات","كيف توصّلت للحل؟"];
-  if(/اقرأ|نص|كلمة/.test(t)) return ["لغة عربية","ماذا فهمت من النص؟"];
-  return ["استكشاف","ماذا ترى في الصفحة؟"];
-}
-
-$("buildPrep").onclick=()=>{
-  const [type,q]=analyze(text);
-  prep.textContent=`📘 نوع الدرس: ${type}
-النص الحرفي:
+prepBtn.onclick=()=>{
+  prepBox.textContent=
+`📘 تحضير مهني:
 "انظروا إلى الصفحة."
-«${q}»
+سؤال واحد.
 صمت.
-النمط: ${$("mode").value} | المدة: ${$("duration").value}`;
-  sim.textContent=`🎬 محاكاة واقعية:
-بداية → صمت → تردّد → محاولة → نطق → إغلاق.`;
+محاولة.
+إغلاق عند نطق الفكرة.`;
 };
-
-$("addStudent").onclick=()=>{
-  const n=$("studentName").value.trim(); if(!n) return;
-  studentsBox.textContent+=`• ${n} : حاول □ | تردّد □ | نطق □ | احتاج دعم □\n`;
-  $("studentName").value="";
-};
-
-function smartSilence(){ $("support").textContent="🛑 صمت مهني مُدار."; }
-function closeIdea(){ $("support").textContent="✅ نُطقت الفكرة — أُغلِقت الحصّة."; }
-function toggleClass(){ document.body.classList.toggle("class-mode"); }
 </script>
 </body>
 </html>
