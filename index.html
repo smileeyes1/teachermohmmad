@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الخبير التربوي المرافق — النسخة النهائية المستقرة</title>
+<title>الخبير التربوي المرافق — نسخة نهائية مستقرة</title>
 
-<!-- ✅ تحميل صحيح لمكتبة OCR -->
-https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
+<!-- ✅ OCR: تحميل صحيح 100% -->
+https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js</script>
 
 <meta http-equiv="Content-Security-Policy"
 content="
@@ -22,18 +22,18 @@ base-uri 'none';
 <style>
 :root{
   --main:#0d47a1;--bg:#f4f6f8;--card:#fff;--ink:#1f2937;
-  --muted:#6b7280;--ok:#166534;--soft:#e3f2fd;
+  --ok:#166534;--soft:#e3f2fd;--muted:#6b7280;
 }
 *{box-sizing:border-box}
 body{margin:0;font-family:Tahoma,Arial;background:var(--bg);color:var(--ink);line-height:1.8}
-.app{max-width:1200px;margin:auto;padding:16px}
+.app{max-width:1100px;margin:auto;padding:16px}
 .header{background:var(--card);padding:18px;border-radius:16px;
 box-shadow:0 6px 20px rgba(0,0,0,.08);text-align:center;margin-bottom:16px}
 .card{background:var(--card);padding:16px;border-radius:14px;
 box-shadow:0 6px 20px rgba(0,0,0,.08);margin-bottom:16px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:900px){.grid{grid-template-columns:1fr}}
-button,input,select{width:100%;padding:12px;border:none;border-radius:12px;font-size:15px;margin-top:8px}
+button,input{width:100%;padding:12px;border-radius:12px;border:none;font-size:15px;margin-top:8px}
 button{background:var(--main);color:#fff;cursor:pointer}
 button.ok{background:var(--ok)}
 button:disabled{opacity:.6}
@@ -49,7 +49,7 @@ button:disabled{opacity:.6}
   <div class="header">
     <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
     <h2 style="color:var(--main)">الخبير التربوي المرافق — دعم سيادي للمعلم</h2>
-    <p class="small">نسخة مستقرة • حدّ أقصى ٣ صور • ضغط تلقائي</p>
+    <p class="small">نسخة مستقرة • حد أقصى ٣ صور • ضغط تلقائي</p>
   </div>
 
   <div class="grid">
@@ -77,19 +77,21 @@ const startBtn=document.getElementById("start");
 const prepBtn=document.getElementById("prepBtn");
 const prepBox=document.getElementById("prep");
 
-let images=[]; let extractedText="";
+let images=[], extractedText="";
 
-filesInput.onchange=async()=>{
+filesInput.onchange=()=>{
   images=[...filesInput.files].slice(0,3);
   if(filesInput.files.length>3){
     statusBox.textContent="⚠️ تم قبول أول ٣ صور فقط.";
   }
-  if(!images.length){return}
-  statusBox.textContent=`✅ تم إدخال ${images.length} صورة.`;
-  startBtn.disabled=false;
+  if(images.length){
+    statusBox.textContent=`✅ تم إدخال ${images.length} صورة.`;
+    startBtn.disabled=false;
+  }
 };
 
-async function compressImage(file){
+/* ضغط وتصغير الصورة تلقائيًا */
+function compressImage(file){
   return new Promise(res=>{
     const img=new Image();
     img.onload=()=>{
@@ -97,8 +99,7 @@ async function compressImage(file){
       const scale=Math.min(1200/img.width,1);
       canvas.width=img.width*scale;
       canvas.height=img.height*scale;
-      const ctx=canvas.getContext("2d");
-      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
       canvas.toBlob(b=>res(b),"image/jpeg",0.7);
     };
     img.src=URL.createObjectURL(file);
@@ -106,8 +107,7 @@ async function compressImage(file){
 }
 
 startBtn.onclick=async()=>{
-  extractedText="";
-  bar.style.width="5%";
+  extractedText=""; bar.style.width="5%";
   for(let i=0;i<images.length;i++){
     const blob=await compressImage(images[i]);
     try{
@@ -120,17 +120,18 @@ startBtn.onclick=async()=>{
     }catch(e){}
   }
   bar.style.width="100%";
-  statusBox.textContent=extractedText? "✅ تمت القراءة بنجاح."
-  :"⚠️ تعذّر الاستخراج — سيتم العمل من الصور.";
+  statusBox.textContent=extractedText
+   ? "✅ تمت القراءة بنجاح."
+   : "⚠️ تعذّر الاستخراج — سيُدار الدرس من الصورة.";
   prepBtn.disabled=false;
 };
 
 prepBtn.onclick=()=>{
   prepBox.textContent=
-`📘 تحضير مهني:
+`📘 تحضير مهني واقعي:
 "انظروا إلى الصفحة."
 سؤال واحد.
-صمت.
+صمت واعٍ.
 محاولة.
 إغلاق عند نطق الفكرة.`;
 };
