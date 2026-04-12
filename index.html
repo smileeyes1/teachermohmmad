@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>الخبير التربوي المرافق — الكتاب هو المنهاج</title>
+
+<title>الخبير التربوي المرافق — مساعد المعلّم (الكتاب هو المنهاج)</title>
 
 <style>
 :root{
@@ -28,7 +29,7 @@ body{
 }
 
 .wrapper{
-  max-width:920px;
+  max-width:900px;
   margin:auto;
   padding:1.2rem;
 }
@@ -105,7 +106,7 @@ input,textarea{
   text-align:center;
 }
 
-/* توافق الشاشات الصغيرة */
+/* دعم الشاشات الصغيرة */
 @media(max-width:600px){
   h1{font-size:1.45rem}
   h2{font-size:1.2rem}
@@ -116,14 +117,14 @@ input,textarea{
 <body>
 <div class="wrapper">
 
-<!-- العنوان -->
+<!-- الهوية -->
 <div class="card">
   <h1>الخبير التربوي المرافق</h1>
   <p>
-    نظام دعم تربوي صامت،  
-    يبني التعلّم من داخل الكتاب،  
-    ويدعم المعلّم،  
-    ويزرع حبّ التعلّم للجميع.
+    مساعد معلم صامت،  
+    يُبنى على الكتاب،  
+    ينظّم الحصّة،  
+    ويرفع العبء كاملًا عن المعلّم.
   </p>
 </div>
 
@@ -131,14 +132,15 @@ input,textarea{
 <div class="card">
   <h2>اعتماد الكتاب كمنهاج</h2>
   <div class="quote">
-    يُحظر تشغيل أي جزء من النظام قبل اعتماد الكتاب رسميًا.
+    لا يعمل النظام قبل اعتماد الكتاب رسميًا.  
+    الكتاب هو المرجع الوحيد.
   </div>
 
   <label>رفع ملف الكتاب (PDF أو صورة)</label>
   <input type="file" id="bookFile" accept=".pdf,image/*">
 
   <label>بيانات الكتاب</label>
-  <input id="bookInfo" placeholder="مثال: لغة عربية – صف ثالث – الفصل الأول">
+  <input id="bookInfo" placeholder="مثال: رياضيات – صف ثالث – فصل أوّل">
 
   <div class="actions">
     <button class="secondary" onclick="adoptBook()">اعتماد الكتاب</button>
@@ -161,8 +163,8 @@ input,textarea{
   <h2>التحضير المبني على الكتاب</h2>
 
   <div class="quote">
-    اختر فكرة واحدة مكتملة من نص الكتاب.
-    لا توسّع خارج النص.
+    فكرة واحدة فقط من النص.  
+    لا توسّع… لا إضافة… لا استعجال.
   </div>
 
   <label>الفكرة الواحدة</label>
@@ -175,7 +177,7 @@ input,textarea{
     <button class="secondary" onclick="lockPrep()">اعتماد التحضير</button>
   </div>
 
-  <p id="prepStatus" class="hidden">✅ التحضير معتمد.</p>
+  <p id="prepStatus" class="hidden">✅ التحضير جاهز.</p>
 </div>
 
 <!-- الحصّة -->
@@ -183,7 +185,9 @@ input,textarea{
   <h2>المرافقة الصفّية الصامتة</h2>
 
   <div class="quote">
-    المحاولة قيمة. الصمت مقبول. الإغلاق جودة.
+    الصمت طبيعي.  
+    المحاولة كافية.  
+    التوقّف جودة.
   </div>
 
   <div class="actions">
@@ -191,7 +195,7 @@ input,textarea{
     <button class="ghost" onclick="logAction('صمت')">صمت</button>
     <button class="ghost" onclick="logAction('ارجع للسؤال')">ارجع للسؤال</button>
     <button class="secondary" onclick="logAction('نُطقت الفكرة — أُغلقت الحصّة')">
-      إغلاق
+      إغلاق الحصّة
     </button>
   </div>
 
@@ -201,13 +205,13 @@ input,textarea{
 </div>
 
 <script>
-/* حالة النظام */
+/* حالة النظام — مدقّق صامت مفعل */
 let bookAdopted = false;
 let prepared = false;
 
 /* اعتماد الكتاب */
 function adoptBook(){
-  if(!bookFile.files.length || !bookInfo.value) return;
+  if(!bookFile.files.length || !bookInfo.value) return; // رفض صامت
   bookAdopted = true;
   prepared = false;
   bookStatus.classList.remove("hidden");
@@ -217,26 +221,26 @@ function adoptBook(){
 
 /* فتح التحضير */
 function openPrep(){
-  if(!bookAdopted) return; // رفض صامت
+  if(!bookAdopted) return; // لا كتاب = لا تحضير
   prep.classList.remove("hidden");
   session.classList.add("hidden");
 }
 
 /* اعتماد التحضير */
 function lockPrep(){
-  if(!idea.value || !question.value) return; // رفض صامت
+  if(!idea.value || !question.value) return; // أقل فعل كافٍ
   prepared = true;
   prepStatus.classList.remove("hidden");
 }
 
 /* فتح الحصّة */
 function openSession(){
-  if(!bookAdopted || !prepared) return; // رفض صامت
+  if(!bookAdopted || !prepared) return; // مدقّق حاكم
   session.classList.remove("hidden");
   prep.classList.add("hidden");
 }
 
-/* تسجيل الحالة الصفّية (دون تتبّع أو تقييم) */
+/* تسجيل صامت (دون تتبّع) */
 function logAction(text){
   log.textContent = text;
   log.classList.remove("hidden");
