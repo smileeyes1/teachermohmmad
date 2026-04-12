@@ -3,32 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>النظام الشامل لدعم المعلّم</title>
+<title>دعم المعلّم – تصوير أو رفع صورة الدرس</title>
 
 <!-- ========================= -->
-<!-- ✅ تحميل المكتبات بشكل صحيح -->
+<!-- ✅ تحميل مكتبة OCR بشكل صحيح -->
 <!-- ========================= -->
-
-<!-- PDF.js -->
-https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js</script>
-<script>
-  // إعداد الـ worker (إجباري للاستقرار)
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-</script>
-
-<!-- Tesseract.js (OCR عربي) -->
-https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
+https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js</script>
 
 <style>
 :root{
   --main:#1565c0;
+  --alt:#455a64;
   --bg:#f4f6f8;
   --card:#ffffff;
-  --ink:#222;
-  --muted:#666;
-  --ok:#2e7d32;
-  --alt:#455a64;
 }
 
 *{box-sizing:border-box}
@@ -37,302 +24,215 @@ body{
   margin:0;
   font-family:Tahoma, Arial, sans-serif;
   background:var(--bg);
-  color:var(--ink);
-  line-height:1.9;
-}
-
-.app{
-  max-width:1200px;
-  margin:auto;
-  padding:1rem;
+  padding:12px;
+  line-height:1.8;
 }
 
 .card{
   background:var(--card);
-  padding:1.25rem;
-  border-radius:1rem;
-  box-shadow:0 .4rem 1.4rem rgba(0,0,0,.08);
-  margin-bottom:1rem;
+  padding:14px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,.12);
+  margin-bottom:12px;
 }
 
-h1,h2{
-  margin:0 0 .75rem 0;
+h3,h4{
+  margin:0 0 8px;
 }
 
-input[type=file],button{
-  padding:.75rem;
-  border-radius:.75rem;
-  border:none;
-  font-size:.95rem;
-}
-
-input[type=file]{
+video,canvas,img{
   width:100%;
-  border:1px dashed #ccc;
-  background:#fafafa;
+  border-radius:10px;
+}
+
+button,input[type=file]{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  font-size:14px;
+  margin-top:8px;
 }
 
 button{
   background:var(--main);
-  color:white;
+  color:#fff;
   cursor:pointer;
 }
 
-button.alt{background:var(--alt)}
-button.ok{background:var(--ok)}
-button.lesson{background:#546e7a}
-
-.buttons{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.5rem;
+button.secondary{
+  background:var(--alt);
 }
 
-#status,#rawText,#lessonList,#output{
+#lessonTitle{
+  font-weight:bold;
+  margin-bottom:6px;
+}
+
+#output{
   white-space:pre-wrap;
-  margin-top:.75rem;
-  font-size:.9rem;
-}
-
-#rawText{
   background:#fafafa;
-  padding:.75rem;
-  border-radius:.75rem;
-  max-height:240px;
-  overflow:auto;
+  padding:10px;
+  border-radius:8px;
+  font-size:14px;
 }
 
-.lesson-box button{
-  margin:.25rem;
-}
-
-@media(max-width:600px){
-  .buttons{flex-direction:column}
+.actions button{
+  margin-top:6px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
-
-<!-- ===================== -->
-<!-- العنوان -->
-<!-- ===================== -->
+<!-- ========================= -->
+<!-- اختيار طريقة إدخال الدرس -->
+<!-- ========================= -->
 <div class="card">
-  <h1>النظام الشامل لدعم المعلّم</h1>
-  <p>قراءة الكتاب فعليًا → اختيار الدرس → تحضير / محاكاة / رصد</p>
+  <h3>📘 إدخال صفحة الدرس</h3>
+  <button onclick="startCamera()">📸 استخدام الكاميرا</button>
+  <input type="file" accept="image/*" onchange="loadImage(event)">
 </div>
 
-<!-- ===================== -->
-<!-- ١) إدراج الكتاب -->
-<!-- ===================== -->
+<!-- ========================= -->
+<!-- الكاميرا -->
+<!-- ========================= -->
+<div class="card" id="cameraBox" style="display:none">
+  <h4>📸 الكاميرا</h4>
+  <video id="video" autoplay playsinline></video>
+  <button onclick="capture()">التقاط الصورة</button>
+</div>
+
+<!-- ========================= -->
+<!-- الصورة الملتقطة أو المرفوعة -->
+<!-- ========================= -->
+<div class="card" id="imageBox" style="display:none">
+  <h4>🖼️ صورة الدرس</h4>
+  <canvas id="canvas"></canvas>
+</div>
+
+<!-- ========================= -->
+<!-- النص واسم الدرس -->
+<!-- ========================= -->
 <div class="card">
-  <h2>١) إدراج الكتاب المدرسي</h2>
-  <input type="file" id="fileInput" accept=".pdf,image/*">
-  <div class="buttons">
-    <button onclick="readBook()">⚡ اقرأ الكتاب</button>
-    <button class="alt" onclick="stopReading()">🛑 إيقاف</button>
-  </div>
-  <div id="status"></div>
+  <div id="lessonTitle"></div>
+  <div id="output">— لم يتم استخراج نص بعد —</div>
 </div>
 
-<!-- ===================== -->
-<!-- ٢) النص المستخرج -->
-<!-- ===================== -->
-<div class="card">
-  <h2>٢) النص المستخرج (كما هو)</h2>
-  <div id="rawText">— لم يتم استخراج نص بعد —</div>
+<!-- ========================= -->
+<!-- أزرار الدعم -->
+<!-- ========================= -->
+<div class="card actions" id="actions" style="display:none">
+  <button onclick="prep()">📘 تحضير</button>
+  <button onclick="sim()">🧪 محاكاة واقعية</button>
+  <button onclick="obs()">📋 قوائم رصد</button>
 </div>
 
-<!-- ===================== -->
-<!-- ٣) أسماء الدروس -->
-<!-- ===================== -->
-<div class="card">
-  <h2>٣) أسماء الدروس المستخرجة (محاولة تلقائية)</h2>
-  <div id="lessonList" class="lesson-box">
-    — لا توجد دروس بعد —
-  </div>
-</div>
-
-<!-- ===================== -->
-<!-- ٤) نوع الدعم -->
-<!-- ===================== -->
-<div class="card">
-  <h2>٤) ما الذي تريده للدرس المختار؟</h2>
-  <div class="buttons">
-    <button onclick="showPrep()">📘 تحضير</button>
-    <button onclick="showSim()">🧪 محاكاة واقعية</button>
-    <button onclick="showObs()">📋 قوائم رصد</button>
-  </div>
-</div>
-
-<!-- ===================== -->
-<!-- ٥) الناتج -->
-<!-- ===================== -->
-<div class="card">
-  <h2>٥) الناتج</h2>
-  <div id="output">— اختر درسًا ثم نوع الدعم —</div>
-</div>
-
-</div>
-
-<!-- ===================== -->
-<!-- ✅ المنطق البرمجي -->
-<!-- ===================== -->
 <script>
-let extractedText = "";
-let currentLesson = "";
-let stopFlag = false;
+/* ========================= */
+/* المتغيرات العامة */
+/* ========================= */
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const output = document.getElementById("output");
+const lessonTitle = document.getElementById("lessonTitle");
+const actions = document.getElementById("actions");
 
-/* إيقاف القراءة */
-function stopReading(){
-  stopFlag = true;
+let lessonName = "";
+
+/* ========================= */
+/* تشغيل الكاميرا */
+/* ========================= */
+function startCamera(){
+  document.getElementById("cameraBox").style.display = "block";
+  navigator.mediaDevices.getUserMedia({video:true})
+    .then(stream => video.srcObject = stream)
+    .catch(()=>alert("تعذّر تشغيل الكاميرا"));
 }
 
-/* قراءة الكتاب بسرعة (PDF أولًا، OCR للصور عند الموافقة) */
-async function readBook(){
-  stopFlag = false;
-  const file = document.getElementById("fileInput").files[0];
-  if(!file){ alert("اختر ملف الكتاب"); return; }
-
-  const status = document.getElementById("status");
-  status.textContent = "⚡ قراءة سريعة جارية...";
-
-  // =====================
-  // ✅ PDF (نصّي)
-  // =====================
-  if(file.type === "application/pdf"){
-    try{
-      const buffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({data:buffer}).promise;
-
-      let text = "";
-      const MAX_PAGES = Math.min(pdf.numPages, 10); // تسريع مقصود
-
-      for(let i=1;i<=MAX_PAGES;i++){
-        if(stopFlag){
-          status.textContent = "⛔ تم إيقاف القراءة";
-          break;
-        }
-
-        status.textContent = `📄 قراءة الصفحة ${i} من ${MAX_PAGES}`;
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-
-        content.items.forEach(item=>{
-          text += item.str + " ";
-        });
-
-        text += "\n\n";
-        document.getElementById("rawText").textContent =
-          text.substring(0,3000) + "…";
-      }
-
-      extractedText = text;
-      extractLessons(text);
-      status.textContent = "✅ انتهت القراءة السريعة";
-
-    }catch(e){
-      console.error(e);
-      status.textContent = "❌ خطأ أثناء قراءة PDF";
-    }
-  }
-
-  // =====================
-  // ✅ صورة (OCR عربي)
-  // =====================
-  else{
-    if(!confirm("OCR على الصور قد يكون بطيئًا. هل تريد المتابعة؟")){
-      status.textContent = "⛔ تم إلغاء OCR";
-      return;
-    }
-
-    try{
-      status.textContent = "🐢 OCR جارٍ...";
-      const result = await Tesseract.recognize(file, "ara", {
-        logger: m => status.textContent = `OCR: ${m.status}`
-      });
-
-      extractedText = result.data.text || "";
-      document.getElementById("rawText").textContent =
-        extractedText.substring(0,3000) + "…";
-
-      extractLessons(extractedText);
-      status.textContent = "✅ انتهى OCR";
-
-    }catch(e){
-      console.error(e);
-      status.textContent = "❌ خطأ أثناء OCR";
-    }
-  }
+/* ========================= */
+/* التقاط صورة من الكاميرا */
+/* ========================= */
+function capture(){
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  ctx.drawImage(video, 0, 0);
+  document.getElementById("imageBox").style.display = "block";
+  runOCR(canvas);
 }
 
-/* محاولة استخراج أسماء الدروس حرفيًا */
-function extractLessons(text){
-  const lines = text.split("\n");
-  const box = document.getElementById("lessonList");
-  box.innerHTML = "";
-  let found = false;
+/* ========================= */
+/* تحميل صورة من الجهاز */
+/* ========================= */
+function loadImage(e){
+  const file = e.target.files[0];
+  if(!file) return;
 
-  lines.forEach(line=>{
-    const clean = line.trim();
-    if(clean.length > 2 && clean.length < 40){
-      if(
-        clean.includes("الدرس") ||
-        clean.includes("العدد") ||
-        clean.includes("الواحد") ||
-        clean.includes("الاثنان") ||
-        clean.includes("الثلاثة") ||
-        clean.includes("الجمع") ||
-        clean.includes("الطرح")
-      ){
-        const btn = document.createElement("button");
-        btn.textContent = clean;
-        btn.className = "lesson";
-        btn.onclick = ()=>{ currentLesson = clean; };
-        box.appendChild(btn);
-        found = true;
-      }
-    }
+  const img = new Image();
+  img.onload = ()=>{
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+    document.getElementById("imageBox").style.display = "block";
+    runOCR(canvas);
+  }
+  img.src = URL.createObjectURL(file);
+}
+
+/* ========================= */
+/* OCR عربي على صورة واحدة */
+/* ========================= */
+function runOCR(source){
+  output.textContent = "⏳ قراءة النص من الصورة...";
+  actions.style.display = "none";
+
+  Tesseract.recognize(
+    source,
+    "ara",
+    { logger: m => output.textContent = `OCR: ${m.status}` }
+  ).then(result=>{
+    const text = result.data.text.trim();
+    output.textContent = text || "لم يتم التعرف على نص";
+
+    // اسم الدرس = أول سطر
+    lessonName = text.split("\n")[0] || "اسم الدرس";
+    lessonTitle.textContent = "📘 " + lessonName;
+
+    actions.style.display = "block";
   });
-
-  if(!found){
-    box.innerHTML = "<em>لم تُكتشف عناوين واضحة — اختر يدويًا من النص</em>";
-  }
 }
 
-/* تحضير */
-function showPrep(){
-  if(!currentLesson){ alert("اختر درسًا أولًا"); return; }
-  document.getElementById("output").textContent =
-`تحضير مختصر للدرس: ${currentLesson}
-
-• بداية من مثال الكتاب
+/* ========================= */
+/* التحضير */
+/* ========================= */
+function prep(){
+  output.textContent =
+`تحضير مختصر – ${lessonName}
+• بداية من المثال الأول في الصفحة
 • مشاركة طالب واحد
-• تثبيت الفكرة
+• تثبيت الفكرة الأساسية
 • توقّف مهني عند الفهم`;
 }
 
-/* محاكاة */
-function showSim(){
-  if(!currentLesson){ alert("اختر درسًا أولًا"); return; }
-  document.getElementById("output").textContent =
-`محاكاة صفّية قابلة للتنفيذ:
-
-١) افتح صفحة الدرس
-٢) مثال واحد فقط
-٣) صمت
-٤) محاولة تلميذ
-٥) انتهِ`;
+/* ========================= */
+/* المحاكاة */
+/* ========================= */
+function sim(){
+  output.textContent =
+`محاكاة صفّية قابلة للتنفيذ – ${lessonName}
+1) عرض المثال أو النشاط
+2) صمت
+3) محاولة طالب
+4) انتهِ عند الفهم`;
 }
 
-/* قوائم رصد */
-function showObs(){
-  if(!currentLesson){ alert("اختر درسًا أولًا"); return; }
-  document.getElementById("output").textContent =
-`قوائم رصد — ${currentLesson}
-
+/* ========================= */
+/* الرصد */
+/* ========================= */
+function obs(){
+  output.textContent =
+`قوائم رصد – ${lessonName}
 ☐ حاول
 ☐ شارك
 ☐ نطق الفكرة
