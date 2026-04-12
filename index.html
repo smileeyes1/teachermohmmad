@@ -1,182 +1,291 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>دعم المعلّم – تصميم متقدّم (بدون OCR / API)</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=١.٠">
+<title>النظام السيادي لدعم المعلّم — وضع الحصّة المباشرة</title>
+
+<!-- OCR اختياري عند توفر الإنترنت -->
+<script>
+(function(){
+  try{
+    const s=document.createElement("script");
+    s.src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js";
+    s.onload=()=>window.OCR_READY=true;
+    s.onerror=()=>window.OCR_READY=false;
+    document.head.appendChild(s);
+  }catch(e){ window.OCR_READY=false; }
+})();
+</script>
 
 <style>
 :root{
-  --bg:#f4f6f8;
+  --bg:#f٤f٦f٨;
   --card:#ffffff;
-  --primary:#١٥٦٥c٠;
-  --accent:#455a64;
-  --muted:#6b7280;
+  --main:#١٥٦٥c٠;
+  --alt:#٤٥٥a٦٤;
+  --ok:#٢e٧d٣٢;
+  --soft:#eef٢f٦;
+  --ink:#٢٢٢;
+  --muted:#٦b٧٢٨٠;
 }
 *{box-sizing:border-box}
 body{
-  margin:0;
-  font-family:Tahoma, Arial, sans-serif;
+  margin:٠;
+  font-family:Tahoma,Arial,sans-serif;
   background:var(--bg);
-  padding:١٢px;
-  line-height:١.٨;
+  color:var(--ink);
+  line-height:١.٩;
+}
+.app{
+  max-width:٩٦٠px;
+  margin:٢٠px auto;
+  padding:١٦px;
 }
 .card{
   background:var(--card);
-  padding:١٤px;
-  border-radius:١٢px;
-  box-shadow:٠ ٤px ١٢px rgba(٠,٠,٠,.١٢);
-  margin-bottom:١٢px;
+  padding:٢٢px;
+  border-radius:١٦px;
+  box-shadow:٠ ٤px ١٦px rgba(٠,٠,٠,.٠٨);
+  margin-bottom:٢٠px;
 }
-header{
-  display:flex;gap:٨px;align-items:center;justify-content:space-between
+.header{text-align:center}
+.header h١{
+  margin:٠;
+  font-size:٢٢px;
+  color:var(--main);
 }
-h1{font-size:١٦px;margin:٠}
-small{color:var(--muted)}
-video,canvas,img{width:١٠٠%;border-radius:١٠px}
-button,input[type=file]{
-  width:١٠٠%;
-  padding:١٠px;
-  border:none;
-  border-radius:٨px;
+.header p{
   margin-top:٨px;
   font-size:١٤px;
+  color:var(--muted);
 }
-button.primary{background:#1565c0;color:#fff}
-button.secondary{background:var(--accent);color:#fff}
-.actions button{background:var(--accent)}
-hr{border:none;border-top:١px solid #e٥e٧eb;margin:١٢px ٠}
-#lessonTitle{font-weight:bold;margin:٦px ٠}
-#status{color:var(--muted);font-size:١٣px}
+h٢{
+  margin:٠ ٠ ١٢px ٠;
+  font-size:١٨px;
+}
+button{
+  width:١٠٠%;
+  padding:١٤px;
+  margin-top:١٠px;
+  border-radius:١٤px;
+  border:none;
+  font-size:١٥px;
+  cursor:pointer;
+  background:var(--main);
+  color:#fff;
+}
+button.alt{background:var(--alt)}
+button.ok{background:var(--ok)}
+.buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:١٢px;
+  margin-top:١٤px;
+}
+video,canvas{
+  width:١٠٠%;
+  border-radius:١٤px;
+}
+.note{
+  background:var(--soft);
+  padding:١٤px;
+  border-radius:١٤px;
+  font-size:١٤px;
+  margin-top:١٢px;
+}
+.output{
+  background:#fafafa;
+  padding:١٨px;
+  border-radius:١٤px;
+  white-space:pre-wrap;
+  margin-top:١٤px;
+  font-size:١٥px;
+}
+.log{
+  background:#fafafa;
+  padding:١٤px;
+  border-radius:١٤px;
+  margin-top:١٢px;
+  white-space:pre-wrap;
+  font-size:١٤px;
+}
 .hidden{display:none}
-.layout{display:grid;grid-template-columns:١fr;gap:١٢px}
-@media(min-width:٨٠٠px){
-  .layout{grid-template-columns:١fr ١fr}
+.footer{
+  text-align:center;
+  font-size:١٣px;
+  color:var(--muted);
+  margin-top:٢٠px;
+}
+@media print{
+  video,button,.buttons,.footer{display:none}
+  body{background:#fff}
+  .output,.log{font-size:١٤pt}
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-  <header>
-    <h1>📘 دعم المعلّم</h1>
-    <small>واجهة صفّية هادئة</small>
-  </header>
-  <p id="status">اختر طريقة إدخال صفحة الدرس.</p>
+<div class="app">
+
+<!-- العنوان -->
+<div class="card header">
+  <h١>النظام السيادي لدعم المعلّم</h١>
+  <p>تصوير الدرس → التزام بالمنهاج → وضع حصّة مباشر مضبوط</p>
 </div>
 
-<div class="layout">
-
-  <!-- الإدخال -->
-  <div class="card">
-    <button class="primary" onclick="startCamera()">📸 استخدام الكاميرا الخلفية</button>
-    <input type="file" accept="image/*" onchange="loadImage(event)" />
-    <p id="note" style="color:#6b7280;font-size:١٣px;margin:٨px ٠ ٠">
-      لا يُعرض أي نص آلي. الصورة مرجع بصري فقط.
-    </p>
+<!-- خطوة التصوير -->
+<div class="card" id="cameraStep">
+  <h٢>١) تصوير صفحة الدرس (كاميرا خلفية)</h٢>
+  <button onclick="startCamera()">📸 تشغيل الكاميرا الخلفية</button>
+  <video id="video" autoplay playsinline class="hidden"></video>
+  <button id="captureBtn" class="hidden" onclick="capture()">التقاط صفحة الدرس</button>
+  <div class="note">
+    ✔ المرجع الوحيد هو الصورة<br>
+    ✔ OCR فقط لاستخراج العنوان عند توفر الإنترنت
   </div>
-
-  <!-- العرض -->
-  <div class="card">
-    <div id="cameraBox" class="hidden">
-      <video id="video" autoplay playsinline></video>
-      <button class="secondary" onclick="capture()">التقاط الصورة</button>
-    </div>
-    <canvas id="canvas" class="hidden"></canvas>
-    <div id="lessonTitle">— هذا الدرس —</div>
-    <small>جاهز لتقديم الدعم دون تشويش.</small>
-  </div>
-
 </div>
 
-<!-- الأفعال -->
-<div class="card actions hidden" id="actions">
-  <button onclick="prep()">📘 تحضير</button>
-  <button onclick="sim()">🧪 محاكاة صفّية</button>
-  <button onclick="obs()">📋 قوائم رصد</button>
+<!-- المعالجة -->
+<div class="card hidden" id="processStep">
+  <canvas id="canvas"></canvas>
+  <div id="lessonTitle" class="note">⏳ تحديد عنوان الدرس…</div>
+
+  <div class="buttons hidden" id="supportActions">
+    <button onclick="prep()">📘 تحضير</button>
+    <button onclick="simulate()">🧪 محاكاة</button>
+    <button onclick="observe()">📋 رصد</button>
+    <button class="ok" onclick="startLesson()">▶ بدء الحصّة المباشرة</button>
+  </div>
+
+  <div id="output" class="output hidden"></div>
+</div>
+
+<!-- وضع الحصّة المباشرة -->
+<div class="card hidden" id="liveLesson">
+  <h٢>وضع الحصّة المباشرة</h٢>
+  <div class="buttons">
+    <button onclick="act('طُرح السؤال')">اطرح السؤال</button>
+    <button class="alt" onclick="act('صمت')">صمت</button>
+    <button class="alt" onclick="act('محاولة')">محاولة</button>
+    <button class="ok" onclick="closeLesson()">نُطقت الفكرة ← توقّف</button>
+  </div>
+  <div class="log" id="log">سجل الحصّة:</div>
+</div>
+
+<div class="footer">
+  أقل فعل كافٍ — التوقّف قرار مهني — الأثر قبل الكم
+</div>
+
 </div>
 
 <script>
 const video=document.getElementById("video");
 const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d");
-const cameraBox=document.getElementById("cameraBox");
-const actions=document.getElementById("actions");
+const ctx=canvas.getContext("٢d");
 const lessonTitle=document.getElementById("lessonTitle");
-const status=document.getElementById("status");
+const output=document.getElementById("output");
+const supportActions=document.getElementById("supportActions");
+const liveLesson=document.getElementById("liveLesson");
+const log=document.getElementById("log");
 
-let lessonName="هذا الدرس";
+let lessonName="الدرس وفق الصورة";
+let closed=false;
 
-// تشغيل الكاميرا الخلفية
+/* تشغيل الكاميرا */
 function startCamera(){
-  cameraBox.classList.remove("hidden");
+  video.classList.remove("hidden");
+  document.getElementById("captureBtn").classList.remove("hidden");
   navigator.mediaDevices.getUserMedia({
     video:{facingMode:{ideal:"environment"}},
     audio:false
-  }).then(s=>{
-    video.srcObject=s;
-    status.textContent="تم تشغيل الكاميرا الخلفية.";
-  }).catch(()=>{
-    status.textContent="تعذّر تشغيل الكاميرا. يمكنك رفع صورة.";
-  });
+  }).then(s=>video.srcObject=s)
+   .catch(()=>alert("تعذّر تشغيل الكاميرا"));
 }
 
-// التقاط صورة
+/* التقاط */
 function capture(){
-  canvas.classList.remove("hidden");
   canvas.width=video.videoWidth;
   canvas.height=video.videoHeight;
-  ctx.drawImage(video,0,0);
-  finalize();
+  ctx.drawImage(video,٠,٠);
+  video.srcObject.getTracks().forEach(t=>t.stop());
+  document.getElementById("processStep").classList.remove("hidden");
+  processImage();
 }
 
-// تحميل صورة
-function loadImage(e){
-  const img=new Image();
-  img.onload=()=>{
-    canvas.classList.remove("hidden");
-    canvas.width=img.width;
-    canvas.height=img.height;
-    ctx.drawImage(img,0,0);
-    finalize();
-  };
-  img.src=URL.createObjectURL(e.target.files[0]);
+/* معالجة الصورة */
+function processImage(){
+  const cropH=Math.floor(canvas.height*٠.٢٥);
+  const crop=document.createElement("canvas");
+  crop.width=canvas.width;
+  crop.height=cropH;
+  crop.getContext("٢d").drawImage(canvas,٠,٠,canvas.width,cropH,٠,٠,canvas.width,cropH);
+
+  if(!window.OCR_READY || !window.Tesseract){
+    finalizeLesson();
+    return;
+  }
+
+  Tesseract.recognize(crop,"ara").then(res=>{
+    const text=res.data.text.trim();
+    lessonName=text.split("\n")[٠]||lessonName;
+    finalizeLesson();
+  }).catch(finalizeLesson);
 }
 
-function finalize(){
-  // ✅ حاكم بصري: لا OCR، اسم عام ثابت
-  lessonName="هذا الدرس";
+function finalizeLesson(){
   lessonTitle.textContent="📘 "+lessonName;
-  actions.classList.remove("hidden");
-  status.textContent="تم تثبيت سياق الدرس. اختر نوع الدعم.";
+  supportActions.classList.remove("hidden");
 }
 
-// الدعم
+function show(text){
+  output.textContent=text;
+  output.classList.remove("hidden");
+}
+
+/* تحضير وخطط */
 function prep(){
-  alert(
-`تحضير مختصر – ${lessonName}
-• ابدأ بالمثال الأوّل.
-• مشاركة قصيرة لطالب واحد.
+  show(
+`تحضير حصّة – ${lessonName}
+
+• مثال واحد من الصفحة.
+• سؤال واحد.
+• محاولة واحدة.
 • توقّف عند الفهم.`
   );
 }
-function sim(){
-  alert(
+function simulate(){
+  show(
 `محاكاة صفّية – ${lessonName}
-١) عرض سريع
-٢) صمت
-٣) محاولة طالب
-٤) انتهِ`
+
+عرض المثال ← صمت ← محاولة ← تثبيت ← انتهت.`
   );
 }
-function obs(){
-  alert(
-`قوائم رصد – ${lessonName}
+function observe(){
+  show(
+`قائمة رصد – ${lessonName}
+
 ☐ حاول
-☐ شارك
+☐ تردّد
+☐ نطق الفكرة
 ☐ احتاج دعم`
   );
+}
+
+/* الحصّة المباشرة */
+function startLesson(){
+  liveLesson.classList.remove("hidden");
+  log.textContent="سجل الحصّة:";
+}
+function act(text){
+  if(closed) return;
+  log.textContent+="\n• "+text;
+}
+function closeLesson(){
+  if(closed) return;
+  closed=true;
+  log.textContent+="\n• نُطقت الفكرة — انتهت الحصّة";
 }
 </script>
 
