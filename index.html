@@ -3,20 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الخبير التربوي المرافق — النسخة السيادية المُحسّنة</title>
+<title>الخبير التربوي المرافق — المنهاج الفلسطيني</title>
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <style>
-:root{
-  --main:#0d47a1;
-  --ok:#2e7d32;
-  --warn:#455a64;
-  --bg:#f4f6f8;
-  --card:#ffffff;
-  --ink:#222;
-  --soft:#e3f2fd;
-}
+:root{--main:#0d47a1;--ok:#2e7d32;--warn:#455a64;--bg:#f4f6f8;--card:#ffffff;--ink:#222;--soft:#e3f2fd}
 *{box-sizing:border-box}
 body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.85}
 .app{max-width:1000px;margin:auto;padding:16px}
@@ -43,18 +35,14 @@ button:disabled{opacity:.6;cursor:not-allowed}
 <div class="header">
   <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
   <h1>الخبير التربوي المرافق</h1>
-  <p class="small">Camera-First • تصوير مباشر • فكرة واحدة • سؤال واحد</p>
+  <p class="small">المنهاج الفلسطيني • الصف الأول والثاني • فكرة واحدة • سؤال واحد</p>
 </div>
 
 <div class="card">
   <h3>📷 التصوير المباشر بالكاميرا</h3>
-  
-  <!-- زر التصوير المباشر (الأساسي) -->
   <button id="cameraBtn" class="ok">📸 افتح الكاميرا وصوّر</button>
-  
-  <!-- خيار إضافي لاختيار من المعرض (للحالات التي لا يعمل فيها الـ capture) -->
-  <input id="fileInput" type="file" accept="image/*" style="display:none">
   <button id="galleryBtn" class="ghost">📁 اختيار صورة من المعرض</button>
+  <input id="fileInput" type="file" accept="image/*" style="display:none">
   
   <p class="small">حد أقصى: ٣ صور — يتم ضغطها تلقائياً</p>
   
@@ -62,15 +50,15 @@ button:disabled{opacity:.6;cursor:not-allowed}
   <div class="progress"><span id="bar"></span></div>
   <div id="status" class="box">— بانتظار التصوير —</div>
   
-  <button id="startBtn" class="ok" disabled>ابدأ القراءة والتحليل</button>
+  <button id="startBtn" class="ok" disabled>ابدأ القراءة والتحليل المنهاجي الفلسطيني</button>
 </div>
 
 <div class="card">
-  <h3>🧭 التحضير التنفيذي</h3>
+  <h3>🧭 التحضير التنفيذي (المنهاج الفلسطيني)</h3>
   <div id="idea" class="box">🔹 الفكرة ستظهر هنا</div>
   <div id="question" class="box">❓ السؤال سيظهر هنا</div>
   <div id="prep" class="box"></div>
-  <button id="buildBtn" class="ok" disabled>أنشئ التحضير</button>
+  <button id="buildBtn" class="ok" disabled>أنشئ التحضير المنهاجي</button>
 </div>
 
 <div class="card">
@@ -78,7 +66,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
   <button class="warn" onclick="support('🛑 صمت مهني مُدار')">صمت مهني</button>
   <button class="ghost" onclick="support('🔁 ارجع للسؤال الواحد')">ارجع للسؤال</button>
   <button class="ok" onclick="closeSession()">✅ أُغلِقت الحصة</button>
-  <button class="ghost" onclick="window.print()">🖨️ طباعة</button>
+  <button class="ghost" onclick="window.print()">🖨️ طباعة التحضير</button>
   <div id="support" class="box"></div>
 </div>
 
@@ -100,32 +88,24 @@ let ocrText = "";
 let worker = null;
 let isClosed = false;
 
-// ================== فتح الكاميرا مباشرة ==================
+// ================== فتح الكاميرا ==================
 cameraBtn.onclick = () => {
   if (isClosed) return;
-  // إنشاء input مؤقت للتصوير فقط
   const tempInput = document.createElement("input");
   tempInput.type = "file";
   tempInput.accept = "image/*";
-  tempInput.capture = "environment";   // الكاميرا الخلفية
+  tempInput.capture = "environment";
   tempInput.style.display = "none";
-  
-  tempInput.onchange = (e) => {
+  tempInput.onchange = e => {
     if (e.target.files.length > 0) {
       images = Array.from(e.target.files).slice(0, 3);
       updateUI();
     }
   };
-  
   tempInput.click();
 };
 
-// ================== اختيار من المعرض ==================
-galleryBtn.onclick = () => {
-  if (isClosed) return;
-  fileInput.click();
-};
-
+galleryBtn.onclick = () => { if (!isClosed) fileInput.click(); };
 fileInput.onchange = () => {
   if (fileInput.files.length > 0) {
     images = Array.from(fileInput.files).slice(0, 3);
@@ -144,7 +124,7 @@ function updateUI() {
   startBtn.disabled = false;
 }
 
-// ================== باقي الكود (ضغط + OCR + تحليل + تحضير) نفس النسخة السابقة مع تحسين بسيط ==================
+// ================== ضغط الصور + OCR ==================
 async function compressImage(file) {
   return new Promise(resolve => {
     const img = new Image();
@@ -169,7 +149,7 @@ async function initWorker() {
 startBtn.onclick = async () => {
   if (images.length === 0 || isClosed) return;
   bar.style.width = "5%";
-  statusBox.textContent = "🔍 جارٍ قراءة الصور...";
+  statusBox.textContent = "🔍 جارٍ قراءة الصور وتحليلها حسب المنهاج الفلسطيني...";
   startBtn.disabled = true;
 
   await initWorker();
@@ -183,22 +163,31 @@ startBtn.onclick = async () => {
   }
 
   bar.style.width = "100%";
-  statusBox.textContent = "✅ انتهت القراءة — اضغط أنشئ التحضير";
+  statusBox.textContent = "✅ انتهت القراءة — اضغط أنشئ التحضير المنهاجي";
   buildBtn.disabled = false;
-  analyzeContent();
+  analyzePalestinianCurriculum();
 };
 
-function analyzeContent() {
-  const text = ocrText.toLowerCase();
-  let idea = "استكشاف المحتوى المرئي في الصور";
-  let q = "ماذا ترى في الصور التي أمامك؟";
+// ================== تحليل منهاجي فلسطيني (محدث) ==================
+function analyzePalestinianCurriculum() {
+  const text = ocrText.toLowerCase().trim();
+  let idea = "استكشاف المحتوى المرئي في الصورة";
+  let q = "ماذا تلاحظ في الصورة أمامك؟";
 
-  if (/جمع|طرح|ضرب|احسب/.test(text)) {
-    idea = "ربط العمليات الحسابية بالصور";
-    q = "كيف نحل هذه المسألة باستخدام ما نراه؟";
-  } else if (/حرف|كلمة|قصة/.test(text)) {
-    idea = "فهم النص من خلال الملاحظة";
-    q = "ما الفكرة الرئيسية في هذا النص؟";
+  // رياضيات (العدد، الجمع، الطرح، الأشكال)
+  if (/عدد|واحد|اثنان|جمع|طرح|احسب|مثلث|دائرة|مربع/.test(text)) {
+    idea = "تنمية المفاهيم العددية والأشكال الهندسية حسب منهاج الرياضيات الفلسطيني";
+    q = "كيف نستخدم ما نراه في الصورة لنحسب أو نصف الشكل؟";
+  }
+  // لغة عربية (حروف، كلمات، قصص)
+  else if (/حرف|كلمة|قصة|الراء|الدال|الخاء|لغتنا الجميلة/.test(text)) {
+    idea = "تعلم الحروف والكلمات من خلال الملاحظة البصرية (كتاب لغتنا الجميلة)";
+    q = "ما الحرف أو الكلمة التي تراها في الصورة؟ كيف تنطقها؟";
+  }
+  // علوم أو تربية وطنية وحياتية
+  else if (/نبات|حيوان|لون|شكل|وطن|فلسطين|علم/.test(text)) {
+    idea = "ربط الملاحظة البصرية بالتربية الوطنية والحياتية والعلوم";
+    q = "ما الذي يميز هذا الشيء في بيئتنا الفلسطينية؟";
   }
 
   document.getElementById("idea").textContent = `🔹 الفكرة: ${idea}`;
@@ -207,23 +196,33 @@ function analyzeContent() {
 
 buildBtn.onclick = () => {
   if (isClosed) return;
+  
   const idea = document.getElementById("idea").textContent.replace("🔹 الفكرة: ", "");
   const q = document.getElementById("question").textContent.replace("❓ السؤال: ", "");
   
   document.getElementById("prep").innerHTML = `
-<strong>ما يقوله المعلم:</strong><br><br>
-"انظروا جيداً إلى الصور..."<br><br>
+<strong>التحضير التنفيذي — المنهاج الفلسطيني</strong><br><br>
+<strong>الفكرة الرئيسية:</strong> ${idea}<br><br>
+<strong>السؤال التوجيهي:</strong> ${q}<br><br>
+<strong>ما يقوله المعلم في الحصة:</strong><br>
+"أيها الأطفال، انظروا جيداً إلى الصور أمامكم... ماذا ترون؟"<br><br>
 ${q}<br><br>
-[ صمت واعٍ ١٥-٢٥ ثانية ]<br><br>
-محاولة واحدة من الطالب.<br>
-عند نطق الفكرة: نغلق الحصة بهدوء.
+[ صمت واعٍ — ١٥ إلى ٢٥ ثانية ]<br><br>
+دع الطالب يحاول مرة واحدة بهدوء.<br>
+عندما ينطق الفكرة أو الجواب المناسب: نشجعه ونغلق الحصة بهدوء وثقة.<br><br>
+<strong>ملاحظة:</strong> يركز الدرس على الملاحظة والتفاعل مع المحتوى المرئي حسب كتب المنهاج الفلسطيني (لغتنا الجميلة والرياضيات).
   `;
+  
+  statusBox.textContent = "✅ تم إنشاء التحضير المنهاجي الفلسطيني";
 };
 
-function support(msg) { document.getElementById("support").textContent = msg; }
+function support(msg) { 
+  if (!isClosed) document.getElementById("support").textContent = msg; 
+}
+
 function closeSession() {
   isClosed = true;
-  statusBox.textContent = "✅ تم إغلاق الحصة";
+  statusBox.textContent = "✅ تم إغلاق الحصة — لا يمكن إضافة محتوى جديد";
   startBtn.disabled = buildBtn.disabled = true;
 }
 </script>
