@@ -3,34 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>النظام التربوي السيادي الشامل — النسخة النهائية</title>
+<title>نظام القيادة الصفّية التنفيذية — النسخة العليا المحصّنة</title>
 
 <style>
 :root{
-  --main:#1565c0;
+  --main:#0d47a1;
   --bg:#f4f6f8;
   --card:#ffffff;
-  --ink:#222;
+  --ink:#1f2937;
   --muted:#6b7280;
   --ok:#2e7d32;
   --warn:#f9a825;
-  --alt:#455a64;
-  --expert:#6a1b9a;
+  --danger:#c62828;
   --soft:#eef2f6;
 }
+
 *{box-sizing:border-box}
+
 body{
   margin:0;
-  font-family:Tahoma,Arial,sans-serif;
+  font-family:Tahoma, Arial, sans-serif;
   background:var(--bg);
   color:var(--ink);
   line-height:1.9;
 }
+
 .app{
   max-width:1200px;
   margin:auto;
   padding:16px;
 }
+
 .card{
   background:var(--card);
   padding:20px;
@@ -38,12 +41,28 @@ body{
   box-shadow:0 8px 24px rgba(0,0,0,.08);
   margin-bottom:16px;
 }
-.header{text-align:center}
-.header h1{margin:0;color:var(--main)}
-.header p{margin-top:6px;color:var(--muted);font-size:14px}
 
-label{display:block;margin-top:10px;font-size:14px}
-button,select,input[type=file]{
+.header{text-align:center}
+
+.header h1{
+  margin:0;
+  color:var(--main);
+  font-size:22px;
+}
+
+.header p{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:14px;
+}
+
+label{
+  display:block;
+  margin-top:10px;
+  font-size:14px;
+}
+
+button,select{
   width:100%;
   padding:14px;
   margin-top:8px;
@@ -51,22 +70,18 @@ button,select,input[type=file]{
   border-radius:14px;
   font-size:15px;
 }
-button{background:var(--main);color:#fff;cursor:pointer}
-button.alt{background:var(--alt)}
-button.ok{background:var(--ok)}
-button.expert{background:var(--expert)}
-button.warn{background:var(--warn);color:#000}
 
-.buttons{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:12px;
-  margin-top:12px;
+button{
+  background:var(--main);
+  color:#ffffff;
+  cursor:pointer;
 }
 
-video,canvas{width:100%;border-radius:14px}
+button.ok{background:var(--ok)}
+button.warn{background:var(--warn); color:#000}
+button.danger{background:var(--danger)}
 
-.output,.log,.expertBox{
+.output{
   background:#fafafa;
   padding:16px;
   border-radius:14px;
@@ -74,7 +89,16 @@ video,canvas{width:100%;border-radius:14px}
   margin-top:12px;
   font-size:14px;
 }
-.expertBox{border-right:5px solid var(--expert)}
+
+.radar{
+  background:#fffaf0;
+  padding:16px;
+  border-radius:14px;
+  border-right:6px solid var(--warn);
+  white-space:pre-wrap;
+  margin-top:12px;
+  font-size:14px;
+}
 
 .badge{
   display:inline-block;
@@ -82,31 +106,15 @@ video,canvas{width:100%;border-radius:14px}
   border-radius:12px;
   font-size:13px;
 }
-.b-before{background:#eee}
-.b-mid{background:#fff3cd}
-.b-ok{background:#e8f5e9;color:var(--ok)}
 
-.progress{
-  height:8px;
-  background:#ddd;
-  border-radius:8px;
-  overflow:hidden;
-  margin-top:10px;
-}
-.progress span{
-  display:block;
-  height:100%;
-  width:0;
-  background:var(--main);
-  transition:.3s;
-}
-
-.hidden{display:none}
+.b-ready{background:#e3f2fd}
+.b-work{background:#fff3cd}
+.b-done{background:#e8f5e9;color:var(--ok)}
 
 @media print{
-  button,input,select,video,.buttons{display:none}
-  body{background:#fff}
-  .output,.log,.expertBox{font-size:14pt}
+  button,select{display:none}
+  body{background:#ffffff}
+  .output,.radar{font-size:14pt}
 }
 </style>
 </head>
@@ -115,35 +123,14 @@ video,canvas{width:100%;border-radius:14px}
 
 <div class="app">
 
-<!-- ================= الرأس ================= -->
+<!-- ================= العنوان ================= -->
 <div class="card header">
-  <h1>النظام التربوي السيادي الشامل</h1>
-  <p>تحضير واقعي • محاكاة قابلة للتنفيذ • دعم خبير • دعم سلوكي ومادّي</p>
+  <h1>نظام القيادة الصفّية التنفيذية</h1>
+  <p>تحضير حرفي • محاكاة تنفيذية • رادار تربوي • حماية وارتقاء</p>
 </div>
 
-<!-- ================= إدخال الدرس ================= -->
+<!-- ================= الإعداد ================= -->
 <div class="card">
-  <h2>📘 إدخال صفحة الدرس</h2>
-  <button onclick="startCamera()">📸 تصوير بالكاميرا الخلفية</button>
-  <input type="file" accept="image/*" onchange="loadImage(event)">
-
-  <video id="video" autoplay playsinline class="hidden"></video>
-  <button id="captureBtn" class="alt hidden" onclick="capture()">التقاط الصورة</button>
-
-  <label>الصف</label>
-  <select id="grade">
-    <option>الصف الأوّل</option>
-    <option>الصف الثاني</option>
-    <option>الصف الثالث</option>
-  </select>
-
-  <label>نوع المادة</label>
-  <select id="subject">
-    <option>لغة عربية</option>
-    <option>رياضيات</option>
-    <option>علوم</option>
-  </select>
-
   <label>نوع الحصّة</label>
   <select id="mode">
     <option>وجاهي</option>
@@ -157,158 +144,125 @@ video,canvas{width:100%;border-radius:14px}
     <option>٤٥ دقيقة</option>
   </select>
 
-  <div class="progress"><span id="bar"></span></div>
+  <button onclick="runSystem()">تشغيل النظام التنفيذي</button>
 </div>
 
-<!-- ================= الدعم والتحضير ================= -->
-<div class="card hidden" id="support">
-  <div id="status" class="badge b-mid">🟡 قيد البناء</div>
-
-  <div class="buttons">
-    <button onclick="prep()">📘 تحضير واقعي مفصّل</button>
-    <button onclick="simulate()">🧪 محاكاة عملية قابلة للتنفيذ</button>
-    <button onclick="observe()">📋 رصد وصفي</button>
-    <button class="warn" onclick="behavior()">🧠 دعم سلوكي لحظي</button>
-    <button class="alt" onclick="material()">🧱 دعم مادّي ذكي</button>
-    <button class="expert" onclick="expert()">🧠 استشارة خبير تربوي</button>
-    <button class="ok" onclick="startLesson()">▶ بدء الحصّة المباشرة</button>
-  </div>
-
-  <div id="output" class="output hidden"></div>
-  <div id="expertBox" class="expertBox hidden"></div>
+<!-- ================= التحضير ================= -->
+<div class="card">
+  <span id="status" class="badge b-ready">جاهز</span>
+  <h2>📘 التحضير التنفيذي الحرفي</h2>
+  <div id="prep" class="output"></div>
 </div>
 
-<!-- ================= الحصّة المباشرة ================= -->
-<div class="card hidden" id="live">
-  <h2>🧭 وضع الحصّة المباشرة</h2>
+<!-- ================= المحاكاة ================= -->
+<div class="card">
+  <h2>🎬 المحاكاة الواقعية القابلة للتنفيذ</h2>
+  <div id="simulation" class="output"></div>
+</div>
 
-  <div class="buttons">
-    <button onclick="act('طُرح السؤال')">اطرح السؤال</button>
-    <button class="alt" onclick="act('صمت واعٍ')">⏳ صمت</button>
-    <button onclick="act('محاولة تلميذ واحد')">محاولة</button>
-    <button class="ok" onclick="finish()">✅ نُطقت الفكرة</button>
-  </div>
-
-  <div id="log" class="log">سجلّ الحصّة:</div>
+<!-- ================= الرادار ================= -->
+<div class="card">
+  <h2>🛡️ الرادار والإرشاد التربوي</h2>
+  <div id="radar" class="radar"></div>
 </div>
 
 </div>
 
 <script>
-const video=document.getElementById("video");
-const canvas=document.createElement("canvas");
-const ctx=canvas.getContext("2d");
-const bar=document.getElementById("bar");
-const support=document.getElementById("support");
-const output=document.getElementById("output");
-const expertBox=document.getElementById("expertBox");
-const live=document.getElementById("live");
-const log=document.getElementById("log");
-const status=document.getElementById("status");
+function runSystem(){
 
-let closed=false;
+  const mode = document.getElementById("mode").value;
+  const time = document.getElementById("time").value;
 
-/* ===== صورة الدرس ===== */
-function startCamera(){
-  video.classList.remove("hidden");
-  captureBtn.classList.remove("hidden");
-  bar.style.width="25%";
-  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false})
-    .then(s=>video.srcObject=s);
-}
-function capture(){
-  canvas.width=video.videoWidth;
-  canvas.height=video.videoHeight;
-  ctx.drawImage(video,0,0);
-  video.srcObject.getTracks().forEach(t=>t.stop());
-  process();
-}
-function loadImage(e){
-  const img=new Image();
-  img.onload=()=>{canvas.width=img.width;canvas.height=img.height;ctx.drawImage(img,0,0);process();}
-  img.src=URL.createObjectURL(e.target.files[0]);
-}
-function process(){
-  bar.style.width="60%";
-  support.classList.remove("hidden");
-}
+  document.getElementById("status").className = "badge b-work";
+  document.getElementById("status").textContent = "قيد التنفيذ";
 
-/* ===== مخرجات ===== */
-function show(t){output.textContent=t;output.classList.remove("hidden")}
+  document.getElementById("prep").textContent =
+`نوع الحصّة: ${mode}
+مدة الحصّة: ${time}
 
-function prep(){
-show(`تحضير واقعي مفصّل
-المادة: ${subject.value}
-الصف: ${grade.value}
-الطريقة: ${mode.value}
-المدة: ${time.value}
+الدقيقة ٠ – ٢:
+المعلّم يقول حرفيًا:
+"افتحوا الصفحة."
+"ضعوا إصبعكم هنا."
+"انظروا فقط."
 
-• فكرة واحدة فقط.
-• سؤال مركزي واحد.
-• محاولة واحدة.
-• صمت واعٍ.
-• توقّف عند الفهم.`);
-}
+⛔ لا شرح
+⛔ لا سؤال
 
-function simulate(){
-show(`محاكاة عملية قابلة للتنفيذ (${mode.value})
+الدقيقة ٢ – ٤:
+المعلّم يقرأ المثال ببطء.
+ثم يقول:
+"استمعوا فقط."
+صمت ٢٠ ثانية كاملة.
 
-١) عرض مثال الكتاب.
-٢) طرح سؤال واحد.
-٣) صمت (٢٠–٣٠ ثانية).
-٤) محاولة تلميذ واحد فقط.
-٥) تثبيت الفكرة بجملة.
-٦) إنهاء الحصّة فور ظهور الفهم.`);
-}
+الدقيقة ٤ – ٦:
+المعلّم يقول:
+"ماذا لاحظت؟"
+صمت ٣٠ ثانية.
 
-function observe(){
-show(`رصد وصفي:
-☐ حاول
-☐ تردّد
-☐ نطق الفكرة
-☐ احتاج دعم
-(بدون أسماء أو تقييم)`);
-}
+إذا لم تحدث مشاركة:
+قل فقط:
+"انظر مرة أخرى."
+ثم صمت إضافي ٢٠ ثانية.
 
-function behavior(){
-show(`دعم سلوكي لحظي:
-• "خذ نفسًا ثم حاول."
-• تغيير مكان الجلوس.
-• دور بسيط.
-(جملة أو فعل واحد فقط)`);
-}
+الدقيقة ٦ – ١٠:
+اختر تلميذًا واحدًا فقط.
+قل:
+"حاول."
+لا تصويب، لا مقاطعة.
 
-function material(){
-show(`دعم مادّي ذكي:
-• بطاقة / أداة / مكعب.
-• أداة مساعدة لا مكافأة.
-• أقصى ٣ أدوات في الحصّة.`);
-}
+إذا أخطأ:
+قل:
+"حاول مرة ثانية."
+صمت ١٥ ثانية.
 
-function expert(){
-expertBox.classList.remove("hidden");
-expertBox.textContent=`🧠 الخبير التربوي:
-ما يتحقق الآن كافٍ.
-الصمت أحيانًا أقوى من الشرح.
-التوقّف قرار مهني.`;
-}
+الدقيقة ١٠ – ١٢:
+عند الفهم:
+قل:
+"إذن نقول: ………"
+يردّدها تلميذ واحد.
 
-function startLesson(){
-live.classList.remove("hidden");
-log.textContent="سجلّ الحصّة:";
-}
+✅ هنا الاكتمال التربوي.
+✅ التوقّف صحيح ومهني.`;
 
-function act(t){
-if(closed)return;
-log.textContent+="\n• "+t;
-}
+  document.getElementById("simulation").textContent =
+`السيناريو التنفيذي الواقعي:
 
-function finish(){
-if(closed)return;
-closed=true;
-status.className="badge b-ok";
-status.textContent="✅ اكتملت الحصّة";
-log.textContent+="\n• نُطقت الفكرة — انتهت الحصّة";
+المعلّم يعرض المثال.
+(صمت)
+تلميذ يحاول.
+المعلّم لا يتدخّل.
+التلميذ يعيد.
+المعلّم يثبت الفكرة بجملة واحدة.
+
+لا نشاط إضافي.
+لا تعميم.
+لا إنقاذ.
+
+إذا تجاوز الوقت ٢٠ دقيقة دون فهم:
+✋ توقّف فوري.
+👣 مثال أبسط لاحقًا.
+✔ الإنهاء صحيح تربويًا.`;
+
+  document.getElementById("radar").textContent =
+`رادارات الحماية أثناء الحصّة:
+
+⚠️ رادار الاسترسال:
+٣ جمل متتالية = توقّف.
+
+⚠️ رادار التوتر:
+ارتفاع الصوت = صمت ١٠ ثوانٍ.
+
+⚠️ رادار الإنهاك:
+انصراف الطلاب = إنهاء الحصّة.
+
+✅ رادار الاكتمال:
+نطق الفكرة بوضوح = توقّف فوري.
+
+🧠 تذكير خبير:
+"ما اكتمل اليوم كافٍ."`;
+
 }
 </script>
 
