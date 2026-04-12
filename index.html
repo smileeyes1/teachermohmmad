@@ -1,264 +1,224 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الخبير التربوي المرافق — اسم الدرس أولاً</title>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-    <style>
-        :root {
-            --main: #0d47a1;
-            --ok: #2e7d32;
-            --bg: #f4f6f8;
-            --card: #ffffff;
-            --ink: #222;
-            --soft: #e3f2fd;
-        }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            font-family: Tahoma, Arial, sans-serif;
-            background: var(--bg);
-            color: var(--ink);
-            line-height: 1.85;
-        }
-        .app { max-width: 1000px; margin: auto; padding: 16px; }
-        .header {
-            background: var(--card);
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,.08);
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .card {
-            background: var(--card);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,.08);
-            margin-bottom: 20px;
-        }
-        h1, h3 { margin: 0 0 12px; color: var(--main); text-align: center; }
-        button, input {
-            width: 100%;
-            padding: 16px;
-            margin-top: 12px;
-            border: none;
-            border-radius: 14px;
-            font-size: 17px;
-        }
-        button { background: var(--main); color: #fff; cursor: pointer; }
-        button.ok { background: var(--ok); }
-        button:disabled { opacity: 0.6; cursor: not-allowed; }
-        .box {
-            background: var(--soft);
-            padding: 16px;
-            border-radius: 14px;
-            margin-top: 12px;
-            white-space: pre-wrap;
-            font-size: 15.5px;
-            line-height: 1.7;
-        }
-        .progress {
-            height: 10px;
-            background: #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-            margin: 16px 0;
-        }
-        .progress span {
-            display: block;
-            height: 100%;
-            width: 0%;
-            background: var(--main);
-            transition: 0.4s;
-        }
-        .small { font-size: 13.5px; color: #6b7280; text-align: center; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الخبير التربوي المرافق — اسم الدرس أولًا</title>
+
+<!-- OCR -->
+https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
+
+<style>
+:root {
+    --main:#0d47a1;
+    --ok:#2e7d32;
+    --bg:#f4f6f8;
+    --card:#ffffff;
+    --ink:#222;
+    --soft:#e3f2fd;
+}
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:Tahoma,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.85
+}
+.hidden{display:none}
+.app{max-width:1000px;margin:auto;padding:16px}
+.header,.card{
+    background:var(--card);
+    padding:24px;
+    border-radius:16px;
+    box-shadow:0 8px 24px rgba(0,0,0,.08);
+    margin-bottom:20px
+}
+h1,h3{margin:0 0 12px;color:var(--main);text-align:center}
+button,input{
+    width:100%;
+    padding:16px;
+    margin-top:12px;
+    border:none;
+    border-radius:14px;
+    font-size:17px
+}
+button{background:var(--main);color:#fff;cursor:pointer}
+button.ok{background:var(--ok)}
+button:disabled{opacity:.6;cursor:not-allowed}
+.box{
+    background:var(--soft);
+    padding:16px;
+    border-radius:14px;
+    margin-top:12px;
+    white-space:pre-wrap;
+    font-size:15.5px;
+    line-height:1.7
+}
+.progress{
+    height:10px;
+    background:#ddd;
+    border-radius:8px;
+    overflow:hidden;
+    margin:16px 0
+}
+.progress span{
+    display:block;
+    height:100%;
+    width:0%;
+    background:var(--main);
+    transition:.4s
+}
+.small{font-size:13.5px;color:#6b7280;text-align:center}
+</style>
 </head>
+
 <body>
 <div class="app">
 
-    <div class="header">
-        <p style="font-size:18px;margin:0 0 8px 0;">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
-        <h1>الخبير التربوي المرافق</h1>
-        <p class="small">أدخل اسم الدرس أولاً → ثم ارفع الملف → يقرأ ما يحتاج فقط</p>
-    </div>
+<div class="header">
+<p style="font-size:18px;margin:0 0 8px">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
+<h1>الخبير التربوي المرافق</h1>
+<p class="small">أدخل اسم الدرس ← ارفع الصفحات ← قراءة مركزة فقط</p>
+</div>
 
-    <!-- خطوة 1: إدخال اسم الدرس -->
-    <div class="card">
-        <h3>📘 أدخل اسم الدرس أولاً (مهم جداً)</h3>
-        <input type="text" id="lessonName" placeholder="مثال: الجمع حتى ١٠ - الحروف المتصلة - الطرح البسيط">
-        <div class="small">سيساعد النظام على التركيز على الجزء المتعلق بهذا الدرس فقط</div>
-        <button id="confirmLessonBtn" class="ok">تأكيد اسم الدرس ومتابعة</button>
-    </div>
+<!-- إدخال اسم الدرس -->
+<div class="card">
+<h3>📘 اسم الدرس</h3>
+<input id="lessonName" placeholder="مثال: الجمع حتى ١٠ – الحروف المتصلة">
+<button id="confirmLessonBtn" class="ok">تأكيد والمتابعة</button>
+</div>
 
-    <!-- خطوة 2: رفع الملف (تظهر بعد تأكيد الاسم) -->
-    <div class="card hidden" id="uploadCard">
-        <h3>📂 ارفع صفحات الكتاب المتعلقة بالدرس</h3>
-        <input type="file" id="fileInput" accept=".pdf,image/*" multiple>
-        <div class="small">ارفع الصفحات المتعلقة بـ «<span id="lessonDisplay"></span>» فقط</div>
-        <div class="progress"><span id="bar"></span></div>
-        <div id="status" class="box">— بانتظار رفع الصفحات —</div>
-        <button id="startBtn" class="ok" disabled>ابدأ القراءة المركزة</button>
-    </div>
+<!-- رفع الملفات -->
+<div class="card hidden" id="uploadCard">
+<h3>📂 الصفحات المرتبطة بالدرس</h3>
+<input type="file" id="fileInput" multiple accept=".pdf,image/*">
+<div class="small">يرجى رفع الصفحات المتعلقة بالدرس فقط</div>
+<div class="progress"><span id="bar"></span></div>
+<div id="status" class="box">— في الانتظار —</div>
+<button id="startBtn" class="ok" disabled>ابدأ القراءة المركزة</button>
+</div>
 
-    <!-- النص المستخرج -->
-    <div class="card">
-        <h3>📝 النص المستخرج (مركز على الدرس)</h3>
-        <div id="rawText" class="box">— سيظهر النص بعد القراءة —</div>
-    </div>
+<!-- النص -->
+<div class="card">
+<h3>📝 النص المستخرج</h3>
+<div id="rawText" class="box">— لم تتم القراءة بعد —</div>
+</div>
 
-    <!-- التحضير -->
-    <div class="card">
-        <h3>🧭 التحضير التنفيذي</h3>
-        <div id="idea" class="box">🔹 الفكرة ستظهر هنا</div>
-        <div id="question" class="box">❓ السؤال سيظهر هنا</div>
-        <div id="prep" class="box"></div>
-        <button id="buildBtn" class="ok" disabled>أنشئ التحضير</button>
-    </div>
+<!-- التحضير -->
+<div class="card">
+<h3>🧭 التحضير التنفيذي</h3>
+<div id="idea" class="box">— الفكرة —</div>
+<div id="question" class="box">— السؤال —</div>
+<div id="prep" class="box"></div>
+<button id="buildBtn" class="ok" disabled>أنشئ التحضير</button>
+</div>
 
-    <!-- المحاكاة -->
-    <div class="card">
-        <h3>🎭 محاكاة عملية واقعية</h3>
-        <button id="simulateBtn" class="ok" disabled>شغّل المحاكاة الواقعية</button>
-        <div id="simulation" class="box"></div>
-    </div>
+<!-- المحاكاة -->
+<div class="card">
+<h3>🎭 محاكاة صفية واقعية</h3>
+<button id="simulateBtn" class="ok" disabled>تشغيل المحاكاة</button>
+<div id="simulation" class="box"></div>
+</div>
 
 </div>
 
 <script>
-// ================== متغيرات ==================
-let lessonName = "";
-let extractedText = "";
+let lessonName="", extractedText="";
+
+// خريطة الدروس (قابلة للتوسع)
+const lessonMap={
+    جمع:{idea:"بناء مفهوم الجمع عبر العدّ والتمثيل",question:"كم أصبح لدينا؟"},
+    طرح:{idea:"فهم الطرح كإزالة",question:"كم تبقّى؟"},
+    حرف:{idea:"تمييز الحرف داخل الكلمة",question:"أين نسمع هذا الحرف؟"},
+    عدد:{idea:"تثبيت مفهوم العدد",question:"كم نرى؟"}
+};
 
 // تأكيد اسم الدرس
-document.getElementById("confirmLessonBtn").addEventListener("click", () => {
-    lessonName = document.getElementById("lessonName").value.trim();
-    if (!lessonName) {
-        alert("يرجى إدخال اسم الدرس أولاً");
-        return;
-    }
-    document.getElementById("lessonDisplay").textContent = lessonName;
+document.getElementById("confirmLessonBtn").onclick=()=>{
+    lessonName=document.getElementById("lessonName").value.trim();
+    if(!lessonName){alert("يرجى إدخال اسم الدرس");return;}
     document.getElementById("uploadCard").classList.remove("hidden");
-    document.getElementById("confirmLessonBtn").disabled = true;
-});
+    document.getElementById("confirmLessonBtn").disabled=true;
+};
 
-// رفع الملف بعد تأكيد الاسم
-const fileInput = document.getElementById("fileInput");
-const startBtn = document.getElementById("startBtn");
+// تفعيل البدء
+fileInput.onchange=()=>startBtn.disabled=!fileInput.files.length;
 
-fileInput.addEventListener("change", () => {
-    if (fileInput.files.length > 0) {
-        startBtn.disabled = false;
+// القراءة
+startBtn.onclick=async()=>{
+    extractedText="";
+    bar.style.width="5%";
+    status.textContent="جارٍ القراءة...";
+    for(let i=0;i<fileInput.files.length;i++){
+        try{
+            const r=await Tesseract.recognize(fileInput.files[i],"ara");
+            extractedText+=r.data.text+"\n";
+        }catch{}
+        bar.style.width=Math.round((i+1)/fileInput.files.length*95)+"%";
     }
-});
-
-startBtn.addEventListener("click", async () => {
-    const files = fileInput.files;
-    if (files.length === 0) return;
-
-    const bar = document.getElementById("bar");
-    const statusBox = document.getElementById("status");
-    bar.style.width = "5%";
-    statusBox.textContent = "🔍 جاري القراءة المركزة على درس: " + lessonName;
-
-    extractedText = "";
-    for (let i = 0; i < files.length; i++) {
-        try {
-            const result = await Tesseract.recognize(files[i], "ara");
-            extractedText += result.data.text + "\n\n";
-        } catch (e) {}
-        bar.style.width = Math.round(((i+1)/files.length)*95) + "%";
-    }
-
-    bar.style.width = "100%";
-    document.getElementById("rawText").textContent = extractedText.substring(0, 2500) + "...";
-    statusBox.textContent = "✅ تمت القراءة المركزة — جاري التحليل";
-    
+    bar.style.width="100%";
     analyzeFocused();
-});
+};
 
-function analyzeFocused() {
-    // تحليل مركز على اسم الدرس
-    const text = extractedText.toLowerCase();
-    let idea = "فهم المحتوى المتعلق بـ " + lessonName;
-    let question = "ماذا فهمت من هذا الدرس؟";
+// فلترة ذكية
+function focusText(text, key){
+    return text.split("\n").filter(l=>l.includes(key)).join("\n");
+}
 
-    if (lessonName.toLowerCase().includes("جمع") || text.includes("جمع")) {
-        idea = "ربط عملية الجمع بالأمثلة البصرية";
-        question = "كيف نجمع الأعداد الموجودة في المثال؟";
-    } else if (lessonName.toLowerCase().includes("طرح") || text.includes("طرح")) {
-        idea = "فهم عملية الطرح";
-        question = "كيف نطرح من العدد المعطى؟";
-    } else if (lessonName.toLowerCase().includes("حرف") || text.includes("حرف")) {
-        idea = "تعلم الحرف أو الكلمة";
-        question = "ما هذا الحرف وكيف نستخدمه؟";
-    }
-
-    document.getElementById("idea").textContent = `🔹 الفكرة: ${idea}`;
-    document.getElementById("question").textContent = `❓ السؤال: ${question}`;
-    document.getElementById("buildBtn").disabled = false;
-    document.getElementById("simulateBtn").disabled = false;
+// تحليل
+function analyzeFocused(){
+    let focused=focusText(extractedText,lessonName);
+    rawText.textContent=focused||"⚠ لم يظهر نص واضح متعلق بالدرس.";
+    let idea="استكشاف هادئ للفكرة",question="ماذا نلاحظ؟";
+    for(let k in lessonMap)
+        if(lessonName.includes(k)){idea=lessonMap[k].idea;question=lessonMap[k].question;}
+    ideaEl.textContent="🔹 الفكرة: "+idea;
+    questionEl.textContent="❓ السؤال: "+question;
+    buildBtn.disabled=false;
+    simulateBtn.disabled=false;
 }
 
 // التحضير
-document.getElementById("buildBtn").addEventListener("click", () => {
-    const prep = `
-التحضير التنفيذي — درس: ${lessonName}
+buildBtn.onclick=()=>{
+prep.textContent=`
+التحضير التنفيذي
+درس: ${lessonName}
 
-الفكرة الرئيسية:
-${document.getElementById("idea").textContent.replace("🔹 الفكرة: ", "")}
+الفكرة:
+${ideaEl.textContent}
 
-السؤال المركزي:
-${document.getElementById("question").textContent.replace("❓ السؤال: ", "")}
+السؤال:
+${questionEl.textContent}
 
-خطوات التنفيذ:
-1. عرض الجزء المتعلق بالدرس من الكتاب
-2. طرح السؤال
-3. صمت واعٍ
-4. محاولة الطلاب
-5. إغلاق الحصة عند الفهم
-    `.trim();
+الخطوات:
+١) عرض هادئ
+٢) سؤال واحد
+٣) صمت واعٍ
+٤) محاولة
+٥) تثبيت وإغلاق
+`.trim();
+};
 
-    document.getElementById("prep").textContent = prep;
-});
+// المحاكاة
+simulateBtn.onclick=()=>{
+simulation.textContent=`
+🎭 محاكاة صفية
 
-// المحاكاة الواقعية
-document.getElementById("simulateBtn").addEventListener("click", () => {
-    const sim = `
-🎭 محاكاة واقعية لدرس: ${lessonName}
+المعلم: "انظروا فقط."
+(صمت)
 
-المعلم يعرض الجزء المتعلق بالدرس.
-"انظروا إلى هذا الجزء بهدوء."
-
-(صمت 25 ثانية)
-
-الطلاب ينظرون ويتردد بعضهم.
 طالب يحاول...
+المعلم ينتظر.
 
-المعلم ينتظر ثم يساعد بلطف إن لزم الأمر.
+تثبيت الفكرة.
+إغلاق الحصة بهدوء.
+`.trim();
+};
 
-عندما يقترب الطالب من الفكرة، يثبتها المعلم.
-
-ثم يغلق الحصة بهدوء.
-
-——— محاكاة طبيعية قابلة للتنفيذ ———
-    `.trim();
-
-    document.getElementById("simulation").textContent = sim;
-});
-
-function act(msg) {
-    const log = document.getElementById("log") || {textContent: ""};
-    log.textContent += `\n• ${msg}`;
-}
-
-function closeLesson() {
-    const log = document.getElementById("log") || {textContent: ""};
-    log.textContent += `\n\n✅ نُطقت الفكرة — أُغلقت الحصة`;
-}
+// اختصارات
+const ideaEl=document.getElementById("idea");
+const questionEl=document.getElementById("question");
 </script>
-
 </body>
 </html>
