@@ -2,133 +2,193 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=١" />
 <title>الخبير التربوي المرافق — Classroom Companion</title>
 
 <style>
-  :root {
-    --bg: #f٥f٦f٨;
-    --card: #ffffff;
-    --primary: #١f٤faa;
-    --secondary: #٢e٧d٣٢;
-    --muted: #٦b٧٢٨٠;
-    --border: #e٥e٧eb;
-  }
+:root {
+  --bg: #f٥f٦f٨;
+  --card: #ffffff;
+  --primary: #١f٤faa;
+  --secondary: #٢e٧d٣٢;
+  --muted: #٦b٧٢٨٠;
+  --border: #e٥e٧eb;
+}
+
+body {
+  margin: ٠;
+  font-family: "Tahoma", "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: #١f٢٩٣٧;
+}
+
+.container {
+  max-width: ٨٠٠px;
+  margin: ٢rem auto;
+  padding: ٠ ١rem;
+}
+
+.card {
+  background: var(--card);
+  border-radius: ١٢px;
+  padding: ١.٥rem;
+  margin-bottom: ١.٢rem;
+  box-shadow: ٠ ٨px ٢٤px rgba(٠,٠,٠,٠.٠٦);
+}
+
+h١, h٢ {
+  margin: ٠ ٠ ٠.٥rem ٠;
+  color: var(--primary);
+}
+
+p {
+  margin: ٠.٥rem ٠;
+  color: var(--muted);
+  line-height: ١.٦;
+}
+
+label {
+  display: block;
+  margin-top: ١rem;
+  font-weight: bold;
+}
+
+input, textarea {
+  width: ١٠٠٪;
+  padding: ٠.٦rem;
+  margin-top: ٠.٣rem;
+  border-radius: ٨px;
+  border: ١px solid var(--border);
+  font-size: ١rem;
+}
+
+button {
+  margin-top: ١rem;
+  padding: ٠.٧rem ١.٢rem;
+  border: none;
+  border-radius: ١٠px;
+  font-size: ١rem;
+  cursor: pointer;
+}
+
+.btn-primary { background: var(--primary); color: #ffffff; }
+.btn-secondary { background: var(--secondary); color: #ffffff; }
+.btn-ghost { background: transparent; color: var(--primary); }
+
+.hidden { display: none; }
+
+.footer {
+  text-align: center;
+  font-size: ٠.٩rem;
+  color: var(--muted);
+  margin-top: ٢rem;
+}
+
+/* ===== الطباعة الرسمية ===== */
+@media print {
   body {
-    margin: ٠;
-    font-family: "Tahoma", "Segoe UI", Arial, sans-serif;
-    background: var(--bg);
-    color: #١f٢٩٣٧;
+    background: #ffffff;
+    color: #000000;
   }
   .container {
-    max-width: ٨٠٠px;
-    margin: ٢rem auto;
-    padding: ٠ ١rem;
+    max-width: ١٠٠٪;
+    margin: ٠;
+    padding: ٠;
   }
   .card {
-    background: var(--card);
-    border-radius: ١٢px;
-    padding: ١.٥rem;
-    margin-bottom: ١.٢rem;
-    box-shadow: ٠ ٨px ٢٤px rgba(٠,٠,٠,٠.٠٦);
+    box-shadow: none;
+    border-radius: ٠;
+    page-break-inside: avoid;
   }
-  h1, h٢ {
-    margin: ٠ ٠ ٠.٥rem ٠;
-    color: var(--primary);
+  button, .footer {
+    display: none !important;
   }
-  p {
-    margin: ٠.٥rem ٠;
-    color: var(--muted);
-    line-height: ١.٦;
-  }
-  label {
-    display: block;
-    margin-top: ١rem;
-    font-weight: bold;
+  h١, h٢ {
+    color: #000000;
   }
   input, textarea {
-    width: ١٠٠%;
-    padding: ٠.٦rem;
-    margin-top: ٠.٣rem;
-    border-radius: ٨px;
-    border: ١px solid var(--border);
-    font-size: ١rem;
-  }
-  button {
-    margin-top: ١rem;
-    padding: ٠.٧rem ١.٢rem;
     border: none;
-    border-radius: ١٠px;
-    font-size: ١rem;
-    cursor: pointer;
+    padding: ٠;
   }
-  .btn-primary { background: var(--primary); color: #fff; }
-  .btn-secondary { background: var(--secondary); color: #fff; }
-  .btn-ghost { background: transparent; color: var(--primary); }
-
-  .hidden { display: none; }
-
-  .footer {
-    text-align: center;
-    font-size: ٠.٩rem;
-    color: var(--muted);
-    margin-top: ٢rem;
+  .print-stamp {
+    display: block;
   }
+}
 
-  /* وضع الحصّة — أزرار فقط */
-  .lesson-controls button {
-    width: ١٠٠%;
-    margin-bottom: ٠.٥rem;
-  }
+/* ===== ختم الطباعة ===== */
+.print-stamp {
+  display: none;
+  border-bottom: ٢px solid #000000;
+  margin-bottom: ١rem;
+  padding-bottom: ٠.٥rem;
+}
+.print-stamp h٣ {
+  margin: ٠;
+  font-size: ١.١rem;
+}
+.print-stamp p {
+  margin: ٠.٢rem ٠ ٠;
+  font-size: ٠.٩rem;
+}
 </style>
 </head>
 
 <body>
 <div class="container">
 
-  <!-- العنوان -->
   <div class="card">
-    <h1>الخبير التربوي المرافق داخل الصف</h1>
-    <p>نظام دعم تربوي صامت — يثبّت لحظة التعلّم ثم ينسحب.</p>
+    <h١>الخبير التربوي المرافق داخل الصف</h١>
+    <p>نظام صامت — يثبّت لحظة التعلّم ثم ينسحب.</p>
   </div>
 
-  <!-- اختيار الوضع -->
   <div class="card">
-    <h٢>اختر وضع التشغيل</h٢>
-    <button class="btn-primary" onclick="activatePrep()">وضع التحضير (خارج زمن الحصّة)</button>
-    <button class="btn-ghost" onclick="activateLesson()">وضع الحصّة (صامت)</button>
+    <h٢>وضع التشغيل</h٢>
+    <button class="btn-primary" onclick="activatePrep()">وضع التحضير</button>
+    <button class="btn-ghost" onclick="activateLesson()">وضع الحصّة</button>
   </div>
 
   <!-- وضع التحضير -->
   <div id="prepMode" class="card hidden">
-    <h٢>وضع التحضير</h٢>
-    <p>يُستخدم قبل الحصّة فقط. لا يُفعَّل داخل الصف.</p>
+
+    <div class="print-stamp">
+      <h٣ id="schoolPrint">—</h٣>
+      <p>
+        المعلّم/ة: <span id="teacherPrint">—</span> |
+        التاريخ: <span id="datePrint">—</span>
+      </p>
+    </div>
+
+    <h٢>تحضير الحصّة</h٢>
+
+    <label>اسم المدرسة (للطباعة)</label>
+    <input id="schoolInput" placeholder="اسم المدرسة الرسمي" />
+
+    <label>اسم المعلّم/ة (للطباعة)</label>
+    <input id="teacherInput" placeholder="الاسم كما يُعتمد رسميًا" />
 
     <label>اسم الدرس</label>
-    <input type="text" id="lessonName" placeholder="مثال: الجمع حتى ١٠" />
+    <input id="lessonName" placeholder="مثال: الجمع حتى ١٠" />
 
-    <label>الفكرة الواحدة (من الكتاب)</label>
-    <textarea id="singleIdea" rows="٣" placeholder="أصغر وحدة معرفية مكتملة من النص"></textarea>
+    <label>الفكرة الواحدة من الكتاب</label>
+    <textarea id="idea" rows="٣"></textarea>
 
     <label>السؤال الواحد</label>
-    <textarea id="singleQuestion" rows="٢" placeholder="سؤال يقود لنطق الفكرة"></textarea>
+    <textarea id="question" rows="٢"></textarea>
 
-    <button class="btn-secondary" onclick="lockPreparation()">اعتماد التحضير</button>
+    <button class="btn-secondary" onclick="lockPrep()">اعتماد التحضير</button>
+    <button class="btn-ghost" onclick="preparePrint()">طباعة التحضير الرسمي</button>
 
-    <p id="prepStatus" class="hidden">✅ تم اعتماد التحضير. الحصّة جاهزة.</p>
+    <p id="prepDone" class="hidden">✅ تم اعتماد التحضير.</p>
   </div>
 
   <!-- وضع الحصّة -->
   <div id="lessonMode" class="card hidden">
-    <h٢>وضع الحصّة الصفيّة</h٢>
-    <p>لا شرح إضافي. لا تحميل. لا OCR.</p>
+    <h٢>الحصّة الصفيّة</h٢>
 
-    <div class="lesson-controls">
-      <button class="btn-primary" onclick="sayAction('اطرح السؤال')">اطرح السؤال</button>
-      <button class="btn-ghost" onclick="sayAction('صمت')">صمت</button>
-      <button class="btn-ghost" onclick="sayAction('ارجع للسؤال')">ارجع للسؤال</button>
-      <button class="btn-secondary" onclick="closeLesson()">نُطقت الفكرة — أُغلقت الحصّة</button>
-    </div>
+    <button class="btn-primary" onclick="announce('اطرح السؤال')">اطرح السؤال</button>
+    <button class="btn-ghost" onclick="announce('صمت')">صمت</button>
+    <button class="btn-ghost" onclick="announce('ارجع للسؤال')">ارجع للسؤال</button>
+    <button class="btn-secondary" onclick="closeLesson()">نُطقت الفكرة — أُغلقت الحصّة</button>
 
     <p id="lessonLog" class="hidden"></p>
   </div>
@@ -140,45 +200,41 @@
 </div>
 
 <script>
-  // حالة مغلقة افتراضيًا
-  let preparationLocked = false;
+let prepLocked = false;
 
-  function activatePrep() {
-    document.getElementById('prepMode').classList.remove('hidden');
-    document.getElementById('lessonMode').classList.add('hidden');
-  }
+function activatePrep() {
+  document.getElementById('prepMode').classList.remove('hidden');
+  document.getElementById('lessonMode').classList.add('hidden');
+}
 
-  function activateLesson() {
-    // لا دخول للحصّة دون اعتماد التحضير
-    if (!preparationLocked) {
-      return; // صمت مقصود — لا رسائل داخل زمن الحصّة
-    }
-    document.getElementById('lessonMode').classList.remove('hidden');
-    document.getElementById('prepMode').classList.add('hidden');
-  }
+function activateLesson() {
+  if (!prepLocked) return;
+  document.getElementById('lessonMode').classList.remove('hidden');
+  document.getElementById('prepMode').classList.add('hidden');
+}
 
-  function lockPreparation() {
-    const name = document.getElementById('lessonName').value.trim();
-    const idea = document.getElementById('singleIdea').value.trim();
-    const q = document.getElementById('singleQuestion').value.trim();
+function lockPrep() {
+  if (!lessonName.value || !idea.value || !question.value) return;
+  prepLocked = true;
+  prepDone.classList.remove('hidden');
+}
 
-    if (!name || !idea || !q) return;
+function announce(text) {
+  lessonLog.textContent = text;
+  lessonLog.classList.remove('hidden');
+}
 
-    preparationLocked = true;
-    document.getElementById('prepStatus').classList.remove('hidden');
-  }
+function closeLesson() {
+  lessonLog.textContent = '✅ تم الإغلاق المهني. يُمنع الاستمرار.';
+}
 
-  function sayAction(text) {
-    const log = document.getElementById('lessonLog');
-    log.textContent = text;
-    log.classList.remove('hidden');
-  }
-
-  function closeLesson() {
-    const log = document.getElementById('lessonLog');
-    log.textContent = '✅ تم الإغلاق المهني. يُمنع الاستمرار.';
-    log.classList.remove('hidden');
-  }
+function preparePrint() {
+  schoolPrint.textContent = schoolInput.value || '—';
+  teacherPrint.textContent = teacherInput.value || '—';
+  datePrint.textContent = new Date().toLocaleDateString('ar');
+  window.print();
+}
 </script>
+
 </body>
 </html>
