@@ -8,7 +8,15 @@
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <style>
-:root{--main:#0d47a1;--ok:#2e7d32;--warn:#455a64;--bg:#f4f6f8;--card:#ffffff;--ink:#222;--soft:#e3f2fd}
+:root{
+  --main:#0d47a1;
+  --ok:#2e7d32;
+  --warn:#455a64;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --ink:#222;
+  --soft:#e3f2fd;
+}
 *{box-sizing:border-box}
 body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.85}
 .app{max-width:1000px;margin:auto;padding:16px}
@@ -35,12 +43,12 @@ button:disabled{opacity:.6;cursor:not-allowed}
 <div class="header">
   <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
   <h1>الخبير التربوي المرافق</h1>
-  <p class="small">المنهاج الفلسطيني • الصف الأول والثاني • فكرة واحدة • سؤال واحد</p>
+  <p class="small">المنهاج الفلسطيني • الصف الأول والثاني • تحضير واقعي قابل للتنفيذ</p>
 </div>
 
 <div class="card">
   <h3>📷 التصوير المباشر بالكاميرا</h3>
-  <button id="cameraBtn" class="ok">📸 افتح الكاميرا وصوّر</button>
+  <button id="cameraBtn" class="ok">📸 افتح الكاميرا وصوّر الصفحة</button>
   <button id="galleryBtn" class="ghost">📁 اختيار صورة من المعرض</button>
   <input id="fileInput" type="file" accept="image/*" style="display:none">
   
@@ -50,15 +58,15 @@ button:disabled{opacity:.6;cursor:not-allowed}
   <div class="progress"><span id="bar"></span></div>
   <div id="status" class="box">— بانتظار التصوير —</div>
   
-  <button id="startBtn" class="ok" disabled>ابدأ القراءة والتحليل المنهاجي الفلسطيني</button>
+  <button id="startBtn" class="ok" disabled>ابدأ القراءة والتحليل المنهاجي</button>
 </div>
 
 <div class="card">
-  <h3>🧭 التحضير التنفيذي (المنهاج الفلسطيني)</h3>
+  <h3>🧭 التحضير التنفيذي الواقعي (المنهاج الفلسطيني)</h3>
   <div id="idea" class="box">🔹 الفكرة ستظهر هنا</div>
   <div id="question" class="box">❓ السؤال سيظهر هنا</div>
   <div id="prep" class="box"></div>
-  <button id="buildBtn" class="ok" disabled>أنشئ التحضير المنهاجي</button>
+  <button id="buildBtn" class="ok" disabled>أنشئ التحضير الواقعي القابل للتنفيذ</button>
 </div>
 
 <div class="card">
@@ -87,6 +95,8 @@ let images = [];
 let ocrText = "";
 let worker = null;
 let isClosed = false;
+let currentIdea = "";
+let currentQuestion = "";
 
 // ================== فتح الكاميرا ==================
 cameraBtn.onclick = () => {
@@ -124,7 +134,7 @@ function updateUI() {
   startBtn.disabled = false;
 }
 
-// ================== ضغط الصور + OCR ==================
+// ================== ضغط + OCR ==================
 async function compressImage(file) {
   return new Promise(resolve => {
     const img = new Image();
@@ -163,32 +173,37 @@ startBtn.onclick = async () => {
   }
 
   bar.style.width = "100%";
-  statusBox.textContent = "✅ انتهت القراءة — اضغط أنشئ التحضير المنهاجي";
+  statusBox.textContent = "✅ انتهت القراءة — اضغط أنشئ التحضير الواقعي";
   buildBtn.disabled = false;
-  analyzePalestinianCurriculum();
+  analyzeRealisticLesson();
 };
 
-// ================== تحليل منهاجي فلسطيني (محدث) ==================
-function analyzePalestinianCurriculum() {
+// ================== تحليل واقعي عميق للمنهاج الفلسطيني ==================
+function analyzeRealisticLesson() {
   const text = ocrText.toLowerCase().trim();
-  let idea = "استكشاف المحتوى المرئي في الصورة";
-  let q = "ماذا تلاحظ في الصورة أمامك؟";
+  let idea = "استكشاف المحتوى المرئي وتنمية الملاحظة";
+  let q = "ماذا ترى في الصورة أمامك؟";
 
-  // رياضيات (العدد، الجمع، الطرح، الأشكال)
-  if (/عدد|واحد|اثنان|جمع|طرح|احسب|مثلث|دائرة|مربع/.test(text)) {
-    idea = "تنمية المفاهيم العددية والأشكال الهندسية حسب منهاج الرياضيات الفلسطيني";
-    q = "كيف نستخدم ما نراه في الصورة لنحسب أو نصف الشكل؟";
+  // تحليل أعمق حسب محتوى الصورة
+  if (/عدد|واحد|اثنان|ثلاثة|جمع|طرح|احسب|مثلث|دائرة|مربع|شكل/.test(text)) {
+    idea = "تنمية مفهوم العد والجمع والأشكال الهندسية من خلال الملاحظة البصرية";
+    q = "كم عدد الأشياء التي تراها في الصورة؟ كيف نجمعها معاً؟";
+  } 
+  else if (/حرف|كلمة|الألف|الباء|قصة|لغتنا|جميلة/.test(text)) {
+    idea = "تعلم الحروف والكلمات من خلال ربطها بالصور (كتاب لغتنا الجميلة)";
+    q = "ما الحرف الذي تراه؟ ما الكلمة التي تبدأ بهذا الحرف؟";
+  } 
+  else if (/نبات|حيوان|شجرة|ورد|فلسطين|وطن|علم|بيت/.test(text)) {
+    idea = "ربط الملاحظة بالبيئة الفلسطينية والتربية الوطنية والحياتية";
+    q = "كيف يساعد هذا النبات أو الحيوان في حياتنا في فلسطين؟";
+  } 
+  else {
+    idea = "تنمية مهارة الملاحظة والتفكير الناقد من خلال الصورة";
+    q = "ما الذي يلفت انتباهك أكثر في هذه الصورة ولماذا؟";
   }
-  // لغة عربية (حروف، كلمات، قصص)
-  else if (/حرف|كلمة|قصة|الراء|الدال|الخاء|لغتنا الجميلة/.test(text)) {
-    idea = "تعلم الحروف والكلمات من خلال الملاحظة البصرية (كتاب لغتنا الجميلة)";
-    q = "ما الحرف أو الكلمة التي تراها في الصورة؟ كيف تنطقها؟";
-  }
-  // علوم أو تربية وطنية وحياتية
-  else if (/نبات|حيوان|لون|شكل|وطن|فلسطين|علم/.test(text)) {
-    idea = "ربط الملاحظة البصرية بالتربية الوطنية والحياتية والعلوم";
-    q = "ما الذي يميز هذا الشيء في بيئتنا الفلسطينية؟";
-  }
+
+  currentIdea = idea;
+  currentQuestion = q;
 
   document.getElementById("idea").textContent = `🔹 الفكرة: ${idea}`;
   document.getElementById("question").textContent = `❓ السؤال: ${q}`;
@@ -197,23 +212,40 @@ function analyzePalestinianCurriculum() {
 buildBtn.onclick = () => {
   if (isClosed) return;
   
-  const idea = document.getElementById("idea").textContent.replace("🔹 الفكرة: ", "");
-  const q = document.getElementById("question").textContent.replace("❓ السؤال: ", "");
-  
-  document.getElementById("prep").innerHTML = `
-<strong>التحضير التنفيذي — المنهاج الفلسطيني</strong><br><br>
-<strong>الفكرة الرئيسية:</strong> ${idea}<br><br>
-<strong>السؤال التوجيهي:</strong> ${q}<br><br>
-<strong>ما يقوله المعلم في الحصة:</strong><br>
-"أيها الأطفال، انظروا جيداً إلى الصور أمامكم... ماذا ترون؟"<br><br>
-${q}<br><br>
-[ صمت واعٍ — ١٥ إلى ٢٥ ثانية ]<br><br>
-دع الطالب يحاول مرة واحدة بهدوء.<br>
-عندما ينطق الفكرة أو الجواب المناسب: نشجعه ونغلق الحصة بهدوء وثقة.<br><br>
-<strong>ملاحظة:</strong> يركز الدرس على الملاحظة والتفاعل مع المحتوى المرئي حسب كتب المنهاج الفلسطيني (لغتنا الجميلة والرياضيات).
+  const prepHTML = `
+<strong>التحضير التنفيذي الواقعي — المنهاج الفلسطيني</strong><br><br>
+
+<strong>الفكرة الرئيسية للحصة:</strong><br>
+${currentIdea}<br><br>
+
+<strong>السؤال التوجيهي الرئيسي:</strong><br>
+${currentQuestion}<br><br>
+
+<strong>أهداف الحصة (من المنهاج الفلسطيني):</strong><br>
+• تنمية مهارة الملاحظة البصرية.<br>
+• ربط المحتوى المرئي بالمفاهيم الدراسية.<br>
+• تشجيع التفاعل والمشاركة الإيجابية.<br>
+• تعزيز الثقة بالنفس من خلال التعبير عن الرأي.<br><br>
+
+<strong>سيناريو الحصة الواقعي (خطوة بخطوة):</strong><br>
+1. التحية والتركيز: "صباح الخير أيها الأطفال، اليوم سنكتشف معاً شيئاً جميلاً من خلال الصور."<br>
+2. عرض الصور: "انظروا جيداً إلى الصور أمامكم... ماذا ترون؟"<br>
+3. طرح السؤال الرئيسي: ${currentQuestion}<br>
+4. [ صمت واعٍ — ١٥ إلى ٢٥ ثانية ] — أترك الطلاب يفكرون بهدوء.<br>
+5. المشاركة: دع الطلاب يتحدثون واحداً تلو الآخر (محاولة واحدة لكل طالب).<br>
+6. التلخيص والإغلاق: "ممتاز! لقد اكتشفنا اليوم أن... (أعيد الفكرة بكلمات الطلاب). هذا ما تعلمناه اليوم."<br>
+7. الختام: "شكراً لكم على التركيز والمشاركة. انتهت الحصة."<br><br>
+
+<strong>نصائح تنفيذية عملية للمعلم:</strong><br>
+• استخدم نبرة صوت هادئة ومشجعة.<br>
+• ابتسم وانظر إلى أعين الطلاب.<br>
+• إذا سكت الطلاب، أعد السؤال بطريقة أبسط.<br>
+• لا تصحح الأخطاء بقسوة، ركز على الجهد والمشاركة.<br>
+• احرص على أن يشارك أكبر عدد ممكن من الطلاب خلال الـ ٣٠-٤٠ دقيقة.
   `;
-  
-  statusBox.textContent = "✅ تم إنشاء التحضير المنهاجي الفلسطيني";
+
+  document.getElementById("prep").innerHTML = prepHTML;
+  statusBox.textContent = "✅ تم إنشاء التحضير الواقعي العميق القابل للتنفيذ";
 };
 
 function support(msg) { 
