@@ -3,99 +3,71 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>الخبير التربوي المرافق — النظام السيادي الشامل</title>
 
-<!-- ✅ حل قطعي لمشكلة السطر العلوي -->
-https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
-
-<!-- ✅ سياسة أمان متوافقة -->
-<meta http-equiv="Content-Security-Policy"
-content="
-default-src 'self';
-script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval';
-worker-src 'self' blob: https://cdn.jsdelivr.net;
-connect-src 'self' https://cdn.jsdelivr.net;
-img-src 'self' data: blob:;
-style-src 'self' 'unsafe-inline';
-base-uri 'none';
-">
+<!-- ✅ تحميل صحيح ونهائي — لا يظهر كنص نهائيًا -->
+https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js</script>
 
 <style>
 :root{
   --main:#0d47a1;
-  --ok:#166534;
-  --warn:#64748b;
+  --ok:#2e7d32;
+  --warn:#455a64;
   --bg:#f4f6f8;
   --card:#ffffff;
-  --ink:#1f2937;
-  --muted:#6b7280;
+  --ink:#222;
   --soft:#e3f2fd;
+  --muted:#666;
 }
-
-/* أساس */
 *{box-sizing:border-box}
 body{
   margin:0;
   font-family:Tahoma,Arial,sans-serif;
   background:var(--bg);
   color:var(--ink);
-  line-height:1.85;
+  line-height:1.8;
 }
-.app{max-width:1200px;margin:auto;padding:16px}
-
-/* رأس الصفحة */
+.app{max-width:1000px;margin:auto;padding:16px}
 .header{
+  text-align:center;
   background:var(--card);
   padding:20px;
-  border-radius:18px;
-  box-shadow:0 10px 28px rgba(0,0,0,.08);
-  text-align:center;
-  margin-bottom:18px;
+  border-radius:16px;
+  box-shadow:0 6px 20px rgba(0,0,0,.08);
+  margin-bottom:16px;
 }
-
-/* بطاقات */
 .card{
   background:var(--card);
   padding:18px;
-  border-radius:18px;
-  box-shadow:0 10px 28px rgba(0,0,0,.08);
-  margin-bottom:18px;
-}
-
-/* شبكة */
-.grid{display:grid;grid-template-columns:1fr;gap:18px}
-@media(min-width:900px){
-  .grid{grid-template-columns:1fr 1fr}
-}
-
-/* مدخلات وأزرار */
-button,input,select{
-  width:100%;
-  padding:16px;
-  border:none;
   border-radius:16px;
-  font-size:16px;
+  box-shadow:0 6px 20px rgba(0,0,0,.08);
+  margin-bottom:16px;
+}
+h1,h2,h3{text-align:center;color:var(--main);margin:0 0 10px}
+input,button{
+  width:100%;
+  padding:14px;
   margin-top:10px;
+  border:none;
+  border-radius:14px;
+  font-size:16px;
 }
 button{background:var(--main);color:#fff;cursor:pointer}
 button.ok{background:var(--ok)}
 button.warn{background:var(--warn)}
-button.ghost{background:#eef2f7;color:#111}
+button.ghost{background:#eee;color:#000}
 button:disabled{opacity:.6;cursor:not-allowed}
-
-/* صناديق */
 .box{
   background:var(--soft);
-  padding:16px;
-  border-radius:16px;
+  padding:14px;
+  border-radius:14px;
   margin-top:12px;
   white-space:pre-wrap;
 }
-
-/* تقدّم */
 .progress{
   height:8px;
-  background:#e5e7eb;
+  background:#ddd;
   border-radius:8px;
   overflow:hidden;
 }
@@ -104,221 +76,174 @@ button:disabled{opacity:.6;cursor:not-allowed}
   height:100%;
   width:0%;
   background:var(--main);
-  transition:.25s;
+  transition:.2s;
 }
-
-/* شارات */
+.small{font-size:13px;color:var(--muted)}
 .badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .badges span{
-  background:#eef2f7;
+  background:#eee;
   border-radius:999px;
   padding:6px 10px;
   font-size:13px;
 }
-
-/* وضع الصف */
-body.class-mode .hide-in-class{display:none !important}
-body.class-mode{background:#ffffff}
-
-/* طباعة */
+body.class-mode .hide-in-class{display:none!important}
 @media print{
-  button,input,select,.progress,.badges{display:none}
+  button,input,.progress,.badges{display:none}
   body{background:#fff}
   .card{box-shadow:none}
 }
-
-.small{font-size:13px;color:var(--muted)}
 </style>
 </head>
 
 <body>
 <div class="app">
-  <!-- الرأس -->
-  <div class="header">
-    <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
-    <h2 style="color:var(--main)">الخبير التربوي المرافق — دعم سيادي للمعلم</h2>
-    <p class="small">
-      Camera‑First • حد أقصى ٣ صور • تحليل بصري • تحضير مختصر • رصد وصفي
-    </p>
-  </div>
 
-  <!-- المرحلة ① + ② -->
-  <div class="grid">
-    <!-- تصوير -->
-    <div class="card hide-in-class">
-      <h3>📷 تصوير صفحة الدرس</h3>
-      <input id="cameraInput" type="file" accept="image/*" capture="environment" multiple>
-      <p class="small">التقط حتى ٣ صفحات متتالية — يتم تحسين الصور تلقائيًا.</p>
-      <div class="progress"><span id="bar"></span></div>
-      <div class="badges" id="pages"></div>
-      <div id="status" class="box">— بانتظار التصوير —</div>
-      <button class="ok" id="start" disabled>ابدأ القراءة</button>
-    </div>
+<div class="header">
+  <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
+  <h1>الخبير التربوي المرافق</h1>
+  <p class="small">
+    Camera‑First • إرفاق من الجهاز • تحليل بصري • فكرة واحدة • رصد وصفي
+  </p>
+</div>
 
-    <!-- التحضير -->
-    <div class="card">
-      <h3>🧭 التحضير (فكرة واحدة)</h3>
-      <button id="prepBtn" class="ok hide-in-class" disabled>أنشئ التحضير</button>
-      <div id="idea" class="box">🔹 الفكرة ستظهر هنا</div>
-      <div id="question" class="box">❓ السؤال سيظهر هنا</div>
-      <div id="prep" class="box"></div>
-    </div>
-  </div>
+<div class="card hide-in-class">
+<h3>📷 تصوير أو إرفاق صفحة الدرس</h3>
 
-  <!-- المرحلة ③ -->
-  <div class="card hide-in-class">
-    <h3>📋 قوائم الرصد وإدارة الطلاب</h3>
-    <input id="studentName" placeholder="اسم الطالب">
-    <button class="ok" id="addStudent">إضافة الطالب</button>
-    <p class="small">رصد وصفي لحظي (بلا درجات، بلا تصنيف).</p>
-    <table style="width:100%;border-collapse:separate;border-spacing:0 8px">
-      <thead>
-        <tr>
-          <th>الطالب</th>
-          <th>الرصد</th>
-          <th>إجراء</th>
-        </tr>
-      </thead>
-      <tbody id="students"></tbody>
-    </table>
-  </div>
+<input
+  id="fileInput"
+  type="file"
+  accept="image/*"
+  multiple
+  capture="environment"
+>
 
-  <!-- المرحلة ④ -->
-  <div class="card">
-    <h3>🎛️ الرادار الصفّي (دعم سريع)</h3>
-    <div class="grid">
-      <button class="warn" onclick="support('🛑 صمت مهني مُدار')">صمت مهني</button>
-      <button class="ghost" onclick="support('🔁 ارجع للسؤال الواحد')">ارجع للسؤال</button>
-      <button class="ok" onclick="support('✅ نُطقت الفكرة — أُغلِقت الحصة')">إغلاق الحصة</button>
-      <button class="ghost" onclick="toggleClass()">🎯 وضع الصف</button>
-      <button class="ghost" onclick="window.print()">🖨️ طباعة</button>
-    </div>
-    <div id="support" class="box"></div>
-  </div>
+<p class="small">
+يمكنك التصوير بالكاميرا أو اختيار الصور من الجهاز
+(حد أقصى ٣ صور).
+</p>
+
+<div class="progress"><span id="bar"></span></div>
+<div id="pages" class="badges"></div>
+<div id="status" class="box">— بانتظار الصور —</div>
+
+<button id="startBtn" class="ok" disabled>ابدأ القراءة</button>
+</div>
+
+<div class="card">
+<h3>🧭 داخل الحصة</h3>
+
+<div id="idea" class="box">🔹 الفكرة ستظهر هنا</div>
+<div id="question" class="box">❓ السؤال سيظهر هنا</div>
+<div id="prep" class="box"></div>
+
+<button id="buildBtn" class="ok hide-in-class" disabled>أنشئ التحضير</button>
+</div>
+
+<div class="card">
+<h3>🎛️ الرادار الصفّي</h3>
+
+<button class="warn" onclick="support('🛑 صمت مهني مُدار')">صمت مهني</button>
+<button class="ghost" onclick="support('🔁 ارجع للسؤال الواحد')">ارجع للسؤال</button>
+<button class="ok" onclick="support('✅ نُطقت الفكرة — أُغلِقت الحصة')">إغلاق الحصة</button>
+<button class="ghost" onclick="toggleClass()">🎯 وضع الصف</button>
+<button class="ghost" onclick="window.print()">🖨️ طباعة</button>
+
+<div id="support" class="box"></div>
+</div>
+
 </div>
 
 <script>
-/* الحالة */
-const input = document.getElementById("cameraInput");
+const input = document.getElementById("fileInput");
 const bar = document.getElementById("bar");
+const status = document.getElementById("status");
 const pages = document.getElementById("pages");
-const statusBox = document.getElementById("status");
-const startBtn = document.getElementById("start");
-const prepBtn = document.getElementById("prepBtn");
+const startBtn = document.getElementById("startBtn");
+const buildBtn = document.getElementById("buildBtn");
 const ideaBox = document.getElementById("idea");
 const questionBox = document.getElementById("question");
 const prepBox = document.getElementById("prep");
-const studentsBody = document.getElementById("students");
-let images = [];
-let ocrText = "";
 
-/* إدخال الصور (حد ٣) */
-input.onchange = () => {
-  pages.innerHTML = "";
-  images = [...input.files].slice(0,3);
-  if (input.files.length > 3) {
-    statusBox.textContent = "⚠️ تم اعتماد أول ٣ صفحات فقط.";
+let images=[];
+let ocrText="";
+
+input.onchange=()=>{
+  images=[...input.files].slice(0,3);
+  pages.innerHTML="";
+  if(input.files.length>3){
+    status.textContent="⚠️ تم اعتماد أول ٣ صور فقط.";
+  }else{
+    status.textContent=`✅ تم إدخال ${images.length} صورة.`;
   }
-  if (images.length) {
-    images.forEach((_, i) => {
-      const s = document.createElement("span");
-      s.textContent = `صفحة ${i+1}`;
-      pages.appendChild(s);
-    });
-    statusBox.textContent = `✅ تم إدخال ${images.length} صفحة.`;
-    startBtn.disabled = false;
-  }
+  images.forEach((_,i)=>{
+    const s=document.createElement("span");
+    s.textContent=`صورة ${i+1}`;
+    pages.appendChild(s);
+  });
+  startBtn.disabled = images.length===0;
 };
 
-/* ضغط تلقائي */
 function compressImage(file){
   return new Promise(res=>{
-    const img = new Image();
-    img.onload = () => {
-      const c = document.createElement("canvas");
-      const sc = Math.min(1200 / img.width, 1);
-      c.width = img.width * sc;
-      c.height = img.height * sc;
+    const img=new Image();
+    img.onload=()=>{
+      const c=document.createElement("canvas");
+      const scale=Math.min(1200/img.width,1);
+      c.width=img.width*scale;
+      c.height=img.height*scale;
       c.getContext("2d").drawImage(img,0,0,c.width,c.height);
-      c.toBlob(b => res(b), "image/jpeg", 0.7);
+      c.toBlob(b=>res(b),"image/jpeg",0.7);
     };
-    img.src = URL.createObjectURL(file);
+    img.src=URL.createObjectURL(file);
   });
 }
 
-/* OCR + Fallback */
-startBtn.onclick = async () => {
-  ocrText = "";
-  bar.style.width = "5%";
-  statusBox.textContent = "🔍 جاري القراءة بهدوء…";
-  for (let i=0;i<images.length;i++){
+startBtn.onclick=async()=>{
+  ocrText="";
+  bar.style.width="5%";
+  status.textContent="🔍 جارٍ القراءة…";
+  for(let i=0;i<images.length;i++){
     const blob = await compressImage(images[i]);
     try{
-      const r = await Tesseract.recognize(blob, "ara", {
-        logger: m => {
-          if (m.progress != null) {
-            bar.style.width = Math.round((i+m.progress)/images.length*90) + "%";
-          }
+      const r = await Tesseract.recognize(blob,"ara",{logger:m=>{
+        if(m.progress!=null){
+          bar.style.width=Math.round((i+m.progress)/images.length*90)+"%";
         }
-      });
-      ocrText += (r.data.text || "") + " ";
+      }});
+      ocrText += r.data.text+" ";
     }catch{}
   }
-  ocrText = ocrText.trim();
-  bar.style.width = "100%";
-  statusBox.textContent = ocrText
-    ? "✅ تمت القراءة بنجاح."
-    : "✅ لم يُتعرف نص واضح — سنعمل من الصورة.";
-  prepBtn.disabled = false;
+  bar.style.width="100%";
+  status.textContent="✅ انتهت المعالجة.";
+  buildBtn.disabled=false;
 };
 
-/* تحليل مبسّط مناسب للأول–الثاني */
 function analyze(){
-  if (ocrText.length < 40) {
-    return { idea: "التعرّف على ما نراه.", q: "ماذا ترى أولًا؟" };
+  if(ocrText.trim().length<40){
+    return {idea:"التعرّف على ما نراه في الصفحة",q:"ماذا ترى أولًا؟"};
   }
-  if (/جمع|طرح|يساوي|احسب/.test(ocrText)) {
-    return { idea: "ربط الأعداد بما نراه.", q: "كيف عرفت؟" };
+  if(/جمع|طرح|احسب/.test(ocrText)){
+    return {idea:"ربط الأعداد بما نراه",q:"كيف عرفت؟"};
   }
-  return { idea: "فكرة بسيطة من الصورة.", q: "ما الفكرة هنا؟" };
+  return {idea:"فكرة بسيطة من الصورة",q:"ما الفكرة هنا؟"};
 }
 
-/* إنشاء التحضير */
-prepBtn.onclick = () => {
-  const a = analyze();
-  ideaBox.textContent = `🔹 الفكرة: ${a.idea}`;
-  questionBox.textContent = `❓ السؤال: ${a.q}`;
-  prepBox.textContent =
-`📘 تحضير مختصر:
-انظروا إلى الصفحة.
-اسأل السؤال.
+buildBtn.onclick=()=>{
+  const a=analyze();
+  ideaBox.textContent=`🔹 الفكرة: ${a.idea}`;
+  questionBox.textContent=`❓ السؤال: ${a.q}`;
+  prepBox.textContent=
+`📘 ما سيقوله المعلم:
+"انظروا إلى الصفحة."
+${a.q}
 صمت.
 محاولة واحدة.
 إغلاق عند نطق الفكرة.`;
 };
 
-/* الطلاب */
-document.getElementById("addStudent").onclick = () => {
-  const name = document.getElementById("studentName").value.trim();
-  if (!name) return;
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td>${name}</td>
-    <td>
-      <label><input type="checkbox"> حاول</label>
-      <label><input type="checkbox"> تردّد</label>
-      <label><input type="checkbox"> نطق</label>
-      <label><input type="checkbox"> احتاج دعم</label>
-    </td>
-    <td><button class="ghost">حذف</button></td>`;
-  tr.querySelector("button").onclick = () => tr.remove();
-  studentsBody.appendChild(tr);
-  document.getElementById("studentName").value = "";
-};
-
-/* دعم */
-function support(t){ document.getElementById("support").textContent = t; }
-function toggleClass(){ document.body.classList.toggle("class-mode"); }
+function support(t){document.getElementById("support").textContent=t;}
+function toggleClass(){document.body.classList.toggle("class-mode");}
 </script>
+
 </body>
 </html>
