@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>النظام السيادي الشامل لدعم المعلّم — النسخة الموحّدة</title>
+<title>النظام السيادي الشامل الذكي — قراءة الصفحة وبناء الحصّة تلقائيًا</title>
+
+<!-- OCR library (يُحمَّل عند توفر إنترنت) -->
+https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
 <style>
-/* ================== الهوية ================== */
 :root{
   --main:#0d47a1;
   --bg:#f4f6f8;
@@ -15,12 +17,11 @@
   --muted:#6b7280;
   --ok:#2e7d32;
   --warn:#f9a825;
-  --danger:#c62828;
   --expert:#6a1b9a;
 }
 
-/* ================== عام ================== */
 *{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:Tahoma,Arial,sans-serif;
@@ -28,11 +29,13 @@ body{
   color:var(--ink);
   line-height:1.9;
 }
+
 .app{
-  max-width:1200px;
+  max-width:1100px;
   margin:auto;
   padding:16px;
 }
+
 .card{
   background:var(--card);
   padding:20px;
@@ -40,12 +43,13 @@ body{
   box-shadow:0 8px 24px rgba(0,0,0,.08);
   margin-bottom:16px;
 }
+
 .header{text-align:center}
 .header h1{margin:0;color:var(--main)}
 .header p{margin-top:6px;color:var(--muted);font-size:14px}
 
-/* ================== عناصر إدخال ================== */
 label{display:block;margin-top:10px;font-size:14px}
+
 button,input,select{
   width:100%;
   padding:14px;
@@ -54,10 +58,10 @@ button,input,select{
   border-radius:14px;
   font-size:15px;
 }
+
 button{background:var(--main);color:#fff;cursor:pointer}
 button.ok{background:var(--ok)}
 button.warn{background:var(--warn);color:#000}
-button.danger{background:var(--danger)}
 button.expert{background:var(--expert)}
 
 .buttons{
@@ -69,8 +73,7 @@ button.expert{background:var(--expert)}
 
 video,canvas{width:100%;border-radius:14px}
 
-/* ================== إخراج ================== */
-.output,.log,.expertBox,.radar{
+.output,.expertBox,.radar{
   background:#fafafa;
   padding:16px;
   border-radius:14px;
@@ -78,15 +81,16 @@ video,canvas{width:100%;border-radius:14px}
   margin-top:12px;
   font-size:14px;
 }
+
 .expertBox{border-right:6px solid var(--expert)}
 .radar{border-right:6px solid var(--warn)}
+
 .hidden{display:none}
 
-/* ================== طباعة ================== */
 @media print{
   button,input,select,video{display:none}
   body{background:#fff}
-  .output,.log,.expertBox,.radar{font-size:14pt}
+  .output,.expertBox,.radar{font-size:14pt}
 }
 </style>
 </head>
@@ -95,16 +99,15 @@ video,canvas{width:100%;border-radius:14px}
 
 <div class="app">
 
-<!-- ================== العنوان ================== -->
+<!-- ===== العنوان ===== -->
 <div class="card header">
-  <h1>النظام السيادي الشامل لدعم المعلّم</h1>
+  <h1>النظام السيادي الشامل الذكي</h1>
   <p>
-    إدراج كتاب • تحضير حرفي • محاكاة تنفيذية • خبير تربوي<br>
-    دعم سلوكي ومادّي • رادار • حصّة مباشرة • أقل جهد
+    يقرأ صفحة الدرس • يبني التحضير والمحاكاة تلقائيًا • أقل جهد للمعلم
   </p>
 </div>
 
-<!-- ================== إدراج الكتاب ================== -->
+<!-- ===== إدراج الصفحة ===== -->
 <div class="card">
   <h2>📘 إدراج صفحة الدرس</h2>
   <button onclick="startCamera()">📸 تصوير بالكاميرا الخلفية</button>
@@ -113,197 +116,165 @@ video,canvas{width:100%;border-radius:14px}
   <button id="captureBtn" class="warn hidden" onclick="capture()">التقاط الصفحة</button>
 </div>
 
-<!-- ================== الإعدادات ================== -->
+<!-- ===== إعدادات بسيطة ===== -->
 <div class="card hidden" id="settings">
-  <label>نوع الحصّة</label>
-  <select id="mode">
-    <option>وجاهي</option>
-    <option>تيمز</option>
-  </select>
-
   <label>مدة الحصّة</label>
   <select id="time">
-    <option>٣٠ دقيقة</option>
-    <option>٤٠ دقيقة</option>
-    <option>٤٥ دقيقة</option>
+    <option value="30">٣٠ دقيقة</option>
+    <option value="40">٤٠ دقيقة</option>
+    <option value="45">٤٥ دقيقة</option>
   </select>
 
   <!-- زر أقل جهد -->
   <button class="ok" onclick="oneClick()">▶ ابدأ الحصّة الآن (أقل جهد)</button>
 
-  <!-- الأزرار الكاملة -->
+  <!-- أزرار معرفة عند الحاجة -->
   <div class="buttons">
-    <button onclick="prep()">📘 تحضير تنفيذي حرفي</button>
-    <button onclick="simulate()">🎬 محاكاة واقعية قابلة للتنفيذ</button>
+    <button onclick="showPrep()">📘 التحضير التنفيذي</button>
+    <button onclick="showSim()">🎬 المحاكاة الصفّية</button>
     <button class="expert" onclick="expert()">🧠 الخبير التربوي</button>
-    <button class="warn" onclick="behavior()">🧠 دعم سلوكي</button>
-    <button onclick="material()">🧱 دعم مادّي</button>
-    <button class="ok" onclick="startLesson()">▶ بدء الحصّة المباشرة</button>
   </div>
 
-  <div id="output" class="output hidden"></div>
+  <div id="prep" class="output hidden"></div>
+  <div id="sim" class="output hidden"></div>
   <div id="expertBox" class="expertBox hidden"></div>
 </div>
 
-<!-- ================== الحصّة المباشرة ================== -->
-<div class="card hidden" id="live">
-  <h2>🧭 الحصّة المباشرة</h2>
-  <div class="buttons">
-    <button onclick="act('طُرح السؤال')">اطرح السؤال</button>
-    <button onclick="act('صمت واعٍ')">صمت</button>
-    <button onclick="act('محاولة تلميذ واحد')">محاولة</button>
-    <button class="ok" onclick="finish()">✅ نُطقت الفكرة</button>
-  </div>
-  <div id="log" class="log">سجل الحصّة:</div>
-</div>
-
-<!-- ================== الرادار ================== -->
+<!-- ===== الرادار ===== -->
 <div class="card hidden" id="radarBox">
   <h2>🛡️ الرادار التربوي</h2>
   <div class="radar">
 ⚠️ إذا تجاوز الكلام ٣ جمل → توقّف  
 ⚠️ إذا ارتفع الصوت → صمت ١٠ ثوانٍ  
-⚠️ إذا ظهر الإنهاك → إنهاء الحصّة  
-✅ عند نطق الفكرة بوضوح → التوقّف صحيح
+⚠️ إذا ظهر الإنهاك → الإنهاء صحيح  
+✅ إذا نُطقت الفكرة بوضوح → التوقّف قرار مهني
   </div>
 </div>
 
 </div>
 
 <script>
-/* ========== مراجع ========= */
+/* ================== متغيرات عامة ================== */
+let imageBlob=null;
+let extractedText="";
+let coreQuestion="ماذا لاحظت؟";
+
 const video=document.getElementById("video");
 const captureBtn=document.getElementById("captureBtn");
-const settings=document.getElementById("settings");
-const radarBox=document.getElementById("radarBox");
-const live=document.getElementById("live");
-const output=document.getElementById("output");
-const expertBox=document.getElementById("expertBox");
-const log=document.getElementById("log");
 
-const canvas=document.createElement("canvas");
-const ctx=canvas.getContext("2d");
-
-/* ========== إدراج الصفحة ========= */
+/* ================== إدراج الصورة ================== */
 function startCamera(){
   video.classList.remove("hidden");
   captureBtn.classList.remove("hidden");
-  navigator.mediaDevices
-    .getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false})
+  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false})
     .then(stream=>video.srcObject=stream);
 }
 
 function capture(){
+  const canvas=document.createElement("canvas");
   canvas.width=video.videoWidth;
   canvas.height=video.videoHeight;
-  ctx.drawImage(video,0,0);
+  canvas.getContext("2d").drawImage(video,0,0);
   video.srcObject.getTracks().forEach(t=>t.stop());
-  activateSystem();
+  imageBlob=dataURLtoBlob(canvas.toDataURL("image/png"));
+  activate();
 }
 
 function loadImage(e){
-  const img=new Image();
-  img.onload=()=>{
-    canvas.width=img.width;
-    canvas.height=img.height;
-    ctx.drawImage(img,0,0);
-    activateSystem();
-  };
-  img.src=URL.createObjectURL(e.target.files[0]);
+  imageBlob=e.target.files[0];
+  activate();
 }
 
-function activateSystem(){
-  settings.classList.remove("hidden");
-  radarBox.classList.remove("hidden");
+function dataURLtoBlob(dataurl){
+  const arr=dataurl.split(","), mime=arr[0].match(/:(.*?);/)[1];
+  const bstr=atob(arr[1]);
+  let n=bstr.length, u8arr=new Uint8Array(n);
+  while(n--) u8arr[n]=bstr.charCodeAt(n);
+  return new Blob([u8arr],{type:mime});
 }
 
-/* ========== إخراج مساعد ========= */
-function show(text){
-  output.textContent=text;
-  output.classList.remove("hidden");
+/* ================== تفعيل النظام ================== */
+async function activate(){
+  document.getElementById("settings").classList.remove("hidden");
+  document.getElementById("radarBox").classList.remove("hidden");
+  await readImage();       // OCR
+  analyzeText();           // استنتاج السؤال
 }
 
-/* ========== تحضير حرفي ========= */
-function prep(){
-show(`التحضير التنفيذي الحرفي:
-
-الدقيقة ٠–٢:
-"افتحوا الصفحة."
-"انظروا فقط."
-
-الدقيقة ٢–٤:
-قراءة المثال ببطء.
-صمت ٢٠ ثانية.
-
-الدقيقة ٤–٨:
-سؤال واحد فقط.
-صمت ٣٠ ثانية.
-
-الدقيقة ٨–١٢:
-محاولة تلميذ واحد.
-جملة تثبيت واحدة.
-⛔ توقّف مهني.`);
+/* ================== قراءة الصفحة ================== */
+async function readImage(){
+  try{
+    const res=await Tesseract.recognize(imageBlob,"ara");
+    extractedText=res.data.text||"";
+  }catch(e){
+    extractedText="";
+  }
 }
 
-/* ========== محاكاة ========= */
-function simulate(){
-show(`المحاكاة الواقعية القابلة للتنفيذ (${mode.value}):
+/* ================== تحليل مبسّط ================== */
+function analyzeText(){
+  if(/جمع|طرح|احسب|يساوي|عدد/.test(extractedText)){
+    coreQuestion="كيف توصلت إلى الناتج؟";
+  }else if(/اقرأ|نص|جملة|كلمة/.test(extractedText)){
+    coreQuestion="ماذا فهمت من هذه الجملة؟";
+  }else{
+    coreQuestion="ماذا لاحظت؟";
+  }
+}
 
-عرض المثال → صمت
-→ محاولة تلميذ واحد
-→ تثبيت بجملة
+/* ================== التحضير ================== */
+function showPrep(){
+  const m=parseInt(time.value);
+  prep.textContent=
+`التحضير التنفيذي (مبني على الصفحة):
+
+• سؤال مركزي:
+«${coreQuestion}»
+
+الدقيقة ٠–٥:
+عرض الصفحة دون شرح.
+
+الدقيقة ٥–١٠:
+طرح السؤال، صمت ٣٠ ثانية.
+
+الدقيقة ١٠–${Math.min(15,m)}:
+محاولة تلميذ واحد فقط.
+
+عند أول فهم:
+التوقّف مهني وصحيح.`;
+  prep.classList.remove("hidden");
+}
+
+/* ================== المحاكاة ================== */
+function showSim(){
+  const m=parseInt(time.value);
+  sim.textContent=
+`المحاكاة الصفّية الواقعية:
+
+عرض → صمت → محاولة
+→ تثبيت بجملة واحدة
 → إنهاء عند الفهم.
 
-في تيمز:
-مشاركة الشاشة، اسم واحد فقط، إنهاء سريع.`);
+إذا لم يظهر الفهم:
+الإنهاء المبكر صحيح تربويًا.`;
+  sim.classList.remove("hidden");
 }
 
-/* ========== خبير تربوي ========= */
+/* ================== الخبير ================== */
 function expert(){
-  expertBox.classList.remove("hidden");
   expertBox.textContent=
 `🧠 الخبير التربوي:
-الصمت يعمل الآن.
-لا تُنقذ سريعًا.
+الصمت هنا يعمل.
+لا تُنقذ بسرعة.
 ما اكتمل كافٍ اليوم.`;
+  expertBox.classList.remove("hidden");
 }
 
-/* ========== دعم سلوكي ========= */
-function behavior(){
-show(`الدعم السلوكي:
-• جملة واحدة رحيمة
-• تغيير مكان أو دور
-• احتواء دون توبيخ`);
-}
-
-/* ========== دعم مادّي ========= */
-function material(){
-show(`الدعم المادّي:
-• أداة واحدة مشتركة
-• لا مكافآت
-• لا سحب أو تهديد`);
-}
-
-/* ========== أقل جهد ========= */
+/* ================== زر أقل جهد ================== */
 function oneClick(){
-  prep();
-  simulate();
+  showPrep();
+  showSim();
   expert();
-  startLesson();
-}
-
-/* ========== الحصّة المباشرة ========= */
-function startLesson(){
-  live.classList.remove("hidden");
-  log.textContent="سجل الحصّة:";
-}
-
-function act(text){
-  log.textContent+="\n• "+text;
-}
-
-function finish(){
-  log.textContent+="\n• نُطقت الفكرة — انتهت الحصّة";
 }
 </script>
 
