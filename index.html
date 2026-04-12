@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الخبير التربوي المرافق — مبني على الكتاب</title>
+<title>الخبير التربوي المرافق — الكتاب هو المنهاج</title>
 
 <style>
 :root{
@@ -16,7 +16,7 @@ body{
   font-family: system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;
   line-height:1.7;
 }
-.wrapper{max-width:900px; margin:auto; padding:1.2rem}
+.wrapper{max-width:920px; margin:auto; padding:1.2rem}
 .card{
   background:var(--card); border-radius:var(--radius);
   padding:1.5rem; margin-bottom:1.1rem;
@@ -38,21 +38,16 @@ input,textarea{
   border-radius:12px; border:1px solid #e5e7eb; font-size:1rem;
 }
 .hidden{display:none}
-.log{
-  margin-top:1rem; padding:1rem; border-radius:12px;
-  background:#f0fdf4; color:#166534; font-weight:700; text-align:center;
-}
-.badges{display:flex; gap:.5rem; flex-wrap:wrap}
-.badge{
-  background:#f8fafc; border:1px solid #e5e7eb; border-radius:999px;
-  padding:.3rem .6rem; font-size:.85rem; color:#334155;
-}
 .quote{
   background:#f8fafc; border-right:4px solid var(--accent);
   padding:.6rem .8rem; border-radius:8px; color:#334155;
 }
+.log{
+  margin-top:1rem; padding:1rem; border-radius:12px;
+  background:#f0fdf4; color:#166534; font-weight:700; text-align:center;
+}
 
-/* ميثاق للطباعة فقط */
+/* الطباعة */
 .print-charter{display:none; page-break-after:always}
 @media print{
   body{background:#fff}
@@ -71,113 +66,126 @@ input,textarea{
 <body>
 <div class="wrapper">
 
-  <!-- صفحة الميثاق (للطباعة فقط) -->
-  <div class="print-charter card">
-    <h1>ميثاق «الكتاب هو المنهاج»</h1>
-    <p><strong>الغرض:</strong> حماية التعلّم، دعم المعلّم، وزراعة حبّ التعلّم.</p>
-    <h2>مبادئ ثابتة</h2>
-    <ul>
-      <li>الكتاب المدرسي هو المرجع الحاكم غير المُجزّأ.</li>
-      <li>حصّة واحدة = فكرة واحدة من الكتاب.</li>
-      <li>الأمان قبل المعرفة. المحاولة قيمة.</li>
-      <li>لا تقييم، لا مقارنة، لا استعجال.</li>
-      <li>التقنية تُهيّئ ثم تنسحب داخل الحصّة.</li>
-    </ul>
-    <h2>ما لا نضيفه أبدًا</h2>
-    <ul>
-      <li>تنبيهات أو تحميلات أثناء الحصّة.</li>
-      <li>أزرار تُغري بالتوسّع.</li>
-      <li>تحليلات أداء أو تتبّع.</li>
-    </ul>
-    <p><strong>المعيار الوحيد:</strong> هل يجعل هذا المعلّم والطالب أكثر هدوءًا؟</p>
+<!-- ===== ميثاق للطباعة ===== -->
+<div class="print-charter card">
+  <h1>ميثاق «الكتاب هو المنهاج»</h1>
+  <p>هذا النظام لا يعمل إلا من داخل الكتاب المعتمد.</p>
+  <ul>
+    <li>الكتاب المدرسي هو المرجع الحاكم.</li>
+    <li>حصّة واحدة = فكرة واحدة من النص.</li>
+    <li>المحاولة قيمة، الصمت مقبول.</li>
+    <li>لا تقييم، لا مقارنة، لا تسريع.</li>
+  </ul>
+</div>
+
+<!-- ===== العنوان ===== -->
+<div class="card">
+  <h1>الخبير التربوي المرافق</h1>
+  <p>نظام يدعم المعلّم، يراعي القدرات، ويزرع حب التعلّم من داخل الكتاب.</p>
+</div>
+
+<!-- ===== اعتماد الكتاب ===== -->
+<div class="card">
+  <h2>اعتماد الكتاب كمنهاج</h2>
+  <div class="quote">
+    لا يُفتح أي تحضير أو حصّة دون اعتماد الكتاب رسميًا.
   </div>
 
-  <!-- العنوان -->
-  <div class="card">
-    <h1>الخبير التربوي المرافق (مبني على الكتاب)</h1>
-    <p>يدعم المعلّم، يحمي التعلّم، ويزرع حبّه عبر الأمان والصمت الواعي.</p>
-    <div class="badges">
-      <span class="badge">الكتاب هو المنهاج</span>
-      <span class="badge">فكرة واحدة</span>
-      <span class="badge">صمت شرعي</span>
-      <span class="badge">إغلاق مهني</span>
-    </div>
+  <label>رفع ملف الكتاب (PDF أو صورة)</label>
+  <input type="file" id="bookFile" accept=".pdf,image/*">
+
+  <label>اسم الكتاب / الصف / المادة</label>
+  <input id="bookInfo" placeholder="مثال: علوم – صف رابع – فصل أول">
+
+  <div class="actions">
+    <button class="secondary" onclick="adoptBook()">اعتماد الكتاب</button>
   </div>
 
-  <!-- اختيار الوضع -->
-  <div class="card">
-    <h2>وضع العمل</h2>
-    <div class="actions">
-      <button class="primary" onclick="openPrep()">تحضير قبل الحصّة (من الكتاب)</button>
-      <button class="ghost" onclick="openSession()">مرافقة أثناء الحصّة (صامتة)</button>
-    </div>
+  <p id="bookStatus" class="hidden">✅ تم اعتماد الكتاب كمنهاج.</p>
+</div>
+
+<!-- ===== وضع العمل ===== -->
+<div class="card">
+  <h2>وضع العمل</h2>
+  <div class="actions">
+    <button class="primary" onclick="openPrep()">تحضير من الكتاب</button>
+    <button class="ghost" onclick="openSession()">مرافقة أثناء الحصّة</button>
+  </div>
+</div>
+
+<!-- ===== التحضير ===== -->
+<div id="prep" class="card hidden">
+  <h2>التحضير المبني على الكتاب</h2>
+
+  <div class="quote">
+    اختر فكرة واحدة مكتملة من نص الكتاب. لا تُضف من خارجه.
   </div>
 
-  <!-- التحضير -->
-  <div id="prep" class="card hidden">
-    <h2>التحضير المبني على الكتاب</h2>
-    <div class="quote">اختر فكرة واحدة مكتملة من نص الكتاب، ولا تتجاوزها.</div>
+  <label>الفكرة الواحدة من النص</label>
+  <textarea id="idea" rows="3"></textarea>
 
-    <label>الكتاب/الصف/المادّة</label>
-    <input id="bookInfo" placeholder="مثال: رياضيات – صف ثالث – الفصل الأوّل">
+  <label>سؤال واحد يقود لنطق الفكرة</label>
+  <textarea id="question" rows="2"></textarea>
 
-    <label>الدرس/الصفحة (اختياري)</label>
-    <input id="lessonPage" placeholder="اسم الدرس أو رقم الصفحة">
-
-    <label>الفكرة الواحدة من الكتاب</label>
-    <textarea id="idea" rows="3" placeholder="أصغر وحدة معرفية مكتملة من النص"></textarea>
-
-    <label>سؤال واحد يقود لنطق الفكرة</label>
-    <textarea id="question" rows="2" placeholder="سؤال يفتح المحاولة دون إحراج"></textarea>
-
-    <div class="quote">
-      ملاحظة دعم: يكفي <strong>أن يحاول الطالب</strong>. الصمت مقبول. الإغلاق جودة.
-    </div>
-
-    <div class="actions">
-      <button class="secondary" onclick="lockPrep()">اعتماد التحضير</button>
-      <button class="ghost" onclick="window.print()">طباعة (تشمل الميثاق)</button>
-    </div>
-
-    <p id="prepMsg" class="hidden">✅ التحضير معتمد. يمكنك الدخول للحصّة.</p>
+  <div class="actions">
+    <button class="secondary" onclick="lockPrep()">اعتماد التحضير</button>
+    <button class="ghost" onclick="window.print()">طباعة</button>
   </div>
 
-  <!-- الحصّة -->
-  <div id="session" class="card hidden">
-    <h2>المرافقة الصفّية الصامتة</h2>
-    <div class="quote">
-      راعِ الفروق: ليس الجميع مستعدًا للكلام. المحاولة كافية.
-    </div>
+  <p id="prepStatus" class="hidden">✅ التحضير جاهز.</p>
+</div>
 
-    <div class="actions">
-      <button class="primary" onclick="logAction('اطرح السؤال')">اطرح السؤال</button>
-      <button class="ghost" onclick="logAction('صمت')">صمت (وقت آمن)</button>
-      <button class="ghost" onclick="logAction('ارجع للسؤال')">ارجع للسؤال</button>
-      <button class="secondary" onclick="logAction('نُطقت الفكرة — أُغلقت الحصّة')">إغلاق</button>
-    </div>
+<!-- ===== الحصّة ===== -->
+<div id="session" class="card hidden">
+  <h2>المرافقة الصفّية الصامتة</h2>
 
-    <div id="log" class="log hidden"></div>
+  <div class="quote">
+    راعِ الفروق: الصمت طبيعي، المحاولة كافية.
   </div>
+
+  <div class="actions">
+    <button class="primary" onclick="logAction('اطرح السؤال')">اطرح السؤال</button>
+    <button class="ghost" onclick="logAction('صمت')">صمت</button>
+    <button class="ghost" onclick="logAction('ارجع للسؤال')">ارجع للسؤال</button>
+    <button class="secondary" onclick="logAction('نُطقت الفكرة — أُغلقت الحصّة')">إغلاق</button>
+  </div>
+
+  <div id="log" class="log hidden"></div>
+</div>
 
 </div>
 
 <script>
+let bookAdopted=false;
 let prepared=false;
+
+function adoptBook(){
+  if(!bookFile.files.length || !bookInfo.value) return;
+  bookAdopted=true;
+  bookStatus.classList.remove("hidden");
+}
+
 function openPrep(){
+  if(!bookAdopted) return;
   prep.classList.remove("hidden");
   session.classList.add("hidden");
 }
+
 function openSession(){
-  if(!prepared) return; // صمت مقصود دون تنبيه
+  if(!bookAdopted || !prepared) return;
   session.classList.remove("hidden");
   prep.classList.add("hidden");
 }
+
 function lockPrep(){
   if(!idea.value || !question.value) return;
-  prepared=true; prepMsg.classList.remove("hidden");
+  prepared=true;
+  prepStatus.classList.remove("hidden");
 }
+
 function logAction(text){
-  log.textContent=text; log.classList.remove("hidden");
+  log.textContent=text;
+  log.classList.remove("hidden");
 }
 </script>
 </body>
