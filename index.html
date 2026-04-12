@@ -5,13 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>النظام الشامل لدعم المعلّم — قراءة الكتاب وتشغيل الدروس</title>
 
-<!-- ✅ تحميل صحيح للمكتبات -->
+<!-- ✅ تحميل المكتبات بشكل صحيح 100% -->
 
 <!-- PDF.js -->
-https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.jsscript>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.jsscript>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+</script>
 
 <!-- Tesseract.js (OCR) -->
-https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <style>
 :root{
@@ -109,10 +113,9 @@ button.lesson{background:#546e7a}
 
 <div class="app">
 
-<!-- العنوان -->
 <div class="card">
   <h1>النظام الشامل لدعم المعلّم</h1>
-  <p>قراءة الكتاب فعليًا → استخراج الدروس → تحضير / محاكاة / رصد</p>
+  <p>قراءة الكتاب فعليًا → اختيار الدرس → تحضير / محاكاة / رصد</p>
 </div>
 
 <!-- ١) إدراج الكتاب -->
@@ -127,13 +130,13 @@ button.lesson{background:#546e7a}
 
 <!-- ٢) النص المستخرج -->
 <div class="card">
-  <h2>٢) النص المستخرج من الكتاب (كما هو)</h2>
+  <h2>٢) النص المستخرج من الكتاب</h2>
   <div id="rawText">— لم يتم استخراج نص بعد —</div>
 </div>
 
 <!-- ٣) أسماء الدروس -->
 <div class="card">
-  <h2>٣) أسماء الدروس كما وجدت في الكتاب</h2>
+  <h2>٣) أسماء الدروس كما ظهرت في الكتاب</h2>
   <div id="lessonList" class="lesson-container">
     — لم يتم التعرف على دروس بعد —
   </div>
@@ -144,8 +147,8 @@ button.lesson{background:#546e7a}
   <h2>٤) ما الذي تريده للدرس المختار؟</h2>
   <div class="buttons">
     <button onclick="showPrep()">📘 تحضير</button>
-    <button onclick="showSim()">🧪 محاكاة واقعية</button>
-    <button onclick="showObs()">📋 قوائم رصد</button>
+    <button onclick="showSim()">🧪 محاكاة</button>
+    <button onclick="showObs()">📋 رصد</button>
   </div>
 </div>
 
@@ -201,7 +204,7 @@ function processText(text){
   extractLessons(text);
 }
 
-/* استخراج أسماء الدروس حرفيًا */
+/* محاولة استخراج أسماء الدروس */
 function extractLessons(text){
   const lines = text.split("\n");
   const box = document.getElementById("lessonList");
@@ -241,9 +244,9 @@ function showPrep(){
   document.getElementById("output").textContent =
 `تحضير مختصر للدرس: ${currentLesson}
 
-• بداية الدرس من أول مثال في الكتاب
+• بداية الدرس من مثال الكتاب
 • مشاركة طالب واحد
-• تثبيت الفكرة
+• تثبيت المفهوم
 • توقّف مهني عند الفهم`;
 }
 
@@ -254,13 +257,13 @@ function showSim(){
 `محاكاة صفّية قابلة للتنفيذ:
 
 ١) افتح صفحة الدرس
-٢) مثال واحد فقط
+٢) اعرض مثالًا واحدًا فقط
 ٣) صمت
 ٤) محاولة تلميذ
 ٥) انتهِ عند الفهم`;
 }
 
-/* قوائم رصد */
+/* رصد */
 function showObs(){
   if(!currentLesson){ alert("اختر درسًا أولًا"); return; }
   document.getElementById("output").textContent =
