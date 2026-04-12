@@ -2,252 +2,214 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الخبير التربوي المرافق — النسخة النهائية المصححة</title>
+<title>الخبير التربوي — PRO</title>
 
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mammoth@1.7.2/mammoth.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <style>
-:root{--main:#0d47a1;--ok:#2e7d32;--warn:#455a64;--bg:#f4f6f8;--card:#ffffff;--ink:#222;--soft:#e3f2fd}
-*{box-sizing:border-box}
-body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.85}
-.app{max-width:1000px;margin:auto;padding:16px}
-.header{background:var(--card);padding:24px 20px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08);text-align:center;margin-bottom:20px}
-.card{background:var(--card);padding:20px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08);margin-bottom:20px}
-h1,h3{margin:0 0 12px;text-align:center;color:var(--main)}
-input,button{width:100%;padding:16px;margin-top:12px;border:none;border-radius:14px;font-size:17px}
-button{background:var(--main);color:#fff;cursor:pointer}
-button.ok{background:var(--ok)}
-button.warn{background:var(--warn)}
-button.ghost{background:#eef2f7;color:#111}
-button.reset{background:#d32f2f;color:#fff}
-button:disabled{opacity:.6;cursor:not-allowed}
-.box{background:var(--soft);padding:16px;border-radius:14px;margin-top:12px;white-space:pre-wrap;font-size:15.5px}
-.progress{height:10px;background:#ddd;border-radius:8px;overflow:hidden;margin:16px 0}
-.progress span{display:block;height:100%;width:0%;background:var(--main);transition:.4s}
-.badges{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.badges span{background:#eef2f7;border-radius:999px;padding:8px 14px;font-size:14px}
-.small{font-size:13.5px;color:#6b7280;text-align:center}
+body{font-family:Tahoma;background:#f4f6f8;margin:0}
+.app{max-width:900px;margin:auto;padding:15px}
+.card{background:#fff;padding:18px;margin:15px 0;border-radius:14px;box-shadow:0 5px 15px rgba(0,0,0,.08)}
+button{width:100%;padding:14px;margin-top:10px;border:none;border-radius:10px;background:#0d47a1;color:#fff;font-size:16px}
+.box{background:#eef5ff;padding:12px;border-radius:10px;margin-top:10px;white-space:pre-wrap}
+.progress{height:8px;background:#ddd;border-radius:10px;margin-top:10px}
+.progress span{display:block;height:100%;width:0;background:#0d47a1}
 </style>
 </head>
+
 <body>
 <div class="app">
 
-<div class="header">
-  <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
-  <h1>الخبير التربوي المرافق</h1>
-  <p class="small">المنهاج الفلسطيني • قراءة سريعة ومضمونة • PDF + Word + PPTX + صور</p>
+<div class="card">
+<h3>📂 رفع الملفات</h3>
+<input type="file" id="fileInput" multiple>
+<button onclick="start()">ابدأ التحليل</button>
+<div class="progress"><span id="bar"></span></div>
+<div id="status" class="box">جاهز</div>
 </div>
 
 <div class="card">
-  <h3>📄 رفع الملفات (حتى ٣ ملفات)</h3>
-  <button id="uploadBtn" class="ok">📤 رفع ملف (PDF • DOCX • PPTX • صور)</button>
-  <input id="fileInput" type="file" accept=".pdf,.docx,.pptx,image/*" multiple style="display:none">
-  <button id="resetBtn" class="reset">إعادة تعيين</button>
-  
-  <div class="badges" id="filesList"></div>
-  <div class="progress"><span id="bar"></span></div>
-  <div id="status" class="box">— بانتظار رفع الملفات —</div>
-  
-  <button id="startBtn" class="ok" disabled>ابدأ القراءة السريعة والدقيقة</button>
-  <button id="showTextBtn" class="ghost" style="display:none;margin-top:8px">عرض النص المستخرج الكامل</button>
+<h3>🧠 التحليل الذكي</h3>
+<div id="analysis" class="box"></div>
+<button onclick="generateLesson()">🎯 توليد التحضير الكامل</button>
 </div>
 
 <div class="card">
-  <h3>🧭 التحضير التنفيذي العميق</h3>
-  <div id="idea" class="box">🔹 الفكرة ستظهر هنا</div>
-  <div id="question" class="box">❓ السؤال سيظهر هنا</div>
-  <div id="prep" class="box"></div>
-  <button id="buildBtn" class="ok" disabled>أنشئ التحضير العميق</button>
+<h3>📘 التحضير الجاهز</h3>
+<div id="lesson" class="box"></div>
 </div>
 
 <div class="card">
-  <h3>🎛️ الرادار الصفّي</h3>
-  <button class="warn" onclick="support('🛑 صمت مهني مُدار')">صمت مهني</button>
-  <button class="ghost" onclick="support('🔁 ارجع للسؤال الواحد')">ارجع للسؤال</button>
-  <button class="ok" onclick="closeSession()">✅ أُغلِقت الحصة</button>
-  <button class="ghost" onclick="window.print()">🖨️ طباعة</button>
-  <div id="support" class="box"></div>
+<h3>🎛️ أدوات صفية</h3>
+<button onclick="silent()">🛑 صمت 20 ثانية</button>
+<div id="timer" class="box"></div>
 </div>
 
 </div>
 
 <script>
-// ================== تهيئة pdf.js ==================
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.js';
 
-// ================== تحويل الأرقام إلى الشكل الشرقي ==================
-const toHindi = (num) => {
-  const str = String(num);
-  return str.replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d])
-            .replace(/\./g, '٫');   // تحويل النقطة العشرية إلى فاصلة عربية
-};
-
-// ================== متغيرات ==================
-const uploadBtn = document.getElementById("uploadBtn");
-const fileInput = document.getElementById("fileInput");
-const resetBtn = document.getElementById("resetBtn");
-const showTextBtn = document.getElementById("showTextBtn");
-const bar = document.getElementById("bar");
-const statusBox = document.getElementById("status");
-const filesList = document.getElementById("filesList");
-const startBtn = document.getElementById("startBtn");
-const buildBtn = document.getElementById("buildBtn");
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.js';
 
 let files = [];
 let fullText = "";
 let worker = null;
-let isClosed = false;
 
-// ================== رفع الملفات ==================
-uploadBtn.onclick = () => fileInput.click();
+// ================= START =================
+async function start(){
+  const input = document.getElementById("fileInput");
+  files = Array.from(input.files).slice(0,3);
 
-fileInput.onchange = () => {
-  if (fileInput.files.length > 0) {
-    files = Array.from(fileInput.files).slice(0, 3);
-    updateFilesList();
+  if(files.length === 0) return;
+
+  fullText = "";
+  update("🔍 بدء التحليل...");
+
+  for(let i=0;i<files.length;i++){
+    const f = files[i];
+    update(`📄 معالجة: ${f.name}`);
+
+    let text = "";
+
+    if(f.name.endsWith(".pdf")) text = await readPDF(f);
+    else if(f.name.endsWith(".docx")) text = await readDOCX(f);
+    else if(f.type.startsWith("image")) text = await readIMG(f);
+
+    fullText += text + "\n\n";
+    progress((i+1)/files.length);
   }
-};
 
-function updateFilesList() {
-  filesList.innerHTML = "";
-  
-  files.forEach((f, index) => {
-    const sizeMB = (f.size / 1024 / 1024).toFixed(1); // أرقام غربية داخل الكود
-    const hindiSize = toHindi(sizeMB);
-    const hindiIndex = toHindi(index + 1);
-    
-    const span = document.createElement("span");
-    span.textContent = `ملف ${hindiIndex}: \( {f.name} ( \){hindiSize} ميجابايت)`;
-    filesList.appendChild(span);
+  update("✅ تم استخراج النص");
+  analyze();
+}
+
+// ================= READERS =================
+async function readPDF(file){
+  const pdf = await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
+  let text="";
+  for(let i=1;i<=pdf.numPages;i++){
+    const page=await pdf.getPage(i);
+    const c=await page.getTextContent();
+    text+=c.items.map(i=>i.str).join(" ")+"\n";
+  }
+  return text;
+}
+
+async function readDOCX(file){
+  const res = await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()});
+  return res.value;
+}
+
+async function readIMG(file){
+  if(!worker){
+    worker = await Tesseract.createWorker('ara');
+    await worker.loadLanguage('ara');
+    await worker.initialize('ara');
+  }
+  const r = await worker.recognize(file);
+  return r.data.text;
+}
+
+// ================= ANALYSIS =================
+function analyze(){
+  const text = fullText.toLowerCase();
+
+  let type="عام";
+  if(/جمع|طرح|عدد|احسب/.test(text)) type="رياضيات";
+  if(/حرف|كلمة|نص|قراءة/.test(text)) type="لغة";
+
+  let keywords = extractKeywords(text);
+
+  document.getElementById("analysis").textContent =
+`📊 نوع المحتوى: ${type}
+
+🧩 كلمات مفتاحية:
+${keywords.join(" - ")}
+
+🧠 حجم النص: ${text.length} حرف
+`;
+
+  window.lessonData = {type,keywords,text};
+}
+
+// ================= KEYWORDS =================
+function extractKeywords(text){
+  const words = text.split(/\s+/);
+  const freq = {};
+  words.forEach(w=>{
+    if(w.length>3){
+      freq[w]=(freq[w]||0)+1;
+    }
   });
 
-  const hindiCount = toHindi(files.length);
-  statusBox.textContent = `✅ تم اختيار ${hindiCount} / ٣ ملفات`;
-  
-  startBtn.disabled = files.length === 0;
+  return Object.entries(freq)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,5)
+    .map(x=>x[0]);
 }
 
-resetBtn.onclick = () => {
-  files = [];
-  fullText = "";
-  filesList.innerHTML = "";
-  statusBox.textContent = "— تم إعادة التعيين —";
-  startBtn.disabled = true;
-  buildBtn.disabled = true;
-  showTextBtn.style.display = "none";
-};
+// ================= LESSON =================
+function generateLesson(){
 
-// ================== بدء القراءة ==================
-startBtn.onclick = async () => {
-  if (files.length === 0) return;
+  const {type,keywords} = window.lessonData;
 
-  // تنبيه للملفات الكبيرة
-  if (files.some(f => f.size > 20 * 1024 * 1024)) {
-    if (!confirm("⚠️ بعض الملفات كبيرة الحجم.\n\nالمعالجة تتم محلياً على جهازك للحفاظ على الخصوصية، وقد تستغرق وقتاً أطول.\n\nهل تريد المتابعة؟")) {
-      return;
+  let idea = `فهم ${keywords[0]}`;
+  let question = `كيف نفسر ${keywords[0]}؟`;
+
+  let lesson = `
+🎯 الفكرة:
+${idea}
+
+❓ السؤال المركزي:
+${question}
+
+🎓 الأهداف:
+- أن يفهم الطالب المفهوم
+- أن يطبقه عملياً
+
+🚀 النشاط:
+اعرض مثال من الملف واطلب من الطلاب الحل
+
+🧠 التفاعل:
+فكر – شارك – ناقش
+
+📏 التقييم:
+سؤال تطبيقي مباشر
+
+🔚 الإغلاق:
+تلخيص سريع + سؤال أخير
+`;
+
+  document.getElementById("lesson").textContent = lesson;
+}
+
+// ================= TIMER =================
+function silent(){
+  let t=20;
+  const el=document.getElementById("timer");
+
+  const i=setInterval(()=>{
+    el.textContent = `⏳ صمت: ${t}`;
+    t--;
+    if(t<0){
+      clearInterval(i);
+      el.textContent="✅ انتهى";
     }
-  }
-
-  bar.style.width = "5%";
-  statusBox.textContent = "🔍 جارٍ استخراج النص...";
-  startBtn.disabled = true;
-  fullText = "";
-
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const ext = file.name.split('.').pop().toLowerCase();
-    let extracted = "لم يتم استخراج نص.";
-
-    try {
-      if (ext === "pdf") extracted = await extractFromPDF(file);
-      else if (ext === "docx") extracted = await extractFromDOCX(file);
-      else if (file.type.startsWith("image/")) extracted = await extractFromImage(file);
-    } catch (e) {
-      extracted = "خطأ في معالجة الملف.";
-    }
-
-    fullText += `--- \( {file.name} ---\n \){extracted}\n\n`;
-    bar.style.width = `${Math.round(((i+1)/files.length)*100)}%`;
-  }
-
-  bar.style.width = "100%";
-  statusBox.textContent = "✅ تم استخراج النص بنجاح";
-  showTextBtn.style.display = "block";
-  buildBtn.disabled = false;
-  analyzeContent();
-};
-
-// ================== دوال الاستخراج ==================
-async function extractFromPDF(file) {
-  const arrayBuffer = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-  let text = "";
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
-    const content = await page.getTextContent();
-    text += content.items.map(item => item.str).join(" ") + "\n\n";
-  }
-  return text || "لم يتم استخراج نص من PDF.";
+  },1000);
 }
 
-async function extractFromDOCX(file) {
-  const arrayBuffer = await file.arrayBuffer();
-  const result = await mammoth.extractRawText({arrayBuffer});
-  return result.value || "لم يتم استخراج نص من Word.";
+// ================= HELPERS =================
+function update(msg){
+  document.getElementById("status").textContent = msg;
 }
 
-async function extractFromImage(file) {
-  if (!worker) {
-    worker = await Tesseract.createWorker('ara', 1);
-  }
-  const result = await worker.recognize(file);
-  // إنهاء الـ worker بعد الاستخدام لتوفير الذاكرة
-  // worker.terminate();   // يمكن تفعيله إذا أردت توفير أكبر للذاكرة
-  return result.data.text || "لم يتم التعرف على نص في الصورة.";
+function progress(p){
+  document.getElementById("bar").style.width = (p*100)+"%";
 }
 
-// ================== تحليل وإنشاء التحضير ==================
-function analyzeContent() {
-  const text = fullText.toLowerCase();
-  let idea = "استكشاف محتوى الملف المرفوع";
-  let q = "ماذا يتحدث عنه هذا الدرس؟";
-
-  if (/جمع|طرح|احسب|عدد/.test(text)) {
-    idea = "ربط العمليات الحسابية بالمحتوى";
-    q = "كيف نحل المسألة باستخدام ما في الملف؟";
-  } else if (/حرف|كلمة|قصة|لغتنا/.test(text)) {
-    idea = "تعلم الحروف والكلمات من النصوص";
-    q = "ما الفكرة الرئيسية في النص؟";
-  }
-
-  currentIdea = idea;
-  currentQuestion = q;
-
-  document.getElementById("idea").textContent = `🔹 الفكرة: ${idea}`;
-  document.getElementById("question").textContent = `❓ السؤال: ${q}`;
-}
-
-buildBtn.onclick = () => {
-  if (isClosed) return;
-  document.getElementById("prep").innerHTML = `
-    <strong>التحضير التنفيذي العميق</strong><br><br>
-    <strong>الفكرة:</strong> ${currentIdea}<br><br>
-    <strong>السؤال التوجيهي:</strong> ${currentQuestion}<br><br>
-    ١. عرض المحتوى من الملف<br>
-    ٢. طرح السؤال<br>
-    ٣. صمت واعٍ (١٥-٢٥ ثانية)<br>
-    ٤. مشاركة الطلاب<br>
-    ٥. تلخيص وإغلاق الحصة
-  `;
-};
-
-showTextBtn.onclick = () => alert("النص الكامل المستخرج:\n\n" + fullText);
-
-function support(msg) { if (!isClosed) document.getElementById("support").textContent = msg; }
-function closeSession() { isClosed = true; }
 </script>
 </body>
 </html>
