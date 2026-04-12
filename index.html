@@ -2,63 +2,113 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>الخبير التربوي المرافق — الكتاب هو المنهاج</title>
 
 <style>
 :root{
-  --bg:#f7f9fc; --card:#ffffff; --main:#1d4ed8; --accent:#16a34a;
-  --soft:#eef2ff; --text:#1f2937; --muted:#6b7280; --radius:18px;
+  --bg:#f7f9fc;
+  --card:#ffffff;
+  --main:#1d4ed8;
+  --accent:#16a34a;
+  --soft:#eef2ff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --radius:18px;
 }
+
 *{box-sizing:border-box}
+
 body{
-  margin:0; background:var(--bg); color:var(--text);
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
   font-family: system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;
   line-height:1.7;
 }
-.wrapper{max-width:920px; margin:auto; padding:1.2rem}
+
+.wrapper{
+  max-width:920px;
+  margin:auto;
+  padding:1.2rem;
+}
+
 .card{
-  background:var(--card); border-radius:var(--radius);
-  padding:1.5rem; margin-bottom:1.1rem;
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:1.5rem;
+  margin-bottom:1.1rem;
   box-shadow:0 10px 28px rgba(0,0,0,.06);
 }
-h1,h2{margin:0 0 .6rem; color:var(--main)}
-p{margin:.3rem 0; color:var(--muted)}
-.actions{display:flex; gap:.7rem; flex-wrap:wrap}
+
+h1,h2{
+  margin:0 0 .6rem;
+  color:var(--main);
+}
+
+p{
+  margin:.3rem 0;
+  color:var(--muted);
+}
+
+.actions{
+  display:flex;
+  gap:.7rem;
+  flex-wrap:wrap;
+}
+
 button{
-  flex:1; min-height:56px; border:none; border-radius:14px;
-  font-size:1rem; cursor:pointer;
+  flex:1;
+  min-height:56px;
+  border:none;
+  border-radius:14px;
+  font-size:1rem;
+  cursor:pointer;
 }
-.primary{background:var(--main); color:#fff}
-.secondary{background:var(--accent); color:#fff}
-.ghost{background:var(--soft); color:var(--main)}
-label{font-weight:600; margin-top:1rem; display:block}
+
+.primary{background:var(--main);color:#fff}
+.secondary{background:var(--accent);color:#fff}
+.ghost{background:var(--soft);color:var(--main)}
+
+label{
+  font-weight:600;
+  margin-top:1rem;
+  display:block;
+}
+
 input,textarea{
-  width:100%; margin-top:.4rem; padding:.75rem .9rem;
-  border-radius:12px; border:1px solid #e5e7eb; font-size:1rem;
+  width:100%;
+  margin-top:.4rem;
+  padding:.75rem .9rem;
+  border-radius:12px;
+  border:1px solid #e5e7eb;
+  font-size:1rem;
 }
+
 .hidden{display:none}
+
 .quote{
-  background:#f8fafc; border-right:4px solid var(--accent);
-  padding:.6rem .8rem; border-radius:8px; color:#334155;
+  background:#f8fafc;
+  border-right:4px solid var(--accent);
+  padding:.6rem .8rem;
+  border-radius:8px;
+  color:#334155;
 }
+
 .log{
-  margin-top:1rem; padding:1rem; border-radius:12px;
-  background:#f0fdf4; color:#166534; font-weight:700; text-align:center;
+  margin-top:1rem;
+  padding:1rem;
+  border-radius:12px;
+  background:#f0fdf4;
+  color:#166534;
+  font-weight:700;
+  text-align:center;
 }
 
-/* الطباعة */
-.print-charter{display:none; page-break-after:always}
-@media print{
-  body{background:#fff}
-  .wrapper > :not(.print-charter){display:none!important}
-  .print-charter{display:block}
-  .card{box-shadow:none}
-}
-
-/* الهاتف */
+/* توافق الشاشات الصغيرة */
 @media(max-width:600px){
-  h1{font-size:1.45rem} h2{font-size:1.2rem}
+  h1{font-size:1.45rem}
+  h2{font-size:1.2rem}
 }
 </style>
 </head>
@@ -66,36 +116,29 @@ input,textarea{
 <body>
 <div class="wrapper">
 
-<!-- ===== ميثاق للطباعة ===== -->
-<div class="print-charter card">
-  <h1>ميثاق «الكتاب هو المنهاج»</h1>
-  <p>هذا النظام لا يعمل إلا من داخل الكتاب المعتمد.</p>
-  <ul>
-    <li>الكتاب المدرسي هو المرجع الحاكم.</li>
-    <li>حصّة واحدة = فكرة واحدة من النص.</li>
-    <li>المحاولة قيمة، الصمت مقبول.</li>
-    <li>لا تقييم، لا مقارنة، لا تسريع.</li>
-  </ul>
-</div>
-
-<!-- ===== العنوان ===== -->
+<!-- العنوان -->
 <div class="card">
   <h1>الخبير التربوي المرافق</h1>
-  <p>نظام يدعم المعلّم، يراعي القدرات، ويزرع حب التعلّم من داخل الكتاب.</p>
+  <p>
+    نظام دعم تربوي صامت،  
+    يبني التعلّم من داخل الكتاب،  
+    ويدعم المعلّم،  
+    ويزرع حبّ التعلّم للجميع.
+  </p>
 </div>
 
-<!-- ===== اعتماد الكتاب ===== -->
+<!-- اعتماد الكتاب -->
 <div class="card">
   <h2>اعتماد الكتاب كمنهاج</h2>
   <div class="quote">
-    لا يُفتح أي تحضير أو حصّة دون اعتماد الكتاب رسميًا.
+    يُحظر تشغيل أي جزء من النظام قبل اعتماد الكتاب رسميًا.
   </div>
 
   <label>رفع ملف الكتاب (PDF أو صورة)</label>
   <input type="file" id="bookFile" accept=".pdf,image/*">
 
-  <label>اسم الكتاب / الصف / المادة</label>
-  <input id="bookInfo" placeholder="مثال: علوم – صف رابع – فصل أول">
+  <label>بيانات الكتاب</label>
+  <input id="bookInfo" placeholder="مثال: لغة عربية – صف ثالث – الفصل الأول">
 
   <div class="actions">
     <button class="secondary" onclick="adoptBook()">اعتماد الكتاب</button>
@@ -104,7 +147,7 @@ input,textarea{
   <p id="bookStatus" class="hidden">✅ تم اعتماد الكتاب كمنهاج.</p>
 </div>
 
-<!-- ===== وضع العمل ===== -->
+<!-- وضع العمل -->
 <div class="card">
   <h2>وضع العمل</h2>
   <div class="actions">
@@ -113,15 +156,16 @@ input,textarea{
   </div>
 </div>
 
-<!-- ===== التحضير ===== -->
+<!-- التحضير -->
 <div id="prep" class="card hidden">
   <h2>التحضير المبني على الكتاب</h2>
 
   <div class="quote">
-    اختر فكرة واحدة مكتملة من نص الكتاب. لا تُضف من خارجه.
+    اختر فكرة واحدة مكتملة من نص الكتاب.
+    لا توسّع خارج النص.
   </div>
 
-  <label>الفكرة الواحدة من النص</label>
+  <label>الفكرة الواحدة</label>
   <textarea id="idea" rows="3"></textarea>
 
   <label>سؤال واحد يقود لنطق الفكرة</label>
@@ -129,25 +173,26 @@ input,textarea{
 
   <div class="actions">
     <button class="secondary" onclick="lockPrep()">اعتماد التحضير</button>
-    <button class="ghost" onclick="window.print()">طباعة</button>
   </div>
 
-  <p id="prepStatus" class="hidden">✅ التحضير جاهز.</p>
+  <p id="prepStatus" class="hidden">✅ التحضير معتمد.</p>
 </div>
 
-<!-- ===== الحصّة ===== -->
+<!-- الحصّة -->
 <div id="session" class="card hidden">
   <h2>المرافقة الصفّية الصامتة</h2>
 
   <div class="quote">
-    راعِ الفروق: الصمت طبيعي، المحاولة كافية.
+    المحاولة قيمة. الصمت مقبول. الإغلاق جودة.
   </div>
 
   <div class="actions">
     <button class="primary" onclick="logAction('اطرح السؤال')">اطرح السؤال</button>
     <button class="ghost" onclick="logAction('صمت')">صمت</button>
     <button class="ghost" onclick="logAction('ارجع للسؤال')">ارجع للسؤال</button>
-    <button class="secondary" onclick="logAction('نُطقت الفكرة — أُغلقت الحصّة')">إغلاق</button>
+    <button class="secondary" onclick="logAction('نُطقت الفكرة — أُغلقت الحصّة')">
+      إغلاق
+    </button>
   </div>
 
   <div id="log" class="log hidden"></div>
@@ -156,37 +201,47 @@ input,textarea{
 </div>
 
 <script>
-let bookAdopted=false;
-let prepared=false;
+/* حالة النظام */
+let bookAdopted = false;
+let prepared = false;
 
+/* اعتماد الكتاب */
 function adoptBook(){
   if(!bookFile.files.length || !bookInfo.value) return;
-  bookAdopted=true;
+  bookAdopted = true;
+  prepared = false;
   bookStatus.classList.remove("hidden");
+  prep.classList.add("hidden");
+  session.classList.add("hidden");
 }
 
+/* فتح التحضير */
 function openPrep(){
-  if(!bookAdopted) return;
+  if(!bookAdopted) return; // رفض صامت
   prep.classList.remove("hidden");
   session.classList.add("hidden");
 }
 
+/* اعتماد التحضير */
+function lockPrep(){
+  if(!idea.value || !question.value) return; // رفض صامت
+  prepared = true;
+  prepStatus.classList.remove("hidden");
+}
+
+/* فتح الحصّة */
 function openSession(){
-  if(!bookAdopted || !prepared) return;
+  if(!bookAdopted || !prepared) return; // رفض صامت
   session.classList.remove("hidden");
   prep.classList.add("hidden");
 }
 
-function lockPrep(){
-  if(!idea.value || !question.value) return;
-  prepared=true;
-  prepStatus.classList.remove("hidden");
-}
-
+/* تسجيل الحالة الصفّية (دون تتبّع أو تقييم) */
 function logAction(text){
-  log.textContent=text;
+  log.textContent = text;
   log.classList.remove("hidden");
 }
 </script>
+
 </body>
 </html>
