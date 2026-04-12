@@ -1,191 +1,215 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>الخبير التربوي المرافق</title>
-
-<!-- OCR -->
-https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
 <style>
 :root{
-  --main:#0d47a1;
-  --ok:#2e7d32;
-  --bg:#f4f6f8;
+  --bg:#f7f9fc;
   --card:#ffffff;
-  --soft:#e3f2fd;
+  --primary:#2563eb;
+  --secondary:#16a34a;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --radius:18px;
 }
+
 *{box-sizing:border-box}
+
 body{
   margin:0;
-  font-family:Tahoma,Arial,sans-serif;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Tahoma,sans-serif;
   background:var(--bg);
-  line-height:1.9;
+  color:var(--text);
+  line-height:1.7;
 }
-.app{
-  max-width:1000px;
+
+.container{
+  max-width:960px;
   margin:auto;
-  padding:20px;
+  padding:1.2rem;
 }
+
 .card{
   background:var(--card);
-  padding:22px;
-  border-radius:16px;
-  box-shadow:0 8px 24px rgba(0,0,0,.08);
-  margin-bottom:20px;
+  border-radius:var(--radius);
+  padding:1.5rem;
+  margin-bottom:1.2rem;
+  box-shadow:0 12px 32px rgba(0,0,0,.06);
 }
-h1,h3{
-  text-align:center;
-  color:var(--main);
-  margin:0 0 12px;
+
+h1,h2{
+  margin:0 0 .6rem;
+  color:var(--primary);
 }
-input,button{
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  font-size:16px;
+
+p{
+  margin:.4rem 0;
+  color:var(--muted);
 }
+
+.actions{
+  display:flex;
+  gap:.8rem;
+  flex-wrap:wrap;
+}
+
 button{
-  background:var(--main);
-  color:#fff;
+  flex:1;
+  min-height:56px;
   border:none;
-  border-radius:12px;
+  border-radius:14px;
+  font-size:1rem;
   cursor:pointer;
+  transition:.15s ease;
 }
-button.ok{background:var(--ok)}
-.box{
-  background:var(--soft);
-  padding:16px;
+
+.btn-primary{background:var(--primary);color:#fff}
+.btn-secondary{background:var(--secondary);color:#fff}
+.btn-ghost{background:#eef2ff;color:var(--primary)}
+
+button:active{transform:scale(.97)}
+
+label{
+  font-weight:600;
+  margin-top:1rem;
+  display:block;
+}
+
+input,textarea{
+  width:100%;
+  margin-top:.4rem;
+  padding:.75rem .9rem;
   border-radius:12px;
-  white-space:pre-wrap;
+  border:1px solid var(--border);
+  font-size:1rem;
 }
-.row{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:8px;
-}
-.small{
-  font-size:13px;
-  color:#555;
-  text-align:center;
-}
+
 .hidden{display:none}
+
+.lesson-buttons button{
+  margin-bottom:.6rem;
+}
+
+.log{
+  margin-top:1.2rem;
+  font-weight:700;
+  text-align:center;
+  font-size:1.1rem;
+}
+
+/* ===== الطباعة الرسمية ===== */
+@media print{
+  body{background:#fff}
+  button,.actions,.footer{display:none!important}
+  .card{box-shadow:none}
+}
+
+/* ===== الهواتف ===== */
+@media (max-width:600px){
+  h1{font-size:1.5rem}
+  h2{font-size:1.25rem}
+}
 </style>
 </head>
 
 <body>
-<div class="app">
+
+<div class="container">
 
 <!-- العنوان -->
 <div class="card">
-  <h1>📘 الخبير التربوي المرافق</h1>
-  <p class="small">تحضير حقيقي من الكتاب • محاكاة حصّة • إغلاق مهني</p>
+  <h1>الخبير التربوي المرافق داخل الصف</h1>
+  <p>
+    نظام دعم تربوي صامت،  
+    يثبّت لحظة التعلّم ثم ينسحب.
+  </p>
 </div>
 
-<!-- اسم الدرس -->
+<!-- اختيار الوضع -->
 <div class="card">
-  <h3>١) اسم الدرس</h3>
-  <input id="lessonName" placeholder="مثال: الجمع حتى ١٠">
+  <h2>وضع التشغيل</h2>
+  <div class="actions">
+    <button class="btn-primary" onclick="openPrep()">وضع التحضير</button>
+    <button class="btn-ghost" onclick="openLesson()">وضع الحصّة</button>
+  </div>
 </div>
 
-<!-- رفع صفحة الكتاب -->
-<div class="card">
-  <h3>٢) رفع صفحة الدرس من الكتاب</h3>
-  <input type="file" id="pageFile" accept="image/*">
-  <button class="ok" onclick="readPage()">📂 اقرأ الصفحة وابنِ التحضير</button>
-  <p class="small">📌 يُفضَّل رفع صورة صفحة واحدة واضحة</p>
-</div>
+<!-- وضع التحضير -->
+<div id="prep" class="card hidden">
+  <h2>تحضير الحصّة</h2>
 
-<!-- النص المستخرج -->
-<div class="card">
-  <h3>٣) النص المستخرج من الكتاب</h3>
-  <div id="extracted" class="box">— بانتظار الرفع —</div>
-</div>
+  <label>اسم المدرسة</label>
+  <input id="school" placeholder="اسم المدرسة الرسمي">
 
-<!-- التحضير -->
-<div class="card">
-  <h3>٤) التحضير التنفيذي (مبني على الكتاب)</h3>
-  <div id="prep" class="box">—</div>
-  <button onclick="copyText('prep')">📋 نسخ التحضير</button>
-</div>
+  <label>اسم المعلّم/ة</label>
+  <input id="teacher" placeholder="الاسم كما يُعتمد رسميًا">
 
-<!-- محاكاة الحصة -->
-<div class="card">
-  <h3>٥) 🎭 محاكاة حصّة صفّية واقعية</h3>
+  <label>اسم الدرس</label>
+  <input id="lesson" placeholder="مثال: الجمع حتى ١٠">
 
-  <div class="row">
-    <button onclick="askQuestion()">اطرح السؤال</button>
-    <button onclick="silence()">صمت</button>
-    <button onclick="intervene()">تدخّل خفيف</button>
-    <button class="ok" onclick="closeLesson()">نُطقت الفكرة — أُغلقت الحصّة</button>
+  <label>الفكرة الواحدة من الكتاب</label>
+  <textarea id="idea" rows="3"></textarea>
+
+  <label>السؤال الواحد</label>
+  <textarea id="question" rows="2"></textarea>
+
+  <div class="actions">
+    <button class="btn-secondary" onclick="lockPrep()">اعتماد التحضير</button>
+    <button class="btn-ghost" onclick="window.print()">طباعة التحضير</button>
   </div>
 
-  <div id="simulation" class="box" style="margin-top:10px">
-    — لم تبدأ المحاكاة —
+  <p id="prepMsg" class="hidden">✅ التحضير مُعتمد وجاهز.</p>
+</div>
+
+<!-- وضع الحصّة -->
+<div id="lessonBox" class="card hidden">
+  <h2>الحصّة الصفيّة</h2>
+
+  <div class="lesson-buttons">
+    <button class="btn-primary" onclick="logAction('اطرح السؤال')">اطرح السؤال</button>
+    <button class="btn-ghost" onclick="logAction('صمت')">صمت</button>
+    <button class="btn-ghost" onclick="logAction('ارجع للسؤال')">ارجع للسؤال</button>
+    <button class="btn-secondary" onclick="logAction('نُطقت الفكرة — أُغلقت الحصّة')">
+      إغلاق الحصّة
+    </button>
   </div>
+
+  <div id="lessonLog" class="log hidden"></div>
+</div>
+
+<div class="footer" style="text-align:center;color:var(--muted);font-size:.9rem">
+  نسخة مكتملة • مستقرة • آمنة صفّيًا
 </div>
 
 </div>
 
 <script>
-async function readPage(){
-  const file = pageFile.files[0];
-  if(!file) return;
+let ready=false;
 
-  extracted.innerText = "جارٍ قراءة الصفحة…";
-  const res = await Tesseract.recognize(file,"ara");
-  const text = (res.data.text||"").trim();
-  extracted.innerText = text || "لم يظهر نص واضح.";
-
-  buildPrep(text);
+function openPrep(){
+  prep.classList.remove("hidden");
+  lessonBox.classList.add("hidden");
 }
 
-function buildPrep(text){
-  if(text.length < 30){
-    prep.innerText =
-"تعذّر بناء تحضير موثوق من هذه الصفحة.\nيرجى اختيار صفحة أوضح.";
-    return;
-  }
-
-  const ideaLine =
-    text.split("\n").find(l => l.trim().length > 8) || "";
-
-  prep.innerText =
-`التحضير التنفيذي
-
-الدرس: ${lessonName.value}
-
-الفكرة (من الكتاب):
-${ideaLine}
-
-السؤال المحوري:
-ماذا نلاحظ في هذا المثال؟
-
-خطوات التنفيذ:
-١) عرض صفحة الكتاب
-٢) صمت واعٍ
-٣) محاولة من الطلبة
-٤) تثبيت الفكرة
-٥) إغلاق الحصّة`;
+function openLesson(){
+  if(!ready) return;
+  lessonBox.classList.remove("hidden");
+  prep.classList.add("hidden");
 }
 
-/* أزرار المحاكاة */
-function askQuestion(){
-  simulation.innerText += "\nالمعلّم يطرح السؤال.\n";
-}
-function silence(){
-  simulation.innerText += "(صمت واعٍ)\n";
-}
-function intervene(){
-  simulation.innerText += "تدخّل خفيف لتوجيه الانتباه.\n";
-}
-function closeLesson(){
-  simulation.innerText += "✅ نُطقت الفكرة — أُغلقت الحصّة.\n";
+function lockPrep(){
+  if(!lesson.value || !idea.value || !question.value) return;
+  ready=true;
+  prepMsg.classList.remove("hidden");
 }
 
-function copyText(id){
-  navigator.clipboard.writeText(document.getElementById(id).innerText);
+function logAction(text){
+  lessonLog.textContent=text;
+  lessonLog.classList.remove("hidden");
 }
 </script>
 
