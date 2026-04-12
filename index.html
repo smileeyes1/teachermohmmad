@@ -2,249 +2,197 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=١.٠">
 <title>النظام السيادي الذكي الشامل لدعم المعلّم</title>
 
-<!-- ✅ OCR: تحميل صحيح ومُتحقَّق -->
-https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
+<!-- ✅ تحميل OCR بالطريقة الصحيحة ١٠٠٪ -->
+https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js</script>
 
 <style>
 :root{
-  --main:#0d47a1;
-  --bg:#f4f6f8;
+  --main:#٠d٤٧a١;
+  --bg:#f٤f٦f٨;
   --card:#ffffff;
-  --ink:#1f2937;
-  --muted:#6b7280;
-  --ok:#2e7d32;
-  --warn:#f9a825;
-  --expert:#6a1b9a;
+  --ink:#٢٢٢;
+  --ok:#٢e٧d٣٢;
+  --warn:#f٩a٨٢٥;
+  --expert:#٦a١b٩a;
 }
+
 *{box-sizing:border-box}
+
 body{
-  margin:0;
+  margin:٠;
   font-family:Tahoma, Arial, sans-serif;
   background:var(--bg);
   color:var(--ink);
-  line-height:1.9;
+  line-height:١.٩;
 }
+
 .app{
-  max-width:1200px;
+  max-width:٩٠٠px;
   margin:auto;
-  padding:16px;
+  padding:١٦px;
 }
+
 .card{
   background:var(--card);
-  padding:20px;
-  border-radius:16px;
-  box-shadow:0 8px 24px rgba(0,0,0,.08);
-  margin-bottom:16px;
+  padding:٢٠px;
+  border-radius:١٦px;
+  box-shadow:٠ ٦px ٢٠px rgba(٠,٠,٠,.١);
+  margin-bottom:١٦px;
 }
-.header{text-align:center}
-.header h1{margin:0;color:var(--main)}
-.header p{margin-top:6px;color:var(--muted);font-size:14px}
 
-label{display:block;margin-top:10px;font-size:14px}
+h١{text-align:center;color:var(--main)}
+
 button,input,select{
-  width:100%;
-  padding:14px;
-  margin-top:8px;
+  width:١٠٠%;
+  padding:١٤px;
+  margin-top:٨px;
   border:none;
-  border-radius:14px;
-  font-size:15px;
+  border-radius:١٤px;
+  font-size:١٦px;
 }
-button{background:var(--main);color:#fff;cursor:pointer}
+
+button{
+  background:var(--main);
+  color:#fff;
+  cursor:pointer;
+}
+
 button.ok{background:var(--ok)}
-button.warn{background:var(--warn);color:#000}
-button.expert{background:var(--expert)}
 
-.buttons{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:12px;
-  margin-top:12px;
-}
-
-.output,.expertBox,.radar,.status,.log{
+.box{
   background:#fafafa;
-  padding:16px;
-  border-radius:14px;
+  padding:١٦px;
+  border-radius:١٤px;
+  margin-top:١٢px;
   white-space:pre-wrap;
-  margin-top:12px;
-  font-size:14px;
 }
-.expertBox{border-right:6px solid var(--expert)}
-.radar{border-right:6px solid var(--warn)}
-.status{background:#eef3ff}
-.hidden{display:none}
 
-@media print{
-  button,input,select{display:none}
-  body{background:#fff}
-  .output,.expertBox,.radar,.status,.log{font-size:14pt}
-}
+.expert{border-right:٦px solid var(--expert)}
+.hidden{display:none}
 </style>
 </head>
 
 <body>
+
 <div class="app">
 
-<div class="card header">
-  <h1>النظام السيادي الذكي الشامل</h1>
-  <p>
-    إدراج صفحة الدرس • قراءة الصورة • تحضير ومحاكاة تلقائيًا<br>
-    خبير تربوي • دعم سلوكي ومادّي • رادار • أقل جهد للمعلم
-  </p>
-</div>
+<h١>النظام السيادي الذكي الشامل</h١>
 
-<!-- إدراج صفحة الدرس -->
 <div class="card">
-  <h2>📘 إدراج صفحة الدرس</h2>
+  <h٣>📘 إدراج صفحة الدرس</h٣>
   <input type="file" accept="image/*" onchange="loadImage(event)">
+  <div id="status" class="box">— بانتظار رفع الصورة —</div>
 </div>
 
-<!-- التحكم -->
 <div class="card hidden" id="controls">
   <label>مدة الحصّة</label>
-  <select id="time">
-    <option value="30">٣٠ دقيقة</option>
-    <option value="40">٤٠ دقيقة</option>
-    <option value="45">٤٥ دقيقة</option>
+  <select id="duration">
+    <option value="٣٠">٣٠ دقيقة</option>
+    <option value="٤٠">٤٠ دقيقة</option>
+    <option value="٤٥">٤٥ دقيقة</option>
   </select>
 
-  <button class="ok" onclick="oneClick()">▶ ابدأ الحصّة الآن (أقل جهد)</button>
+  <button class="ok" onclick="startLesson()">▶ ابدأ الحصّة الآن (أقل جهد)</button>
 
-  <div id="status" class="status">— بانتظار رفع الصورة —</div>
-
-  <div class="buttons">
-    <button onclick="showPrep()">📘 التحضير التنفيذي الحرفي</button>
-    <button onclick="showSim()">🎬 المحاكاة الصفّية الواقعية</button>
-    <button class="expert" onclick="expert()">🧠 الخبير التربوي</button>
-    <button class="warn" onclick="behavior()">🧠 دعم سلوكي</button>
-    <button onclick="material()">🧱 دعم مادّي</button>
-  </div>
-
-  <div id="prep" class="output hidden"></div>
-  <div id="sim" class="output hidden"></div>
-  <div id="expertBox" class="expertBox hidden"></div>
-</div>
-
-<!-- الرادار -->
-<div class="card hidden" id="radarBox">
-  <h2>🛡️ الرادار التربوي</h2>
-  <div class="radar">
-⚠️ إذا تجاوز الكلام ٣ جمل → توقّف  
-⚠️ إذا ارتفع الصوت → صمت ١٠ ثوانٍ  
-⚠️ إذا ظهر الإنهاك → الإنهاء صحيح  
-✅ نطق الفكرة = قرار توقّف مهني
-  </div>
+  <div id="prep" class="box"></div>
+  <div id="sim" class="box"></div>
+  <div id="expertBox" class="box expert"></div>
+  <div id="support" class="box"></div>
 </div>
 
 </div>
 
 <script>
-let imageBlob=null;
+let imageFile=null;
 let extractedText="";
 let coreQuestion="ماذا لاحظت؟";
+let lessonType="عام";
+let attempts=٠;
+let startTime=٠;
 
+/* تحميل الصورة */
 function loadImage(e){
-  imageBlob=e.target.files[0];
-  document.getElementById("controls").classList.remove("hidden");
-  document.getElementById("radarBox").classList.remove("hidden");
+  imageFile=e.target.files[٠];
+  status.textContent="🔍 جارٍ قراءة الصفحة…";
+  readImage();
 }
 
-async function oneClick(){
-  status.textContent="🔍 جارٍ قراءة الصفحة...";
-  await readImage();
-  analyzeText();
-  showPrep();
-  showSim();
-  expert();
-}
-
+/* OCR */
 async function readImage(){
   try{
-    const res=await Tesseract.recognize(imageBlob,"ara");
-    extractedText=res.data.text||"";
+    const result = await Tesseract.recognize(imageFile,"ara");
+    extractedText=result.data.text||"";
     status.textContent="✅ تم استخراج النص من الصفحة";
   }catch(e){
     extractedText="";
     status.textContent="⚠️ تعذّر الاستخراج – استخدام خطة آمنة";
   }
+  analyzeText();
+  controls.classList.remove("hidden");
 }
 
+/* تحليل النص */
 function analyzeText(){
-  if(/جمع|طرح|احسب|عدد|يساوي/.test(extractedText)){
+  if(/جمع|طرح|احسب|يساوي|عدد/.test(extractedText)){
+    lessonType="رياضيات";
     coreQuestion="كيف توصلت إلى الناتج؟";
   }else if(/اقرأ|نص|كلمة|جملة/.test(extractedText)){
-    coreQuestion="ماذا فهمت من هذه الجملة؟";
+    lessonType="لغة عربية";
+    coreQuestion="ماذا فهمت من النص؟";
   }else{
-    coreQuestion="ماذا لاحظت؟";
+    lessonType="استكشاف";
+    coreQuestion="ماذا لاحظت في الصفحة؟";
   }
 }
 
-function showPrep(){
-  const m=parseInt(time.value,10);
+/* تشغيل الحصّة */
+function startLesson(){
+  attempts=١;
+  startTime=Date.now();
+  const mins=parseInt(duration.value,١٠);
+
   prep.textContent=
-`التحضير التنفيذي الحرفي:
+`📘 التحضير التنفيذي المبني على الصفحة:
 
-السؤال المركزي:
+نوع الدرس: ${lessonType}
+
+ما يقوله المعلم حرفيًا:
+"انظروا إلى الصفحة."
+ثم:
 «${coreQuestion}»
-
-الدقيقة ٠–٥:
-"افتحوا الصفحة."
-"انظروا فقط."
-
-الدقيقة ٥–١٠:
-طرح السؤال.
 صمت ٣٠ ثانية.
+محاولة طالب واحد فقط.
+توقّف عند الفهم.`;
 
-الدقيقة ١٠–${Math.min(15,m)}:
-محاولة تلميذ واحد.
-جملة تثبيت واحدة.
-
-✅ عند أول فهم:
-التوقّف مهني وصحيح.`;
-  prep.classList.remove("hidden");
-}
-
-function showSim(){
   sim.textContent=
-`المحاكاة الصفّية الواقعية:
+`🎬 المحاكاة الصفّية الواقعية:
 
-عرض الصفحة → صمت واعٍ
-→ محاولة تلميذ واحد فقط
-→ تثبيت بجملة قصيرة
-→ إنهاء عند الفهم
+عرض المحتوى كما هو.
+سؤال من نفس النص.
+صمت.
+محاولة واحدة.
+تثبيت بجملة قصيرة.
+إنهاء.`;
 
-الإنهاء المبكر جزء من الجودة.`;
-  sim.classList.remove("hidden");
-}
-
-function expert(){
   expertBox.textContent=
 `🧠 الخبير التربوي:
+لا تُضِف شيئًا خارج الصفحة.
 الصمت هنا يعمل.
-لا تُنقذ بسرعة.
-ما اكتمل كافٍ اليوم.`;
-  expertBox.classList.remove("hidden");
-}
+الإنهاء المبكر جودة تربوية.`;
 
-function behavior(){
-  prep.textContent=
-`الدعم السلوكي:
-• جملة رحيمة واحدة
-• تغيير مكان أو دور
-• احتواء بلا توبيخ`;
-  prep.classList.remove("hidden");
-}
+  support.textContent=
+`📊 الدعم الكمي والنوعي والسلوكي:
+عدد المحاولات: ${attempts}
+الزمن التقريبي: ${Math.round((Date.now()-startTime)/٦٠٠٠٠)} دقيقة
 
-function material(){
-  prep.textContent=
-`الدعم المادّي:
-• أداة واحدة فقط
-• لا مكافآت
-• لا سحب أو تهديد`;
-  prep.classList.remove("hidden");
+الوصف النوعي:
+"محاولة واحدة مستقلة – أداء مناسب."
+
+التوصية السلوكية:
+جملة رحيمة واحدة ثم التوقّف.`;
 }
 </script>
 
