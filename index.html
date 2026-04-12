@@ -3,240 +3,173 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دعم المعلّم – تصوير أو رفع صورة الدرس</title>
+<title>دعم المعلّم – كاميرا / صورة (ملف واحد)</title>
 
-<!-- ========================= -->
-<!-- ✅ تحميل مكتبة OCR بشكل صحيح -->
-<!-- ========================= -->
-https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js</script>
+<script>
+/* تحميل OCR إن كانت هناك إنترنت */
+(function(){
+  try{
+    const s=document.createElement("script");
+    s.src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js";
+    s.onload=()=>window.OCR_READY=true;
+    s.onerror=()=>window.OCR_READY=false;
+    document.head.appendChild(s);
+  }catch(e){
+    window.OCR_READY=false;
+  }
+})();
+</script>
 
 <style>
-:root{
-  --main:#1565c0;
-  --alt:#455a64;
-  --bg:#f4f6f8;
-  --card:#ffffff;
-}
-
-*{box-sizing:border-box}
-
 body{
   margin:0;
   font-family:Tahoma, Arial, sans-serif;
-  background:var(--bg);
+  background:#f4f6f8;
   padding:12px;
   line-height:1.8;
 }
-
 .card{
-  background:var(--card);
+  background:#fff;
   padding:14px;
   border-radius:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,.12);
   margin-bottom:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,.12);
 }
-
-h3,h4{
-  margin:0 0 8px;
-}
-
-video,canvas,img{
-  width:100%;
-  border-radius:10px;
-}
-
+video,canvas,img{width:100%;border-radius:10px}
 button,input[type=file]{
   width:100%;
   padding:10px;
   border:none;
   border-radius:8px;
-  font-size:14px;
   margin-top:8px;
-}
-
-button{
-  background:var(--main);
-  color:#fff;
-  cursor:pointer;
-}
-
-button.secondary{
-  background:var(--alt);
-}
-
-#lessonTitle{
-  font-weight:bold;
-  margin-bottom:6px;
-}
-
-#output{
-  white-space:pre-wrap;
-  background:#fafafa;
-  padding:10px;
-  border-radius:8px;
   font-size:14px;
 }
-
-.actions button{
-  margin-top:6px;
-}
+button{background:#1565c0;color:#fff}
+.actions button{background:#455a64}
+#title{font-weight:bold;margin-bottom:6px}
+#output{white-space:pre-wrap;background:#fafafa;padding:10px;border-radius:8px}
+.notice{font-size:13px;color:#555}
 </style>
 </head>
 
 <body>
 
-<!-- ========================= -->
-<!-- اختيار طريقة إدخال الدرس -->
-<!-- ========================= -->
 <div class="card">
   <h3>📘 إدخال صفحة الدرس</h3>
-  <button onclick="startCamera()">📸 استخدام الكاميرا</button>
+  <button onclick="startCamera()">📸 استخدام الكاميرا الخلفية</button>
   <input type="file" accept="image/*" onchange="loadImage(event)">
+  <div class="notice">
+    يعمل مع الإنترنت وبدونه.  
+    عند عدم وجود إنترنت: OCR يتعطّل ويستمر النظام يدويًا.
+  </div>
 </div>
 
-<!-- ========================= -->
-<!-- الكاميرا -->
-<!-- ========================= -->
 <div class="card" id="cameraBox" style="display:none">
-  <h4>📸 الكاميرا</h4>
   <video id="video" autoplay playsinline></video>
   <button onclick="capture()">التقاط الصورة</button>
 </div>
 
-<!-- ========================= -->
-<!-- الصورة الملتقطة أو المرفوعة -->
-<!-- ========================= -->
-<div class="card" id="imageBox" style="display:none">
-  <h4>🖼️ صورة الدرس</h4>
-  <canvas id="canvas"></canvas>
-</div>
-
-<!-- ========================= -->
-<!-- النص واسم الدرس -->
-<!-- ========================= -->
 <div class="card">
-  <div id="lessonTitle"></div>
+  <canvas id="canvas"></canvas>
+  <div id="title"></div>
   <div id="output">— لم يتم استخراج نص بعد —</div>
 </div>
 
-<!-- ========================= -->
-<!-- أزرار الدعم -->
-<!-- ========================= -->
 <div class="card actions" id="actions" style="display:none">
   <button onclick="prep()">📘 تحضير</button>
-  <button onclick="sim()">🧪 محاكاة واقعية</button>
-  <button onclick="obs()">📋 قوائم رصد</button>
+  <button onclick="sim()">🧪 محاكاة</button>
+  <button onclick="obs()">📋 رصد</button>
 </div>
 
 <script>
-/* ========================= */
-/* المتغيرات العامة */
-/* ========================= */
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const output = document.getElementById("output");
-const lessonTitle = document.getElementById("lessonTitle");
-const actions = document.getElementById("actions");
+const video=document.getElementById("video");
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+const output=document.getElementById("output");
+const titleBox=document.getElementById("title");
+const actions=document.getElementById("actions");
 
-let lessonName = "";
+let lessonName="";
 
-/* ========================= */
-/* تشغيل الكاميرا */
-/* ========================= */
+// تشغيل الكاميرا الخلفية
 function startCamera(){
-  document.getElementById("cameraBox").style.display = "block";
-  navigator.mediaDevices.getUserMedia({video:true})
-    .then(stream => video.srcObject = stream)
-    .catch(()=>alert("تعذّر تشغيل الكاميرا"));
+  document.getElementById("cameraBox").style.display="block";
+  navigator.mediaDevices.getUserMedia({
+    video:{facingMode:{ideal:"environment"}},
+    audio:false
+  }).then(s=>video.srcObject=s)
+   .catch(()=>alert("تعذّر تشغيل الكاميرا الخلفية"));
 }
 
-/* ========================= */
-/* التقاط صورة من الكاميرا */
-/* ========================= */
+// التقاط صورة
 function capture(){
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  ctx.drawImage(video, 0, 0);
-  document.getElementById("imageBox").style.display = "block";
-  runOCR(canvas);
+  canvas.width=video.videoWidth;
+  canvas.height=video.videoHeight;
+  ctx.drawImage(video,0,0);
+  processImage();
 }
 
-/* ========================= */
-/* تحميل صورة من الجهاز */
-/* ========================= */
+// تحميل صورة
 function loadImage(e){
-  const file = e.target.files[0];
-  if(!file) return;
+  const img=new Image();
+  img.onload=()=>{
+    canvas.width=img.width;
+    canvas.height=img.height;
+    ctx.drawImage(img,0,0);
+    processImage();
+  };
+  img.src=URL.createObjectURL(e.target.files[0]);
+}
 
-  const img = new Image();
-  img.onload = ()=>{
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0);
-    document.getElementById("imageBox").style.display = "block";
-    runOCR(canvas);
+// معالجة الصورة (OCR عند توفره)
+function processImage(){
+  lessonName="اسم الدرس";
+  titleBox.textContent="📘 "+lessonName;
+  actions.style.display="block";
+
+  if(window.OCR_READY && window.Tesseract){
+    output.textContent="⏳ قراءة النص...";
+    Tesseract.recognize(canvas,"ara").then(res=>{
+      const text=res.data.text.trim();
+      output.textContent=text || "لم يتم التعرف على نص";
+      lessonName=text.split("\n")[0]||lessonName;
+      titleBox.textContent="📘 "+lessonName;
+    }).catch(()=>{
+      output.textContent="تعذّر OCR، استمر يدويًا.";
+    });
+  }else{
+    output.textContent=
+"لا يوجد إنترنت → OCR غير متاح.\n" +
+"يمكنك متابعة التحضير والمحاكاة بناءً على الصفحة المصوّرة.";
   }
-  img.src = URL.createObjectURL(file);
 }
 
-/* ========================= */
-/* OCR عربي على صورة واحدة */
-/* ========================= */
-function runOCR(source){
-  output.textContent = "⏳ قراءة النص من الصورة...";
-  actions.style.display = "none";
-
-  Tesseract.recognize(
-    source,
-    "ara",
-    { logger: m => output.textContent = `OCR: ${m.status}` }
-  ).then(result=>{
-    const text = result.data.text.trim();
-    output.textContent = text || "لم يتم التعرف على نص";
-
-    // اسم الدرس = أول سطر
-    lessonName = text.split("\n")[0] || "اسم الدرس";
-    lessonTitle.textContent = "📘 " + lessonName;
-
-    actions.style.display = "block";
-  });
-}
-
-/* ========================= */
-/* التحضير */
-/* ========================= */
+// تحضير
 function prep(){
-  output.textContent =
+output.textContent=
 `تحضير مختصر – ${lessonName}
-• بداية من المثال الأول في الصفحة
+• بداية من المثال الأول
 • مشاركة طالب واحد
-• تثبيت الفكرة الأساسية
-• توقّف مهني عند الفهم`;
+• توقّف عند الفهم`;
 }
 
-/* ========================= */
-/* المحاكاة */
-/* ========================= */
+// محاكاة
 function sim(){
-  output.textContent =
-`محاكاة صفّية قابلة للتنفيذ – ${lessonName}
-1) عرض المثال أو النشاط
+output.textContent=
+`محاكاة – ${lessonName}
+1) عرض المثال
 2) صمت
-3) محاولة طالب
-4) انتهِ عند الفهم`;
+3) محاولة
+4) انتهِ`;
 }
 
-/* ========================= */
-/* الرصد */
-/* ========================= */
+// رصد
 function obs(){
-  output.textContent =
+output.textContent=
 `قوائم رصد – ${lessonName}
 ☐ حاول
 ☐ شارك
-☐ نطق الفكرة
-☐ احتاج دعم`;
+☐ نطق الفكرة`;
 }
 </script>
 
