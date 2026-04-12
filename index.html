@@ -3,190 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الخبير التربوي المرافق</title>
+    <title>الخبير التربوي المرافق — داخل الصف</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
+        :root {
+            --main: #0d47a1;
+            --ok: #2e7d32;
+            --bg: #f4f6f8;
+            --card: #ffffff;
+            --ink: #222;
+            --soft: #e3f2fd;
+        }
+        * { box-sizing: border-box; }
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            color: #333;
-            padding: 15px;
+            font-family: Tahoma, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.85;
         }
-        .container {
-            max-width: 900px;
+        .app {
+            max-width: 980px;
             margin: auto;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            overflow: hidden;
+            padding: 16px;
         }
         .header {
-            background: #0d47a1;
-            color: white;
-            padding: 20px;
+            background: var(--card);
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,.08);
             text-align: center;
-            font-size: 20px;
+            margin-bottom: 20px;
         }
         .card {
+            background: var(--card);
             padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,.08);
+            margin-bottom: 20px;
         }
-        input, button, textarea {
+        h1, h3 { margin: 0 0 12px; color: var(--main); text-align: center; }
+        button, input, select {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-        button {
-            background: #0d47a1;
-            color: white;
+            padding: 16px;
+            margin-top: 12px;
             border: none;
-            cursor: pointer;
+            border-radius: 14px;
             font-size: 17px;
         }
-        button:disabled {
-            background: #999;
-        }
+        button { background: var(--main); color: #fff; cursor: pointer; }
+        button.ok { background: var(--ok); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
         .box {
-            background: #f8fbff;
-            padding: 15px;
-            border-radius: 12px;
-            min-height: 120px;
-            margin: 10px 0;
+            background: var(--soft);
+            padding: 16px;
+            border-radius: 14px;
+            margin-top: 12px;
             white-space: pre-wrap;
-            font-size: 15px;
-            line-height: 1.6;
+            font-size: 15.5px;
+            line-height: 1.7;
         }
-        .status {
-            text-align: center;
-            padding: 15px;
-            background: #e8f0fe;
+        .progress {
+            height: 10px;
+            background: #ddd;
             border-radius: 8px;
-            margin: 10px 0;
+            overflow: hidden;
+            margin: 16px 0;
         }
-        h3 {
-            color: #0d47a1;
-            margin: 20px 0 10px 0;
+        .progress span {
+            display: block;
+            height: 100%;
+            width: 0%;
+            background: var(--main);
+            transition: 0.4s;
+        }
+        .small { font-size: 13.5px; color: #6b7280; text-align: center; }
+        @media print {
+            button, .progress, .actions { display: none; }
+            body { background: #fff; }
         }
     </style>
 </head>
 <body>
+<div class="app">
 
-<div class="container">
     <div class="header">
-        الخبير التربوي المرافق داخل الصف
+        <p style="font-size:18px;margin:0 0 8px 0;">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
+        <h1>الخبير التربوي المرافق</h1>
+        <p class="small">فكرة واحدة • سؤال واحد • صمت واعٍ • إغلاق مهني</p>
     </div>
 
+    <!-- 1. إدخال الصفحة -->
     <div class="card">
-        <h3>📂 رفع محتوى الدرس (نص فقط)</h3>
-        <textarea id="lessonText" rows="8" placeholder="الصق هنا نص الدرس أو الصفحة من الكتاب..."></textarea>
-        
-        <h3>🔑 مفتاح API (اختياري - للتحليل المتقدم)</h3>
-        <input type="password" id="apiKey" placeholder="الصق مفتاح API هنا إذا أردت استخدام الذكاء الاصطناعي">
-        
-        <button id="startBtn">🚀 ابدأ التحليل</button>
-        
-        <div id="status" class="status">جاهز للعمل - الصق النص واضغط ابدأ التحليل</div>
+        <h3>📷 تصوير أو رفع صفحة الدرس</h3>
+        <input type="file" id="fileInput" accept="image/*" multiple>
+        <div class="small">الحد الأقصى: ٣ صفحات • صوّر بوضوح</div>
+        <div class="progress"><span id="bar"></span></div>
+        <div id="status" class="box">— بانتظار رفع الصور —</div>
+        <button id="startBtn" class="ok" disabled>ابدأ القراءة والتحليل</button>
     </div>
 
+    <!-- 2. التحضير -->
     <div class="card">
-        <h3>🧠 التحليل</h3>
-        <div id="analysis" class="box">لم يتم التحليل بعد...</div>
+        <h3>🧭 التحضير التنفيذي (فكرة واحدة)</h3>
+        <div id="idea" class="box">🔹 الفكرة ستظهر هنا</div>
+        <div id="question" class="box">❓ السؤال سيظهر هنا</div>
+        <div id="prep" class="box"></div>
+        <button id="buildBtn" class="ok" disabled>أنشئ التحضير</button>
     </div>
 
+    <!-- 3. وضع الحصة المباشرة -->
     <div class="card">
-        <h3>📘 خطة الدرس المقترحة</h3>
-        <div id="lessonPlan" class="box">ستظهر هنا بعد التحليل</div>
+        <h3>🎛️ وضع التشغيل أثناء الحصة</h3>
+        <div class="buttons" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px">
+            <button onclick="act('طُرح السؤال')">اطرح السؤال</button>
+            <button onclick="act('صمت')">صمت واعٍ</button>
+            <button onclick="act('محاولة')">محاولة</button>
+            <button class="ok" onclick="closeLesson()">✅ نُطقت الفكرة — أغلق الحصة</button>
+        </div>
+        <div id="log" class="box">سجل الحصة:</div>
     </div>
 
-    <div class="card">
-        <h3>🎤 سكربت المعلم (نص حرفي)</h3>
-        <div id="script" class="box">ستظهر هنا...</div>
-    </div>
-
-    <div class="card">
-        <button id="clearBtn">مسح كل شيء والبدء من جديد</button>
-    </div>
 </div>
 
 <script>
-// الوظائف الأساسية
-const startBtn = document.getElementById("startBtn");
-const clearBtn = document.getElementById("clearBtn");
+// ================== المتغيرات ==================
+const fileInput = document.getElementById("fileInput");
+const bar = document.getElementById("bar");
 const statusBox = document.getElementById("status");
+const startBtn = document.getElementById("startBtn");
+const buildBtn = document.getElementById("buildBtn");
 
-startBtn.addEventListener("click", startAnalysis);
-clearBtn.addEventListener("click", clearAll);
+let images = [];
+let extractedText = "";
+let currentIdea = "فكرة واحدة من الصفحة";
+let currentQuestion = "ماذا تلاحظ في الصفحة؟";
 
-function startAnalysis() {
-    const text = document.getElementById("lessonText").value.trim();
-    const apiKey = document.getElementById("apiKey").value.trim();
-
-    if (!text) {
-        statusBox.textContent = "❌ يرجى إدخال نص الدرس أولاً";
-        statusBox.style.background = "#ffebee";
-        return;
-    }
-
-    startBtn.disabled = true;
-    statusBox.textContent = "جاري التحليل...";
-    statusBox.style.background = "#e8f0fe";
-
-    // تحليل بسيط محلي (بدون أي مصدر خارجي)
-    setTimeout(() => {
-        const result = simpleLocalAnalysis(text);
-        
-        document.getElementById("analysis").innerHTML = result.analysis;
-        document.getElementById("lessonPlan").innerHTML = result.lessonPlan;
-        document.getElementById("script").innerHTML = result.script;
-
-        statusBox.textContent = "✅ تم التحليل بنجاح";
+// ================== رفع الصور ==================
+fileInput.addEventListener("change", () => {
+    images = Array.from(fileInput.files).slice(0, 3);
+    if (images.length) {
+        statusBox.textContent = `✅ تم رفع ${images.length} صفحة`;
         startBtn.disabled = false;
-    }, 800);
-}
-
-function simpleLocalAnalysis(text) {
-    // استخراج كلمات مفتاحية بسيطة
-    const words = text.replace(/[^\u0600-\u06FF\s]/g, " ")
-                      .split(/\s+/)
-                      .filter(w => w.length > 2);
-    
-    const mainIdea = words.slice(0, 5).join(" ") || "الفكرة الرئيسية في النص";
-
-    return {
-        analysis: `
-            <strong>عدد الكلمات:</strong> ${words.length}<br>
-            <strong>الموضوع الرئيسي المكتشف:</strong> ${mainIdea}
-        `,
-        lessonPlan: `
-            🎯 <strong>الفكرة الواحدة لهذه الحصة:</strong><br>
-            ${mainIdea}<br><br>
-            ❓ <strong>السؤال المركزي المقترح:</strong><br>
-            ما هي ${mainIdea} وكيف نفهمها من خلال النص؟
-        `,
-        script: `
-            "السلام عليكم ورحمة الله...<br>
-            اليوم سنركز على فكرة واحدة فقط: ${mainIdea}<br><br>
-            أريد منكم أن تقرأوا الفقرة بهدوء...<br>
-            (صمت)<br><br>
-            ما الذي فهمتموه من هذه الفكرة؟"<br><br>
-            "ممتاز... (صمت)<br>
-            سنتوقف هنا اليوم."
-        `
-    };
-}
-
-function clearAll() {
-    if (confirm("هل تريد مسح كل المحتوى والبدء من جديد؟")) {
-        document.getElementById("lessonText").value = "";
-        document.getElementById("apiKey").value = "";
-        document.getElementById("analysis").innerHTML = "لم يتم التحليل بعد...";
-        document.getElementById("lessonPlan").innerHTML = "ستظهر هنا بعد التحليل";
-        document.getElementById("script").innerHTML = "ستظهر هنا...";
-        statusBox.textContent = "جاهز للعمل - الصق النص واضغط ابدأ التحليل";
-        statusBox.style.background = "#e8f0fe";
     }
+});
+
+// ================== قراءة وتحليل ==================
+startBtn.addEventListener("click", async () => {
+    if (images.length === 0) return;
+    bar.style.width = "5%";
+    statusBox.textContent = "🔍 جاري معالجة الصور...";
+    startBtn.disabled = true;
+
+    extractedText = "";
+    for (let i = 0; i < images.length; i++) {
+        try {
+            const result = await Tesseract.recognize(images[i], "ara");
+            extractedText += result.data.text + "\n\n";
+        } catch (e) {}
+        bar.style.width = Math.round(((i+1)/images.length)*95) + "%";
+    }
+
+    bar.style.width = "100%";
+    statusBox.textContent = "✅ تم استخراج النص — جاهز للتحضير";
+    buildBtn.disabled = false;
+    analyze();
+});
+
+function analyze() {
+    const text = extractedText.toLowerCase();
+    if (/جمع|طرح|احسب|عدد|يساوي/.test(text)) {
+        currentIdea = "ربط الأعداد بالمثال البصري";
+        currentQuestion = "كيف توصلت إلى هذا الناتج؟";
+    } else if (/حرف|كلمة|جملة|اقرأ/.test(text)) {
+        currentIdea = "فهم الكلمة أو الجملة من السياق";
+        currentQuestion = "ماذا فهمت من هذه الجملة؟";
+    } else {
+        currentIdea = "الملاحظة البصرية والتفاعل مع المحتوى";
+        currentQuestion = "ماذا تلاحظ في الصفحة أمامك؟";
+    }
+
+    document.getElementById("idea").textContent = `🔹 الفكرة: ${currentIdea}`;
+    document.getElementById("question").textContent = `❓ السؤال: ${currentQuestion}`;
+}
+
+// ================== إنشاء التحضير ==================
+buildBtn.addEventListener("click", () => {
+    const prepText = `
+التحضير التنفيذي — فكرة واحدة فقط
+
+الفكرة المركزية:
+${currentIdea}
+
+سؤال الحصة الواحد:
+«${currentQuestion}»
+
+خطوات التنفيذ:
+1. عرض المثال من الكتاب فقط
+2. طرح السؤال
+3. صمت واعٍ (١٥-٣٠ ثانية)
+4. محاولة تلميذ واحد
+5. تثبيت قصير
+6. إغلاق الحصة فور النطق
+
+مبدأ العمل:
+الصمت أداة تربوية.
+التوقف قرار مهني صحيح.
+    `.trim();
+
+    document.getElementById("prep").textContent = prepText;
+    statusBox.textContent = "✅ تم إنشاء التحضير — جاهز للطباعة أو الاستخدام";
+});
+
+// ================== وضع الحصة المباشرة ==================
+function act(msg) {
+    const log = document.getElementById("log");
+    log.textContent += `\n• ${msg}`;
+}
+
+function closeLesson() {
+    const log = document.getElementById("log");
+    log.textContent += `\n\n✅ نُطقت الفكرة — أُغلقت الحصة`;
+    statusBox.textContent = "✅ الحصة مُغلقة مهنيًا";
 }
 </script>
 
