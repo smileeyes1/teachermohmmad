@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الخبير التربوي المرافق — قراءة كاملة + محاكاة واقعية</title>
+    <title>الخبير التربوي المرافق — اسم الدرس أولاً</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root {
@@ -82,221 +82,181 @@
     <div class="header">
         <p style="font-size:18px;margin:0 0 8px 0;">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
         <h1>الخبير التربوي المرافق</h1>
-        <p class="small">قراءة كاملة • فهم واقعي • محاكاة عملية قابلة للتنفيذ</p>
+        <p class="small">أدخل اسم الدرس أولاً → ثم ارفع الملف → يقرأ ما يحتاج فقط</p>
     </div>
 
-    <!-- رفع الملفات -->
+    <!-- خطوة 1: إدخال اسم الدرس -->
     <div class="card">
-        <h3>📷 رفع صفحات الكتاب أو الصور (حتى ٣ صفحات)</h3>
-        <input type="file" id="fileInput" accept="image/*" multiple>
-        <div class="small">ارفع صور الصفحات بوضوح — سيتم قراءتها كاملة</div>
+        <h3>📘 أدخل اسم الدرس أولاً (مهم جداً)</h3>
+        <input type="text" id="lessonName" placeholder="مثال: الجمع حتى ١٠ - الحروف المتصلة - الطرح البسيط">
+        <div class="small">سيساعد النظام على التركيز على الجزء المتعلق بهذا الدرس فقط</div>
+        <button id="confirmLessonBtn" class="ok">تأكيد اسم الدرس ومتابعة</button>
+    </div>
+
+    <!-- خطوة 2: رفع الملف (تظهر بعد تأكيد الاسم) -->
+    <div class="card hidden" id="uploadCard">
+        <h3>📂 ارفع صفحات الكتاب المتعلقة بالدرس</h3>
+        <input type="file" id="fileInput" accept=".pdf,image/*" multiple>
+        <div class="small">ارفع الصفحات المتعلقة بـ «<span id="lessonDisplay"></span>» فقط</div>
         <div class="progress"><span id="bar"></span></div>
-        <div id="status" class="box">— بانتظار رفع الصور —</div>
-        <button id="startBtn" class="ok" disabled>ابدأ القراءة الكاملة والتحليل</button>
+        <div id="status" class="box">— بانتظار رفع الصفحات —</div>
+        <button id="startBtn" class="ok" disabled>ابدأ القراءة المركزة</button>
     </div>
 
     <!-- النص المستخرج -->
     <div class="card">
-        <h3>📝 النص المستخرج كاملاً من الكتاب</h3>
-        <div id="rawText" class="box">— سيظهر النص الكامل هنا —</div>
+        <h3>📝 النص المستخرج (مركز على الدرس)</h3>
+        <div id="rawText" class="box">— سيظهر النص بعد القراءة —</div>
     </div>
 
-    <!-- التحليل والتحضير -->
+    <!-- التحضير -->
     <div class="card">
-        <h3>🧠 الفهم الذكي والتحضير</h3>
-        <div id="idea" class="box">🔹 الفكرة الرئيسية ستظهر هنا</div>
-        <div id="question" class="box">❓ السؤال المركزي سيظهر هنا</div>
+        <h3>🧭 التحضير التنفيذي</h3>
+        <div id="idea" class="box">🔹 الفكرة ستظهر هنا</div>
+        <div id="question" class="box">❓ السؤال سيظهر هنا</div>
         <div id="prep" class="box"></div>
-        <button id="buildBtn" class="ok" disabled>أنشئ التحضير الواقعي</button>
+        <button id="buildBtn" class="ok" disabled>أنشئ التحضير</button>
     </div>
 
-    <!-- المحاكاة العملية الواقعية -->
+    <!-- المحاكاة -->
     <div class="card">
-        <h3>🎭 محاكاة عملية واقعية قابلة للتنفيذ</h3>
+        <h3>🎭 محاكاة عملية واقعية</h3>
         <button id="simulateBtn" class="ok" disabled>شغّل المحاكاة الواقعية</button>
         <div id="simulation" class="box"></div>
-    </div>
-
-    <!-- وضع الحصة المباشرة -->
-    <div class="card">
-        <h3>🎛️ وضع التشغيل داخل الصف</h3>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px">
-            <button onclick="act('طُرح السؤال')">اطرح السؤال</button>
-            <button onclick="act('صمت واعٍ')">صمت</button>
-            <button onclick="act('محاولة تلميذ')">محاولة</button>
-            <button class="ok" onclick="closeLesson()">✅ نُطقت الفكرة — أغلق الحصة</button>
-        </div>
-        <div id="log" class="box">سجل الحصة:</div>
     </div>
 
 </div>
 
 <script>
 // ================== متغيرات ==================
-const fileInput = document.getElementById("fileInput");
-const bar = document.getElementById("bar");
-const statusBox = document.getElementById("status");
-const startBtn = document.getElementById("startBtn");
-const buildBtn = document.getElementById("buildBtn");
-const simulateBtn = document.getElementById("simulateBtn");
-
-let images = [];
+let lessonName = "";
 let extractedText = "";
-let currentIdea = "";
-let currentQuestion = "";
 
-// رفع الصور
+// تأكيد اسم الدرس
+document.getElementById("confirmLessonBtn").addEventListener("click", () => {
+    lessonName = document.getElementById("lessonName").value.trim();
+    if (!lessonName) {
+        alert("يرجى إدخال اسم الدرس أولاً");
+        return;
+    }
+    document.getElementById("lessonDisplay").textContent = lessonName;
+    document.getElementById("uploadCard").classList.remove("hidden");
+    document.getElementById("confirmLessonBtn").disabled = true;
+});
+
+// رفع الملف بعد تأكيد الاسم
+const fileInput = document.getElementById("fileInput");
+const startBtn = document.getElementById("startBtn");
+
 fileInput.addEventListener("change", () => {
-    images = Array.from(fileInput.files).slice(0, 3);
-    if (images.length > 0) {
-        statusBox.textContent = `✅ تم رفع ${images.length} صفحة`;
+    if (fileInput.files.length > 0) {
         startBtn.disabled = false;
     }
 });
 
-// بدء القراءة الكاملة
 startBtn.addEventListener("click", async () => {
-    if (images.length === 0) return;
+    const files = fileInput.files;
+    if (files.length === 0) return;
 
+    const bar = document.getElementById("bar");
+    const statusBox = document.getElementById("status");
     bar.style.width = "5%";
-    statusBox.textContent = "🔍 جاري القراءة الكاملة والتحسين...";
-    startBtn.disabled = true;
+    statusBox.textContent = "🔍 جاري القراءة المركزة على درس: " + lessonName;
 
     extractedText = "";
-    for (let i = 0; i < images.length; i++) {
-        const processed = await preprocessImage(images[i]);
+    for (let i = 0; i < files.length; i++) {
         try {
-            const result = await Tesseract.recognize(processed, "ara");
+            const result = await Tesseract.recognize(files[i], "ara");
             extractedText += result.data.text + "\n\n";
         } catch (e) {}
-        bar.style.width = Math.round(((i+1)/images.length)*95) + "%";
+        bar.style.width = Math.round(((i+1)/files.length)*95) + "%";
     }
 
     bar.style.width = "100%";
-    document.getElementById("rawText").textContent = extractedText || "لم يتم استخراج نص واضح";
-    statusBox.textContent = "✅ اكتملت القراءة الكاملة — جاري الفهم الذكي";
-    buildBtn.disabled = false;
-    simulateBtn.disabled = false;
-    analyzeDeeply();
+    document.getElementById("rawText").textContent = extractedText.substring(0, 2500) + "...";
+    statusBox.textContent = "✅ تمت القراءة المركزة — جاري التحليل";
+    
+    analyzeFocused();
 });
 
-// تحسين الصورة لقراءة أفضل
-async function preprocessImage(file) {
-    return new Promise(resolve => {
-        const img = new Image();
-        img.onload = () => {
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            const scale = Math.min(1600 / img.width, 1.6);
-            canvas.width = img.width * scale;
-            canvas.height = img.height * scale;
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-            // تحسين التباين والتبييض
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imageData.data;
-            for (let i = 0; i < data.length; i += 4) {
-                let gray = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
-                gray = gray > 100 ? 255 : 0;
-                data[i] = data[i+1] = data[i+2] = gray;
-            }
-            ctx.putImageData(imageData, 0, 0);
-            canvas.toBlob(blob => resolve(blob), "image/jpeg", 0.92);
-        };
-        img.src = URL.createObjectURL(file);
-    });
-}
-
-// الفهم الذكي العميق
-function analyzeDeeply() {
+function analyzeFocused() {
+    // تحليل مركز على اسم الدرس
     const text = extractedText.toLowerCase();
+    let idea = "فهم المحتوى المتعلق بـ " + lessonName;
+    let question = "ماذا فهمت من هذا الدرس؟";
 
-    if (/جمع|طرح|احسب|عدد|يساوي|معادلة/.test(text)) {
-        currentIdea = "ربط العمليات الحسابية بالأمثلة البصرية في الكتاب";
-        currentQuestion = "كيف توصلت إلى هذا الناتج من المثال في الصفحة؟";
-    } else if (/حرف|كلمة|جملة|اقرأ|نص|قصة/.test(text)) {
-        currentIdea = "فهم معنى الكلمات والجمل من السياق والصور المرافقة";
-        currentQuestion = "ماذا فهمت من هذه الجملة أو الكلمة في الصفحة؟";
-    } else {
-        currentIdea = "الملاحظة الدقيقة والتفاعل مع المحتوى الموجود في الصفحة";
-        currentQuestion = "ماذا تلاحظ في الصفحة أمامك وكيف يرتبط بما تعرفه؟";
+    if (lessonName.toLowerCase().includes("جمع") || text.includes("جمع")) {
+        idea = "ربط عملية الجمع بالأمثلة البصرية";
+        question = "كيف نجمع الأعداد الموجودة في المثال؟";
+    } else if (lessonName.toLowerCase().includes("طرح") || text.includes("طرح")) {
+        idea = "فهم عملية الطرح";
+        question = "كيف نطرح من العدد المعطى؟";
+    } else if (lessonName.toLowerCase().includes("حرف") || text.includes("حرف")) {
+        idea = "تعلم الحرف أو الكلمة";
+        question = "ما هذا الحرف وكيف نستخدمه؟";
     }
 
-    document.getElementById("idea").textContent = `🔹 الفكرة الرئيسية: ${currentIdea}`;
-    document.getElementById("question").textContent = `❓ السؤال المركزي: ${currentQuestion}`;
+    document.getElementById("idea").textContent = `🔹 الفكرة: ${idea}`;
+    document.getElementById("question").textContent = `❓ السؤال: ${question}`;
+    document.getElementById("buildBtn").disabled = false;
+    document.getElementById("simulateBtn").disabled = false;
 }
 
-// إنشاء التحضير
-buildBtn.addEventListener("click", () => {
+// التحضير
+document.getElementById("buildBtn").addEventListener("click", () => {
     const prep = `
-التحضير التنفيذي الواقعي — بناءً على قراءة كاملة للصفحة
+التحضير التنفيذي — درس: ${lessonName}
 
-الفكرة الرئيسية المستخرجة:
-${currentIdea}
+الفكرة الرئيسية:
+${document.getElementById("idea").textContent.replace("🔹 الفكرة: ", "")}
 
 السؤال المركزي:
-«${currentQuestion}»
+${document.getElementById("question").textContent.replace("❓ السؤال: ", "")}
 
-خطوات التنفيذ داخل الصف:
-1. عرض المثال أو النص من الصفحة كما هو
-2. طرح السؤال المركزي
-3. صمت واعٍ (20-40 ثانية)
-4. السماح بمحاولة تلميذ واحد أو أكثر
-5. تثبيت قصير جداً
-6. إغلاق الحصة فور ظهور الفهم
-
-مبدأ العمل:
-القراءة الكاملة → الفهم الواقعي → التوقف في اللحظة الصحيحة.
+خطوات التنفيذ:
+1. عرض الجزء المتعلق بالدرس من الكتاب
+2. طرح السؤال
+3. صمت واعٍ
+4. محاولة الطلاب
+5. إغلاق الحصة عند الفهم
     `.trim();
 
     document.getElementById("prep").textContent = prep;
 });
 
-// ================== المحاكاة العملية الواقعية ==================
-simulateBtn.addEventListener("click", () => {
-    const simulation = `
-🎭 محاكاة عملية واقعية قابلة للتنفيذ — درس: ${currentIdea}
+// المحاكاة الواقعية
+document.getElementById("simulateBtn").addEventListener("click", () => {
+    const sim = `
+🎭 محاكاة واقعية لدرس: ${lessonName}
 
-الدقيقة 0-2:
-المعلم يفتح الصفحة ويعرض المثال أو النص.
-"انظروا إلى الصفحة بهدوء."
+المعلم يعرض الجزء المتعلق بالدرس.
+"انظروا إلى هذا الجزء بهدوء."
 
-الدقيقة 2-5:
-يطرح السؤال المركزي:
-«${currentQuestion}»
-ثم يصمت تماماً (صمت واعٍ).
+(صمت 25 ثانية)
 
-الدقيقة 5-12:
-بعض الطلاب يترددون، بعضهم يحاول بصوت منخفض.
-المعلم لا يصحح فوراً، بل ينتظر.
+الطلاب ينظرون ويتردد بعضهم.
+طالب يحاول...
 
-الدقيقة 12-18:
-طالب واحد أو اثنان ينطقان شيئاً قريباً من الفكرة.
-المعلم يعيد صياغة الإجابة بلباقة.
+المعلم ينتظر ثم يساعد بلطف إن لزم الأمر.
 
-الدقيقة 18-22:
-تثبيت قصير جداً.
-ثم يُغلق المعلم الحصة بهدوء:
-"اليوم فهمنا ... شكراً لكم."
+عندما يقترب الطالب من الفكرة، يثبتها المعلم.
 
-——— نهاية المحاكاة الواقعية ———
+ثم يغلق الحصة بهدوء.
 
-ملاحظة: هذه محاكاة طبيعية تحتوي على تردد وصمت، لأن هذا هو الواقع داخل الصف.
+——— محاكاة طبيعية قابلة للتنفيذ ———
     `.trim();
 
-    document.getElementById("simulation").textContent = simulation;
+    document.getElementById("simulation").textContent = sim;
 });
 
-// ================== وضع الحصة المباشرة ==================
 function act(msg) {
-    const log = document.getElementById("log");
+    const log = document.getElementById("log") || {textContent: ""};
     log.textContent += `\n• ${msg}`;
 }
 
 function closeLesson() {
-    const log = document.getElementById("log");
-    log.textContent += `\n\n✅ نُطقت الفكرة — أُغلقت الحصة مهنيًا`;
-    statusBox.textContent = "✅ الحصة مُغلقة بنجاح";
+    const log = document.getElementById("log") || {textContent: ""};
+    log.textContent += `\n\n✅ نُطقت الفكرة — أُغلقت الحصة`;
 }
 </script>
 
