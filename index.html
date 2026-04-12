@@ -3,108 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الخبير التربوي المرافق</title>
+<title>الخبير التربوي المرافق — مبني على الكتاب</title>
 
 <style>
 :root{
-  --bg:#f5f7fb;
-  --card:#ffffff;
-  --main:#1d4ed8;
-  --soft:#e0e7ff;
-  --accent:#16a34a;
-  --text:#1f2937;
-  --muted:#6b7280;
-  --radius:18px;
+  --bg:#f7f9fc; --card:#ffffff; --main:#1d4ed8; --accent:#16a34a;
+  --soft:#eef2ff; --text:#1f2937; --muted:#6b7280; --radius:18px;
 }
-
-/* ===== أساسيات ===== */
 *{box-sizing:border-box}
 body{
-  margin:0;
-  background:var(--bg);
-  font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
-  color:var(--text);
+  margin:0; background:var(--bg); color:var(--text);
+  font-family: system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;
   line-height:1.7;
 }
-
-.wrapper{
-  max-width:900px;
-  margin:auto;
-  padding:1.2rem;
-}
-
+.wrapper{max-width:900px; margin:auto; padding:1.2rem}
 .card{
-  background:var(--card);
-  border-radius:var(--radius);
-  padding:1.5rem;
-  margin-bottom:1.2rem;
+  background:var(--card); border-radius:var(--radius);
+  padding:1.5rem; margin-bottom:1.1rem;
   box-shadow:0 10px 28px rgba(0,0,0,.06);
 }
-
-h1,h2{
-  margin:0 0 .6rem;
-  color:var(--main);
-}
-
-p{
-  margin:.3rem 0;
-  color:var(--muted);
-}
-
-.actions{
-  display:flex;
-  gap:.7rem;
-  flex-wrap:wrap;
-}
-
+h1,h2{margin:0 0 .6rem; color:var(--main)}
+p{margin:.3rem 0; color:var(--muted)}
+.actions{display:flex; gap:.7rem; flex-wrap:wrap}
 button{
-  flex:1;
-  min-height:54px;
-  border:none;
-  border-radius:14px;
-  font-size:1rem;
-  cursor:pointer;
+  flex:1; min-height:56px; border:none; border-radius:14px;
+  font-size:1rem; cursor:pointer;
 }
-
-.primary{background:var(--main);color:#fff}
-.secondary{background:var(--accent);color:#fff}
-.ghost{background:var(--soft);color:var(--main)}
-
-label{
-  font-weight:600;
-  margin-top:1rem;
-  display:block;
-}
-
+.primary{background:var(--main); color:#fff}
+.secondary{background:var(--accent); color:#fff}
+.ghost{background:var(--soft); color:var(--main)}
+label{font-weight:600; margin-top:1rem; display:block}
 input,textarea{
-  width:100%;
-  margin-top:.4rem;
-  padding:.7rem .9rem;
-  border-radius:12px;
-  border:1px solid #e5e7eb;
-  font-size:1rem;
+  width:100%; margin-top:.4rem; padding:.75rem .9rem;
+  border-radius:12px; border:1px solid #e5e7eb; font-size:1rem;
 }
-
 .hidden{display:none}
-
-/* ===== سجل الحصّة ===== */
 .log{
-  margin-top:1.1rem;
-  padding:1rem;
-  background:#f0fdf4;
-  border-radius:12px;
-  font-weight:700;
-  color:#166534;
-  text-align:center;
+  margin-top:1rem; padding:1rem; border-radius:12px;
+  background:#f0fdf4; color:#166534; font-weight:700; text-align:center;
+}
+.badges{display:flex; gap:.5rem; flex-wrap:wrap}
+.badge{
+  background:#f8fafc; border:1px solid #e5e7eb; border-radius:999px;
+  padding:.3rem .6rem; font-size:.85rem; color:#334155;
+}
+.quote{
+  background:#f8fafc; border-right:4px solid var(--accent);
+  padding:.6rem .8rem; border-radius:8px; color:#334155;
 }
 
-/* ===== صفحة الميثاق (للطباعة فقط) ===== */
-.print-charter{
-  display:none;
-  page-break-after:always;
-}
-
-/* ===== الطباعة ===== */
+/* ميثاق للطباعة فقط */
+.print-charter{display:none; page-break-after:always}
 @media print{
   body{background:#fff}
   .wrapper > :not(.print-charter){display:none!important}
@@ -112,86 +61,97 @@ input,textarea{
   .card{box-shadow:none}
 }
 
-/* ===== الهاتف ===== */
+/* الهاتف */
 @media(max-width:600px){
-  h1{font-size:1.5rem}
-  h2{font-size:1.2rem}
+  h1{font-size:1.45rem} h2{font-size:1.2rem}
 }
 </style>
 </head>
 
 <body>
-
 <div class="wrapper">
 
-  <!-- ===== صفحة الميثاق ===== -->
+  <!-- صفحة الميثاق (للطباعة فقط) -->
   <div class="print-charter card">
-    <h1>ميثاق الخبير التربوي المرافق</h1>
-    <p><strong>الغرض:</strong> توثيق فلسفة الاستخدام وضمان الاستقرار التربوي.</p>
-
+    <h1>ميثاق «الكتاب هو المنهاج»</h1>
+    <p><strong>الغرض:</strong> حماية التعلّم، دعم المعلّم، وزراعة حبّ التعلّم.</p>
     <h2>مبادئ ثابتة</h2>
     <ul>
-      <li>الكتاب المدرسي هو المرجع الوحيد.</li>
-      <li>فكرة واحدة في كل حصّة.</li>
-      <li>الصمت أداة تربوية لا خللًا.</li>
-      <li>لا تقييم، لا مقارنة، لا درجات.</li>
-      <li>التقنية لا تتدخل داخل زمن الحصّة.</li>
+      <li>الكتاب المدرسي هو المرجع الحاكم غير المُجزّأ.</li>
+      <li>حصّة واحدة = فكرة واحدة من الكتاب.</li>
+      <li>الأمان قبل المعرفة. المحاولة قيمة.</li>
+      <li>لا تقييم، لا مقارنة، لا استعجال.</li>
+      <li>التقنية تُهيّئ ثم تنسحب داخل الحصّة.</li>
     </ul>
-
     <h2>ما لا نضيفه أبدًا</h2>
     <ul>
-      <li>تنبيهات أو رسائل مفاجئة أثناء الحصّة.</li>
-      <li>خيارات جديدة تربك المعلّم.</li>
-      <li>تحليل أداء أو تتبّع.</li>
-      <li>تحميلات أو مكتبات خارجية.</li>
+      <li>تنبيهات أو تحميلات أثناء الحصّة.</li>
+      <li>أزرار تُغري بالتوسّع.</li>
+      <li>تحليلات أداء أو تتبّع.</li>
     </ul>
-
-    <p>
-      <strong>المعيار الوحيد للإضافة:</strong><br>
-      هل يجعل هذا المعلّم أكثر هدوءًا؟
-    </p>
+    <p><strong>المعيار الوحيد:</strong> هل يجعل هذا المعلّم والطالب أكثر هدوءًا؟</p>
   </div>
 
-  <!-- ===== الواجهة العملية ===== -->
+  <!-- العنوان -->
   <div class="card">
-    <h1>الخبير التربوي المرافق داخل الصف</h1>
-    <p>نظام صامت يثبّت التعلّم ثم ينسحب في اللحظة الصحيحة.</p>
-  </div>
-
-  <div class="card">
-    <h2>وضع العمل</h2>
-    <div class="actions">
-      <button class="primary" onclick="openPrep()">تحضير قبل الحصّة</button>
-      <button class="ghost" onclick="openSession()">مرافقة أثناء الحصّة</button>
+    <h1>الخبير التربوي المرافق (مبني على الكتاب)</h1>
+    <p>يدعم المعلّم، يحمي التعلّم، ويزرع حبّه عبر الأمان والصمت الواعي.</p>
+    <div class="badges">
+      <span class="badge">الكتاب هو المنهاج</span>
+      <span class="badge">فكرة واحدة</span>
+      <span class="badge">صمت شرعي</span>
+      <span class="badge">إغلاق مهني</span>
     </div>
   </div>
 
+  <!-- اختيار الوضع -->
+  <div class="card">
+    <h2>وضع العمل</h2>
+    <div class="actions">
+      <button class="primary" onclick="openPrep()">تحضير قبل الحصّة (من الكتاب)</button>
+      <button class="ghost" onclick="openSession()">مرافقة أثناء الحصّة (صامتة)</button>
+    </div>
+  </div>
+
+  <!-- التحضير -->
   <div id="prep" class="card hidden">
-    <h2>التحضير</h2>
+    <h2>التحضير المبني على الكتاب</h2>
+    <div class="quote">اختر فكرة واحدة مكتملة من نص الكتاب، ولا تتجاوزها.</div>
 
-    <label>اسم الدرس</label>
-    <input id="lesson">
+    <label>الكتاب/الصف/المادّة</label>
+    <input id="bookInfo" placeholder="مثال: رياضيات – صف ثالث – الفصل الأوّل">
 
-    <label>الفكرة الواحدة</label>
-    <textarea id="idea" rows="3"></textarea>
+    <label>الدرس/الصفحة (اختياري)</label>
+    <input id="lessonPage" placeholder="اسم الدرس أو رقم الصفحة">
 
-    <label>السؤال المحوري</label>
-    <textarea id="question" rows="2"></textarea>
+    <label>الفكرة الواحدة من الكتاب</label>
+    <textarea id="idea" rows="3" placeholder="أصغر وحدة معرفية مكتملة من النص"></textarea>
+
+    <label>سؤال واحد يقود لنطق الفكرة</label>
+    <textarea id="question" rows="2" placeholder="سؤال يفتح المحاولة دون إحراج"></textarea>
+
+    <div class="quote">
+      ملاحظة دعم: يكفي <strong>أن يحاول الطالب</strong>. الصمت مقبول. الإغلاق جودة.
+    </div>
 
     <div class="actions">
       <button class="secondary" onclick="lockPrep()">اعتماد التحضير</button>
       <button class="ghost" onclick="window.print()">طباعة (تشمل الميثاق)</button>
     </div>
 
-    <p id="prepMsg" class="hidden">✅ التحضير معتمد.</p>
+    <p id="prepMsg" class="hidden">✅ التحضير معتمد. يمكنك الدخول للحصّة.</p>
   </div>
 
+  <!-- الحصّة -->
   <div id="session" class="card hidden">
-    <h2>المرافقة الصفّية</h2>
+    <h2>المرافقة الصفّية الصامتة</h2>
+    <div class="quote">
+      راعِ الفروق: ليس الجميع مستعدًا للكلام. المحاولة كافية.
+    </div>
 
     <div class="actions">
       <button class="primary" onclick="logAction('اطرح السؤال')">اطرح السؤال</button>
-      <button class="ghost" onclick="logAction('صمت')">صمت</button>
+      <button class="ghost" onclick="logAction('صمت')">صمت (وقت آمن)</button>
       <button class="ghost" onclick="logAction('ارجع للسؤال')">ارجع للسؤال</button>
       <button class="secondary" onclick="logAction('نُطقت الفكرة — أُغلقت الحصّة')">إغلاق</button>
     </div>
@@ -203,29 +163,22 @@ input,textarea{
 
 <script>
 let prepared=false;
-
 function openPrep(){
   prep.classList.remove("hidden");
   session.classList.add("hidden");
 }
-
 function openSession(){
-  if(!prepared) return;
+  if(!prepared) return; // صمت مقصود دون تنبيه
   session.classList.remove("hidden");
   prep.classList.add("hidden");
 }
-
 function lockPrep(){
-  if(!lesson.value || !idea.value || !question.value) return;
-  prepared=true;
-  prepMsg.classList.remove("hidden");
+  if(!idea.value || !question.value) return;
+  prepared=true; prepMsg.classList.remove("hidden");
 }
-
 function logAction(text){
-  log.textContent=text;
-  log.classList.remove("hidden");
+  log.textContent=text; log.classList.remove("hidden");
 }
 </script>
-
 </body>
 </html>
