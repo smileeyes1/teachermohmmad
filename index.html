@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الخبير التربوي المرافق — نسخة نهائية مستقرة</title>
+<title>الخبير التربوي المرافق — نسخة مستقرة Camera‑First</title>
 
-<!-- ✅ OCR: تحميل صحيح 100% -->
-https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js</script>
+<!-- OCR -->
+https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
 <meta http-equiv="Content-Security-Policy"
 content="
@@ -21,25 +21,81 @@ base-uri 'none';
 
 <style>
 :root{
-  --main:#0d47a1;--bg:#f4f6f8;--card:#fff;--ink:#1f2937;
-  --ok:#166534;--soft:#e3f2fd;--muted:#6b7280;
+  --main:#0d47a1;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --ink:#1f2937;
+  --ok:#166534;
+  --soft:#e3f2fd;
+  --muted:#6b7280;
 }
 *{box-sizing:border-box}
-body{margin:0;font-family:Tahoma,Arial;background:var(--bg);color:var(--ink);line-height:1.8}
+body{
+  margin:0;
+  font-family:Tahoma,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.8;
+}
 .app{max-width:1100px;margin:auto;padding:16px}
-.header{background:var(--card);padding:18px;border-radius:16px;
-box-shadow:0 6px 20px rgba(0,0,0,.08);text-align:center;margin-bottom:16px}
-.card{background:var(--card);padding:16px;border-radius:14px;
-box-shadow:0 6px 20px rgba(0,0,0,.08);margin-bottom:16px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media(max-width:900px){.grid{grid-template-columns:1fr}}
-button,input{width:100%;padding:12px;border-radius:12px;border:none;font-size:15px;margin-top:8px}
-button{background:var(--main);color:#fff;cursor:pointer}
+.header{
+  background:var(--card);
+  padding:18px;
+  border-radius:16px;
+  box-shadow:0 6px 20px rgba(0,0,0,.08);
+  text-align:center;
+  margin-bottom:16px;
+}
+.card{
+  background:var(--card);
+  padding:16px;
+  border-radius:14px;
+  box-shadow:0 6px 20px rgba(0,0,0,.08);
+  margin-bottom:16px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:16px;
+}
+@media(min-width:900px){
+  .grid{grid-template-columns:1fr 1fr}
+}
+button,input{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  font-size:16px;
+  margin-top:10px;
+}
+button{
+  background:var(--main);
+  color:#fff;
+  cursor:pointer;
+}
 button.ok{background:var(--ok)}
 button:disabled{opacity:.6}
-.box{background:var(--soft);padding:12px;border-radius:12px;margin-top:10px;white-space:pre-wrap}
-.progress{height:8px;background:#e5e7eb;border-radius:8px;overflow:hidden}
-.progress span{display:block;height:100%;width:0%;background:var(--main);transition:.2s}
+.box{
+  background:var(--soft);
+  padding:14px;
+  border-radius:14px;
+  margin-top:12px;
+  white-space:pre-wrap;
+}
+.progress{
+  height:8px;
+  background:#e5e7eb;
+  border-radius:8px;
+  overflow:hidden;
+}
+.progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:var(--main);
+  transition:.2s;
+}
 .small{font-size:13px;color:var(--muted)}
 </style>
 </head>
@@ -49,28 +105,44 @@ button:disabled{opacity:.6}
   <div class="header">
     <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
     <h2 style="color:var(--main)">الخبير التربوي المرافق — دعم سيادي للمعلم</h2>
-    <p class="small">نسخة مستقرة • حد أقصى ٣ صور • ضغط تلقائي</p>
+    <p class="small">ابدأ بتصوير صفحة الدرس • حدّ أقصى ٣ صور • تحسين تلقائي</p>
   </div>
 
   <div class="grid">
     <div class="card">
-      <h3>📷 إدخال صور الدرس (٣ صور كحد أقصى)</h3>
-      <input type="file" id="files" accept="image/*" multiple>
+      <h3>📷 تصوير صفحة الدرس</h3>
+
+      <!-- Camera‑First -->
+      <input
+        id="cameraInput"
+        type="file"
+        accept="image/*"
+        capture="environment"
+        multiple
+      >
+
+      <p class="small">
+        التقط حتى ٣ صفحات متتالية.
+        يتم تحسين الصور تلقائيًا لسرعة واستقرار القراءة.
+      </p>
+
       <div class="progress"><span id="bar"></span></div>
-      <div id="status" class="box">— بانتظار الصور —</div>
+
+      <div id="status" class="box">— بانتظار التصوير —</div>
+
       <button class="ok" id="start" disabled>ابدأ القراءة</button>
     </div>
 
     <div class="card">
-      <h3>🧭 التحضير</h3>
-      <button id="prepBtn" disabled class="ok">إنشاء التحضير</button>
+      <h3>🧭 تحضير الحصة (فكرة واحدة)</h3>
+      <button id="prepBtn" class="ok" disabled>إنشاء التحضير</button>
       <div id="prep" class="box"></div>
     </div>
   </div>
 </div>
 
 <script>
-const filesInput=document.getElementById("files");
+const input=document.getElementById("cameraInput");
 const statusBox=document.getElementById("status");
 const bar=document.getElementById("bar");
 const startBtn=document.getElementById("start");
@@ -79,18 +151,17 @@ const prepBox=document.getElementById("prep");
 
 let images=[], extractedText="";
 
-filesInput.onchange=()=>{
-  images=[...filesInput.files].slice(0,3);
-  if(filesInput.files.length>3){
-    statusBox.textContent="⚠️ تم قبول أول ٣ صور فقط.";
+input.onchange=()=>{
+  images=[...input.files].slice(0,3);
+  if(input.files.length>3){
+    statusBox.textContent="⚠️ تم اعتماد أول ٣ صور فقط.";
   }
   if(images.length){
-    statusBox.textContent=`✅ تم إدخال ${images.length} صورة.`;
+    statusBox.textContent=`✅ تم إدخال ${images.length} صفحة.`;
     startBtn.disabled=false;
   }
 };
 
-/* ضغط وتصغير الصورة تلقائيًا */
 function compressImage(file){
   return new Promise(res=>{
     const img=new Image();
@@ -107,7 +178,9 @@ function compressImage(file){
 }
 
 startBtn.onclick=async()=>{
-  extractedText=""; bar.style.width="5%";
+  extractedText="";
+  bar.style.width="5%";
+  statusBox.textContent="🔍 جاري القراءة بهدوء…";
   for(let i=0;i<images.length;i++){
     const blob=await compressImage(images[i]);
     try{
@@ -122,17 +195,17 @@ startBtn.onclick=async()=>{
   bar.style.width="100%";
   statusBox.textContent=extractedText
    ? "✅ تمت القراءة بنجاح."
-   : "⚠️ تعذّر الاستخراج — سيُدار الدرس من الصورة.";
+   : "✅ لم يتم التعرف على النص بدقة — سيتم متابعة الدرس من الصور.";
   prepBtn.disabled=false;
 };
 
 prepBtn.onclick=()=>{
   prepBox.textContent=
-`📘 تحضير مهني واقعي:
+`📘 تحضير مهني قابل للتنفيذ:
 "انظروا إلى الصفحة."
-سؤال واحد.
+سؤال واحد واضح.
 صمت واعٍ.
-محاولة.
+محاولة واحدة.
 إغلاق عند نطق الفكرة.`;
 };
 </script>
