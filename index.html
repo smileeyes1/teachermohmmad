@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الخبير التربوي المرافق — النسخة السيادية النهائية</title>
+<title>الخبير التربوي المرافق — النسخة السيادية المُصححة</title>
 
-<!-- ✅ تحميل صحيح ونهائي لمكتبة OCR -->
-https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js</script>
+<!-- ✅ تحميل Tesseract.js v5 بشكل صحيح -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <style>
 :root{
@@ -63,19 +63,21 @@ button:disabled{opacity:.6;cursor:not-allowed}
   border-radius:14px;
   margin-top:12px;
   white-space:pre-wrap;
+  font-size:15px;
 }
 .progress{
   height:8px;
   background:#ddd;
   border-radius:8px;
   overflow:hidden;
+  margin:12px 0;
 }
 .progress span{
   display:block;
   height:100%;
   width:0%;
   background:var(--main);
-  transition:.2s;
+  transition:.3s;
 }
 .badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .badges span{
@@ -85,53 +87,44 @@ button:disabled{opacity:.6;cursor:not-allowed}
   font-size:13px;
 }
 .small{font-size:13px;color:var(--muted)}
-body.class-mode .hide-in-class{display:none!important}
-@media print{
-  button,input,.progress,.badges{display:none}
-  body{background:#fff}
-  .card{box-shadow:none}
-}
 </style>
 </head>
-
 <body>
 <div class="app">
 
 <div class="header">
   <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
   <h1>الخبير التربوي المرافق</h1>
-  <p class="small">
-    Camera‑First • اختيار من الملفات • فكرة واحدة • سؤال واحد • صمت • إغلاق
-  </p>
+  <p class="small">Camera-First • اختيار من الملفات • فكرة واحدة • سؤال واحد</p>
 </div>
 
-<!-- ✅ إدخال الصور: كاميرا + ملفات بحاكم صارم -->
-<div class="card hide-in-class">
+<div class="card">
   <h3>📷 تصوير أو اختيار صورة من الملفات</h3>
-  <input id="fileInput" type="file" accept="image/*" multiple capture="environment">
-  <p class="small">اختر من الكاميرا أو الملفات (حدّ أقصى: ٣ صور).</p>
+  <input id="fileInput" type="file" accept="image/*" capture="environment">
+  <p class="small">اختر من الكاميرا أو الملفات (حد أقصى: ٣ صور)</p>
+  
+  <!-- زر تجريبي لتجنب "لم يتم اختيار ملف" -->
+  <button id="demoBtn" class="ghost">جرب بصورة تجريبية</button>
+  
   <div class="progress"><span id="bar"></span></div>
   <div id="pages" class="badges"></div>
   <div id="status" class="box">— بانتظار الصور —</div>
   <button id="startBtn" class="ok" disabled>ابدأ القراءة</button>
 </div>
 
-<!-- التحضير -->
 <div class="card">
   <h3>🧭 داخل الحصّة</h3>
   <div id="idea" class="box">🔹 الفكرة ستظهر هنا</div>
   <div id="question" class="box">❓ السؤال سيظهر هنا</div>
   <div id="prep" class="box"></div>
-  <button id="buildBtn" class="ok hide-in-class" disabled>أنشئ التحضير</button>
+  <button id="buildBtn" class="ok" disabled>أنشئ التحضير</button>
 </div>
 
-<!-- الرادار -->
 <div class="card">
   <h3>🎛️ الرادار الصفّي</h3>
   <button class="warn" onclick="support('🛑 صمت مهني مُدار')">صمت مهني</button>
   <button class="ghost" onclick="support('🔁 ارجع للسؤال الواحد')">ارجع للسؤال</button>
   <button class="ok" onclick="support('✅ نُطقت الفكرة — أُغلِقت الحصّة')">إغلاق الحصّة</button>
-  <button class="ghost" onclick="toggleClass()">🎯 وضع الصف</button>
   <button class="ghost" onclick="window.print()">🖨️ طباعة</button>
   <div id="support" class="box"></div>
 </div>
@@ -139,114 +132,137 @@ body.class-mode .hide-in-class{display:none!important}
 </div>
 
 <script>
-/* الحالة العامة */
+// ================== المتغيرات ==================
 const input = document.getElementById("fileInput");
+const demoBtn = document.getElementById("demoBtn");
 const bar = document.getElementById("bar");
 const statusBox = document.getElementById("status");
 const pages = document.getElementById("pages");
 const startBtn = document.getElementById("startBtn");
 const buildBtn = document.getElementById("buildBtn");
-const ideaBox = document.getElementById("idea");
-const questionBox = document.getElementById("question");
-const prepBox = document.getElementById("prep");
 
 let images = [];
 let ocrText = "";
+let worker = null;
 
-/* ✅ حاكم إدخال الصور: حدّ ٣ + تصفير الحالة */
+// ================== تحميل Worker مرة واحدة ==================
+async function initTesseract() {
+  if (worker) return worker;
+  statusBox.textContent = "⏳ جارٍ تحميل محرك القراءة...";
+  worker = await Tesseract.createWorker('ara', 1, {
+    logger: m => {
+      if (m.status === 'recognizing text') {
+        bar.style.width = Math.round(m.progress * 100) + '%';
+      }
+    }
+  });
+  statusBox.textContent = "✅ محرك القراءة جاهز (عربي)";
+  return worker;
+}
+
+// ================== اختيار الملفات ==================
 input.onchange = () => {
-  images = [...input.files].slice(0,3);
-  ocrText = "";
+  images = Array.from(input.files).slice(0, 3);
+  updateUIAfterSelect();
+};
+
+demoBtn.onclick = async () => {
+  // صورة تجريبية عامة (يمكنك استبدالها برابط صورة كتاب عربي)
+  const demoUrl = "https://picsum.photos/id/1015/800/600"; // صورة واضحة للتجربة
+  statusBox.textContent = "⏳ جارٍ تحميل صورة تجريبية...";
+  const response = await fetch(demoUrl);
+  const blob = await response.blob();
+  images = [new File([blob], "demo.jpg", {type: "image/jpeg"})];
+  updateUIAfterSelect();
+};
+
+function updateUIAfterSelect() {
   pages.innerHTML = "";
-  if (input.files.length > 3) {
-    statusBox.textContent = "⚠️ تم اعتماد أول ٣ صور فقط.";
-  } else {
-    statusBox.textContent = `✅ تم إدخال ${images.length} صورة.`;
+  if (images.length === 0) {
+    statusBox.textContent = "— بانتظار الصور —";
+    startBtn.disabled = true;
+    return;
   }
-  images.forEach((_,i)=>{
-    const s=document.createElement("span");
+  images.forEach((_, i) => {
+    const s = document.createElement("span");
     s.textContent = `صورة ${i+1}`;
     pages.appendChild(s);
   });
-  startBtn.disabled = images.length === 0;
-  buildBtn.disabled = true;
+  statusBox.textContent = `✅ تم اختيار ${images.length} صورة`;
+  startBtn.disabled = false;
+}
+
+// ================== بدء القراءة ==================
+startBtn.onclick = async () => {
+  if (images.length === 0) return;
+
+  bar.style.width = "5%";
+  statusBox.textContent = "🔍 جارٍ قراءة النص العربي...";
+
+  await initTesseract();
+
+  ocrText = "";
+
+  for (let i = 0; i < images.length; i++) {
+    const blob = await compressImage(images[i]);
+    const result = await worker.recognize(blob);
+    ocrText += (result.data.text || "") + "\n\n";
+    bar.style.width = Math.round(((i+1)/images.length)*100) + "%";
+  }
+
+  bar.style.width = "100%";
+  statusBox.textContent = "✅ انتهت القراءة بنجاح! يمكنك الآن إنشاء التحضير.";
+  buildBtn.disabled = false;
+
+  // عرض النص المستخرج للتحقق
+  console.log("النص المستخرج:", ocrText);
 };
 
-/* ضغط تلقائي للصورة */
-function compressImage(file){
-  return new Promise(res=>{
-    const img=new Image();
-    img.onload=()=>{
-      const c=document.createElement("canvas");
-      const scale=Math.min(1200/img.width,1);
-      c.width=img.width*scale;
-      c.height=img.height*scale;
-      c.getContext("2d").drawImage(img,0,0,c.width,c.height);
-      c.toBlob(b=>res(b),"image/jpeg",0.7);
+// ضغط الصورة لتسريع العملية
+function compressImage(file) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const scale = Math.min(1200 / img.width, 1);
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(blob => resolve(blob), "image/jpeg", 0.75);
     };
-    img.src=URL.createObjectURL(file);
+    img.src = URL.createObjectURL(file);
   });
 }
 
-/* ✅ الخطوة ٦ مصحّحة: حارس تحميل + فشل محسوب */
-startBtn.onclick = async () => {
-  bar.style.width = "5%";
-  statusBox.textContent = "🔍 جارٍ القراءة…";
-  ocrText = "";
-
-  // حارس التحميل
-  if (!window.Tesseract) {
-    statusBox.textContent = "✅ متابعة الدرس دون قراءة آلية (وضع آمن).";
-    bar.style.width = "100%";
-    buildBtn.disabled = false;
-    return;
-  }
-
-  for (let i=0;i<images.length;i++){
-    const blob = await compressImage(images[i]);
-    try{
-      const r = await Tesseract.recognize(blob,"ara",{logger:m=>{
-        if(m.progress!=null){
-          bar.style.width = Math.round((i+m.progress)/images.length*90)+"%";
-        }
-      }});
-      ocrText += (r.data.text||"")+" ";
-    }catch{}
-  }
-  bar.style.width = "100%";
-  statusBox.textContent = "✅ انتهت المعالجة.";
-  buildBtn.disabled = false;
-};
-
-/* تحليل سيادي: فكرة واحدة + سؤال واحد */
-function analyze(){
-  if (ocrText.trim().length < 40) {
-    return {idea:"التعرّف على ما نراه في الصفحة", q:"ماذا ترى أولًا؟"};
-  }
-  if (/جمع|طرح|احسب/.test(ocrText)) {
-    return {idea:"ربط الأعداد بما نراه", q:"كيف عرفت؟"};
-  }
-  return {idea:"فكرة بسيطة من الصورة", q:"ما الفكرة هنا؟"};
-}
-
-/* إنشاء التحضير */
+// ================== تحليل وإنشاء التحضير ==================
 buildBtn.onclick = () => {
-  const a = analyze();
-  ideaBox.textContent = `🔹 الفكرة: ${a.idea}`;
-  questionBox.textContent = `❓ السؤال: ${a.q}`;
-  prepBox.textContent =
-`📘 ما سيقوله المعلّم:
-"انظروا إلى الصفحة."
-${a.q}
-[ صمت واعٍ ]
-محاولة واحدة.
-إغلاق عند نطق الفكرة.`;
+  const lower = ocrText.toLowerCase();
+  let idea = "ربط المحتوى المرئي بالمفاهيم";
+  let q = "ماذا تلاحظ في هذه الصفحة؟";
+
+  if (/جمع|طرح|ضرب|قسم|احسب|مساحة|حجم/.test(lower)) {
+    idea = "ربط العمليات الحسابية بالأمثلة المرئية";
+    q = "كيف يمكننا حل هذه المسألة خطوة بخطوة؟";
+  } else if (/قصة|نص|كتاب|شعر/.test(lower)) {
+    idea = "فهم النص من خلال الأسئلة الموجهة";
+    q = "ما الفكرة الرئيسية في هذا النص؟";
+  }
+
+  document.getElementById("idea").textContent = `🔹 الفكرة: ${idea}`;
+  document.getElementById("question").textContent = `❓ السؤال: ${q}`;
+  document.getElementById("prep").innerHTML = `
+    <strong>ما سيقوله المعلم:</strong><br>
+    "انظروا جيداً إلى الصفحة..."<br>
+    ${q}<br><br>
+    [صمت واعٍ ١٥-٢٠ ثانية]<br>
+    محاولة واحدة من الطلاب.<br>
+    إغلاق الحصة عند نطق الفكرة الصحيحة.
+  `;
 };
 
-/* الرادار */
-function support(msg){ document.getElementById("support").textContent = msg; }
-function toggleClass(){ document.body.classList.toggle("class-mode"); }
+function support(msg) {
+  document.getElementById("support").textContent = msg;
+}
 </script>
-
 </body>
 </html>
