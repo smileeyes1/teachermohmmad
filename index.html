@@ -5,8 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>النظام السيادي الذكي الشامل لدعم المعلّم</title>
 
-<!-- ✅ تحميل Tesseract.js بشكل صحيح -->
+<!-- ✅ تحميل صحيح ومحمي لـ Tesseract.js -->
 https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
+
+<!-- ✅ سياسة أمان مقتصدة -->
+<meta http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self';
+        img-src 'self' data:;
+        script-src 'self' https://cdn.jsdelivr.net;
+        style-src 'self' 'unsafe-inline';
+        base-uri 'none';
+      ">
 
 <style>
 :root{
@@ -15,6 +25,7 @@ https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
   --card:#ffffff;
   --ink:#222;
   --ok:#2e7d32;
+  --warn:#777;
   --expert:#6a1b9a;
 }
 
@@ -22,7 +33,7 @@ https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
 body{
   margin:0;
-  font-family:Tahoma, Arial, sans-serif;
+  font-family:Tahoma,Arial,sans-serif;
   background:var(--bg);
   color:var(--ink);
   line-height:1.8;
@@ -61,7 +72,8 @@ button{
 }
 
 button.ok{background:var(--ok)}
-button.warn{background:#777}
+button.warn{background:var(--warn)}
+button:disabled{opacity:.6;cursor:not-allowed}
 
 .box{
   background:#fafafa;
@@ -74,12 +86,28 @@ button.warn{background:#777}
 .expert{border-right:6px solid var(--expert)}
 .hidden{display:none}
 
-/* ✅ وضع الصف – تصحيح منطقي */
+/* ✅ وضع الصف */
 body.class-mode{
   background:#fff;
 }
 body.class-mode .card:not(#lessonCard){display:none}
 body.class-mode h1{display:none}
+
+/* ✅ مؤشّر تقدّم صامت */
+.progress{
+  height:8px;
+  border-radius:8px;
+  background:#e0e0e0;
+  overflow:hidden;
+  margin-top:8px;
+}
+.progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:var(--main);
+  transition:width .2s;
+}
 </style>
 </head>
 
@@ -91,19 +119,20 @@ body.class-mode h1{display:none}
 
 <div class="card">
   <h3>📘 إدراج صفحة الدرس</h3>
-  <input type="file" id="fileInput" accept="image/*">
+  <input type="file" id="fileInput" accept="image/*" aria-label="تحميل صورة الدرس">
+  <div class="progress"><span id="bar"></span></div>
   <div id="status" class="box">— بانتظار رفع الصورة —</div>
 </div>
 
 <div class="card hidden" id="lessonCard">
-  <label>مدة الحصّة</label>
+  <label for="duration">مدة الحصّة</label>
   <select id="duration">
-    <option value="30">٣٠ دقيقة</option>
-    <option value="40">٤٠ دقيقة</option>
-    <option value="45">٤٥ دقيقة</option>
+    <option value="٣٠">٣٠ دقيقة</option>
+    <option value="٤٠">٤٠ دقيقة</option>
+    <option value="٤٥">٤٥ دقيقة</option>
   </select>
 
-  <button class="ok" id="startBtn">▶ ابدأ الحصّة (أقل جهد)</button>
+  <button class="ok" id="startBtn" disabled>▶ ابدأ الحصّة (أقل جهد)</button>
   <button class="warn" onclick="enterClassMode()">🎯 وضع الصف</button>
   <button class="warn" onclick="smartSilence()">🛑 لا تقترح شيئًا</button>
 
@@ -116,114 +145,143 @@ body.class-mode h1{display:none}
 </div>
 
 <script>
-const statusBox = document.getElementById("status");
-const fileInput = document.getElementById("fileInput");
-const lessonCard = document.getElementById("lessonCard");
-const duration = document.getElementById("duration");
-const prep = document.getElementById("prep");
-const sim = document.getElementById("sim");
-const expertBox = document.getElementById("expertBox");
-const support = document.getElementById("support");
-const startBtn = document.getElementById("startBtn");
+/* ═══════════════════════════════
+   الحارس التشغيلي السيادي
+   ═══════════════════════════════ */
+window.addEventListener("error", ()=>{
+  const s=document.getElementById("status");
+  if(s) s.textContent="⚠️ حدث خلل غير مؤذٍ — استخدم الصفحة كما هي وسؤال واحد كافٍ.";
+});
 
-let extractedText = "";
-let lessonType = "استكشاف";
-let coreQuestion = "ماذا لاحظت؟";
-let attempts = 0;
-let startTime = 0;
+/* ✅ حارس الجاهزية */
+document.addEventListener("DOMContentLoaded", ()=>{
+  const status=document.getElementById("status");
+  if(typeof window.Tesseract==="undefined"){
+    status.textContent="⚠️ مكوّن قراءة الصورة غير جاهز — أعد تحميل الصفحة.";
+  }
+});
 
-fileInput.addEventListener("change", handleImage);
-startBtn.addEventListener("click", startLesson);
+/* ═══════════════════════════════
+   المنطق التنفيذي
+   ═══════════════════════════════ */
+const $=id=>document.getElementById(id);
+const state={
+  text:"",
+  lessonType:"استكشاف",
+  coreQuestion:"ماذا لاحظت؟",
+  attempts:٠,
+  startTime:٠
+};
 
-/* ✅ تطبيع عربي وقائي للـ OCR */
-function normalizeArabic(text){
-  return text
-    .replace(/[^\u0600-\u06FF\s]/g,"")
-    .replace(/\s+/g," ")
-    .trim();
+const fileInput=$("fileInput"), status=$("status"), lessonCard=$("lessonCard");
+const prep=$("prep"), sim=$("sim"), expertBox=$("expertBox"), support=$("support");
+const startBtn=$("startBtn"), bar=$("bar"), duration=$("duration");
+
+fileInput.addEventListener("change",handleImage);
+startBtn.addEventListener("click",startLesson);
+
+function normalizeArabic(t){
+  return (t||"").replace(/[^\u0600-\u06FF\s]/g,"").replace(/\s+/g," ").trim();
+}
+
+function validImage(f){
+  return f && /^image\//.test(f.type) && f.size<=٥*١٠٢٤*١٠٢٤;
 }
 
 async function handleImage(){
-  const file = fileInput.files[0];
-  if(!file) return;
-
-  statusBox.textContent = "🔍 جارٍ قراءة الصفحة…";
-
-  try{
-    const result = await Tesseract.recognize(file,"ara");
-    extractedText = normalizeArabic(result.data.text || "");
-    statusBox.textContent = "✅ تم استخراج النص من الصفحة";
-  }catch(e){
-    extractedText = "";
-    statusBox.textContent = "⚠️ تعذّر الاستخراج – سنكمل بطريقة آمنة";
-  }
-
-  analyzeText();
-  lessonCard.classList.remove("hidden");
-}
-
-function analyzeText(){
-  if(!extractedText){
-    lessonType = "استكشاف";
-    coreQuestion = "ماذا ترى في الصفحة؟";
+  const file=fileInput.files[٠];
+  if(!validImage(file)){
+    status.textContent="⚠️ ملف غير صالح — صورة فقط وبحجم آمن.";
     return;
   }
 
-  if(/جمع|طرح|احسب|يساوي|عدد/.test(extractedText)){
-    lessonType = "رياضيات";
-    coreQuestion = "كيف توصلت إلى الناتج؟";
-  }else if(/اقرأ|نص|كلمة|جملة/.test(extractedText)){
-    lessonType = "لغة عربية";
-    coreQuestion = "ماذا فهمت من النص؟";
+  status.textContent="🔍 جارٍ قراءة الصفحة…";
+  bar.style.width="١٠%";
+  startBtn.disabled=true;
+
+  try{
+    const res=await Tesseract.recognize(
+      file,"ara",
+      {logger:m=>{
+        if(m.progress!=null){
+          bar.style.width=Math.round(m.progress*٨٠+١٠)+"%";
+        }
+      }}
+    );
+    state.text=normalizeArabic(res.data.text);
+    status.textContent=state.text
+      ?"✅ تم استخراج النص من الصفحة"
+      :"✅ صورة بلا نص — استخدم الصفحة كما هي";
+  }catch{
+    state.text="";
+    status.textContent="✅ تعذّر الاستخراج — سؤال واحد كافٍ.";
+  }finally{
+    bar.style.width="١٠٠%";
+    analyzeText();
+    lessonCard.classList.remove("hidden");
+    startBtn.disabled=false;
+  }
+}
+
+function analyzeText(){
+  const t=state.text;
+  if(!t){
+    state.lessonType="استكشاف";
+    state.coreQuestion="ماذا ترى في الصفحة؟";
+    return;
+  }
+  if(/جمع|طرح|احسب|يساوي|عدد/.test(t)){
+    state.lessonType="رياضيات";
+    state.coreQuestion="كيف توصلت إلى الناتج؟";
+  }else if(/اقرأ|نص|كلمة|جملة/.test(t)){
+    state.lessonType="لغة عربية";
+    state.coreQuestion="ماذا فهمت من النص؟";
   }else{
-    lessonType = "استكشاف";
-    coreQuestion = "ماذا لاحظت في الصفحة؟";
+    state.lessonType="استكشاف";
+    state.coreQuestion="ماذا لاحظت في الصفحة؟";
   }
 }
 
 function startLesson(){
-  attempts = 1;
-  startTime = Date.now();
+  startBtn.disabled=true;
+  state.attempts=١;
+  state.startTime=Date.now();
 
-  prep.textContent =
+  prep.textContent=
 `📘 التحضير التنفيذي:
+نوع الدرس: ${state.lessonType}
 
-نوع الدرس: ${lessonType}
-
-ما يقوله المعلّم حرفيًا:
+ما يقوله المعلّم:
 "انظروا إلى الصفحة."
-ثم:
-«${coreQuestion}»
-صمت.
-محاولة واحدة.
-توقّف.`;
+«${state.coreQuestion}»
+صمت. محاولة واحدة. توقّف.`;
 
-  sim.textContent =
+  sim.textContent=
 `🎬 المحاكاة الصفّية:
 عرض المحتوى كما هو.
 سؤال واحد.
 صمت.
 تثبيت.
-إنهاء.`;
+إنهاء مبكر مسموح.`;
 
-  expertBox.textContent =
+  expertBox.textContent=
 `🧠 توصية الخبير:
-لا تُضِف شيئًا خارج الصفحة.
+لا تُضِف خارج الصفحة.
 الإنهاء المبكر جودة.`;
 
-  support.textContent =
+  support.textContent=
 `📊 الدعم:
-عدد المحاولات: ${attempts}
-الزمن التقريبي: ${Math.round((Date.now()-startTime)/60000)} دقيقة
+المدة المختارة: ${duration.value} دقيقة
+عدد المحاولات: ${state.attempts}
 
 جملة رحيمة واحدة ثم التوقّف.`;
 }
 
 function smartSilence(){
-  prep.textContent = "✅ الصف يعمل.";
-  sim.textContent = "";
-  expertBox.textContent = "";
-  support.textContent = "";
+  prep.textContent="✅ الصف يعمل.";
+  sim.textContent="";
+  expertBox.textContent="";
+  support.textContent="";
 }
 
 function enterClassMode(){
