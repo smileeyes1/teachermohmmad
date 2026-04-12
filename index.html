@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دعم المعلّم – ملف واحد شامل</title>
+<title>دعم المعلّم – الإصدار النهائي</title>
 
-<!-- تحميل OCR فقط إن وُجد إنترنت -->
+<!-- تحميل OCR عند توفر إنترنت فقط -->
 <script>
 (function(){
   try{
@@ -23,7 +23,7 @@
 <style>
 body{
   margin:0;
-  font-family:Tahoma,Arial,sans-serif;
+  font-family:Tahoma, Arial, sans-serif;
   background:#f4f6f8;
   padding:12px;
   line-height:1.8;
@@ -35,7 +35,10 @@ body{
   margin-bottom:12px;
   box-shadow:0 4px 12px rgba(0,0,0,.12);
 }
-video,canvas{width:100%;border-radius:10px}
+video,canvas{
+  width:100%;
+  border-radius:10px;
+}
 button,input[type=file]{
   width:100%;
   padding:10px;
@@ -47,7 +50,7 @@ button,input[type=file]{
 button{background:#1565c0;color:#fff}
 .actions button{background:#455a64}
 #lessonTitle{font-weight:bold;margin-bottom:6px}
-#info{font-size:13px;color:#555}
+#hint{font-size:13px;color:#555}
 </style>
 </head>
 
@@ -58,9 +61,9 @@ button{background:#1565c0;color:#fff}
   <h3>📘 إدخال صفحة الدرس</h3>
   <button onclick="startCamera()">📸 استخدام الكاميرا الخلفية</button>
   <input type="file" accept="image/*" onchange="loadImage(event)">
-  <div id="info">
-    • يعمل مع الإنترنت وبدونه<br>
-    • OCR يُستخدم لاستخراج اسم الدرس فقط عند توفر الإنترنت
+  <div id="hint">
+    • النظام يدعم الإنترنت وبدونه<br>
+    • OCR يُستَخدم داخليًا ولا يُعرض النص الخام
   </div>
 </div>
 
@@ -79,8 +82,8 @@ button{background:#1565c0;color:#fff}
 <!-- الأفعال -->
 <div class="card actions" id="actions" style="display:none">
   <button onclick="prep()">📘 تحضير</button>
-  <button onclick="sim()">🧪 محاكاة واقعية</button>
-  <button onclick="obs()">📋 قوائم رصد</button>
+  <button onclick="sim()">🧪 محاكاة</button>
+  <button onclick="obs()">📋 رصد</button>
 </div>
 
 <script>
@@ -92,7 +95,6 @@ const actions=document.getElementById("actions");
 
 let lessonName="اسم الدرس";
 
-// تشغيل الكاميرا الخلفية
 function startCamera(){
   document.getElementById("cameraBox").style.display="block";
   navigator.mediaDevices.getUserMedia({
@@ -102,7 +104,6 @@ function startCamera(){
     .catch(()=>alert("تعذّر تشغيل الكاميرا الخلفية"));
 }
 
-// التقاط صورة
 function capture(){
   canvas.width=video.videoWidth;
   canvas.height=video.videoHeight;
@@ -110,7 +111,6 @@ function capture(){
   processImage();
 }
 
-// تحميل صورة
 function loadImage(e){
   const img=new Image();
   img.onload=()=>{
@@ -122,21 +122,44 @@ function loadImage(e){
   img.src=URL.createObjectURL(e.target.files[0]);
 }
 
-// المعالجة الذكية للصورة
+/* ===== الحاكم (Gatekeeper) ===== */
+
+function gatekeeper(raw){
+  if(!raw) return false;
+
+  // طول غير منطقي
+  if(raw.length > 40) return false;
+
+  // تكرار حروف مبالغ فيه
+  if(/(.)\1\1/.test(raw)) return false;
+
+  // كثرة رموز غير عربية
+  const clean = raw.replace(/[\u0600-\u06FF0-9\s]/g,"");
+  if(clean.length > raw.length * 0.3) return false;
+
+  return true;
+}
+
+function cleanTitle(t){
+  return t.replace(/[^\u0600-\u06FF0-9\s]/g,"").trim();
+}
+
 function processImage(){
   actions.style.display="none";
   lessonTitle.textContent="⏳ تحديد اسم الدرس...";
 
-  // قص أعلى 25% فقط من الصفحة
-  const cropHeight=Math.floor(canvas.height*0.25);
+  // قص أعلى 25% فقط
+  const cropH=Math.floor(canvas.height*0.25);
   const crop=document.createElement("canvas");
   crop.width=canvas.width;
-  crop.height=cropHeight;
-  crop.getContext("2d").drawImage(canvas,0,0,canvas.width,cropHeight,0,0,canvas.width,cropHeight);
+  crop.height=cropH;
+  crop.getContext("2d").drawImage(
+    canvas,0,0,canvas.width,cropH,0,0,canvas.width,cropH
+  );
 
-  // بدون إنترنت: تخطّي OCR
+  // بدون إنترنت → اسم عام
   if(!window.OCR_READY || !window.Tesseract){
-    lessonName="الدرس (بدون OCR)";
+    lessonName="هذا الدرس";
     lessonTitle.textContent="📘 "+lessonName;
     actions.style.display="block";
     return;
@@ -144,45 +167,51 @@ function processImage(){
 
   // OCR انتقائي
   Tesseract.recognize(crop,"ara").then(res=>{
-    const text=res.data.text.trim();
-    // اسم الدرس = أول سطر واضح
-    lessonName=text.split("\n")[0]||"اسم الدرس";
+    const raw = (res.data.text || "").split("\n")[0] || "";
+    const cleaned = cleanTitle(raw);
+
+    if(gatekeeper(cleaned)){
+      lessonName=cleaned;
+    }else{
+      lessonName="هذا الدرس";
+    }
+
     lessonTitle.textContent="📘 "+lessonName;
     actions.style.display="block";
   }).catch(()=>{
-    lessonName="اسم الدرس";
+    lessonName="هذا الدرس";
     lessonTitle.textContent="📘 "+lessonName;
     actions.style.display="block";
   });
 }
 
-// ===== الدعم =====
+/* ===== الدعم ===== */
 function prep(){
-alert(
+  alert(
 `تحضير مختصر – ${lessonName}
 • بداية من المثال الأول
 • مشاركة طالب واحد
 • توقّف عند الفهم`
-);
+  );
 }
 
 function sim(){
-alert(
+  alert(
 `محاكاة صفّية – ${lessonName}
 1) عرض المثال
 2) صمت
 3) محاولة
 4) انتهِ`
-);
+  );
 }
 
 function obs(){
-alert(
+  alert(
 `قوائم رصد – ${lessonName}
 ☐ حاول
 ☐ شارك
 ☐ نطق الفكرة`
-);
+  );
 }
 </script>
 
