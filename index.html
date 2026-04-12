@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>النظام السيادي الذكي الشامل لدعم المعلّم</title>
 
-<!-- ✅ تحميل OCR بالطريقة الصحيحة -->
+<!-- ✅ تحميل Tesseract بشكل صحيح -->
 https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
 <style>
@@ -25,7 +25,7 @@ body{
   font-family:Tahoma, Arial, sans-serif;
   background:var(--bg);
   color:var(--ink);
-  line-height:1.9;
+  line-height:1.8;
 }
 
 .app{
@@ -43,6 +43,7 @@ body{
 }
 
 h1{text-align:center;color:var(--main)}
+h3{margin-top:0}
 
 button,input,select{
   width:100%;
@@ -60,6 +61,7 @@ button{
 }
 
 button.ok{background:var(--ok)}
+button.warn{background:#777}
 
 .box{
   background:#fafafa;
@@ -71,6 +73,11 @@ button.ok{background:var(--ok)}
 
 .expert{border-right:6px solid var(--expert)}
 .hidden{display:none}
+
+/* وضع الصف */
+.class-mode .card:not(#lessonCard){display:none}
+.class-mode h1{display:none}
+.class-mode body{background:#fff}
 </style>
 </head>
 
@@ -82,11 +89,11 @@ button.ok{background:var(--ok)}
 
 <div class="card">
   <h3>📘 إدراج صفحة الدرس</h3>
-  <input type="file" accept="image/*" id="imageInput">
+  <input type="file" id="fileInput" accept="image/*">
   <div id="status" class="box">— بانتظار رفع الصورة —</div>
 </div>
 
-<div class="card hidden" id="controls">
+<div class="card hidden" id="lessonCard">
   <label>مدة الحصّة</label>
   <select id="duration">
     <option value="30">٣٠ دقيقة</option>
@@ -94,7 +101,9 @@ button.ok{background:var(--ok)}
     <option value="45">٤٥ دقيقة</option>
   </select>
 
-  <button class="ok" id="startBtn">▶ ابدأ الحصّة الآن (أقل جهد)</button>
+  <button class="ok" id="startBtn">▶ ابدأ الحصّة (أقل جهد)</button>
+  <button class="warn" onclick="enterClassMode()">🎯 وضع الصف</button>
+  <button class="warn" onclick="smartSilence()">🛑 لا تقترح شيئًا</button>
 
   <div id="prep" class="box"></div>
   <div id="sim" class="box"></div>
@@ -106,42 +115,41 @@ button.ok{background:var(--ok)}
 
 <script>
 const statusBox = document.getElementById("status");
-const controls = document.getElementById("controls");
-const imageInput = document.getElementById("imageInput");
+const fileInput = document.getElementById("fileInput");
+const lessonCard = document.getElementById("lessonCard");
 const duration = document.getElementById("duration");
 const prep = document.getElementById("prep");
 const sim = document.getElementById("sim");
 const expertBox = document.getElementById("expertBox");
 const support = document.getElementById("support");
+const startBtn = document.getElementById("startBtn");
 
-let imageFile = null;
 let extractedText = "";
-let coreQuestion = "ماذا لاحظت؟";
 let lessonType = "استكشاف";
+let coreQuestion = "ماذا لاحظت؟";
 let attempts = 0;
 let startTime = 0;
 
-imageInput.addEventListener("change", loadImage);
-document.getElementById("startBtn").addEventListener("click", startLesson);
+fileInput.addEventListener("change", handleImage);
+startBtn.addEventListener("click", startLesson);
 
-function loadImage(e){
-  imageFile = e.target.files[0];
-  if(!imageFile) return;
+async function handleImage(){
+  const file = fileInput.files[0];
+  if(!file) return;
+
   statusBox.textContent = "🔍 جارٍ قراءة الصفحة…";
-  readImage();
-}
 
-async function readImage(){
   try{
-    const result = await Tesseract.recognize(imageFile,"ara");
+    const result = await Tesseract.recognize(file,"ara");
     extractedText = result.data.text || "";
     statusBox.textContent = "✅ تم استخراج النص من الصفحة";
   }catch(e){
     extractedText = "";
-    statusBox.textContent = "⚠️ تعذّر الاستخراج – استخدام خطة آمنة";
+    statusBox.textContent = "⚠️ تعذّر الاستخراج – سنكمل بطريقة آمنة";
   }
+
   analyzeText();
-  controls.classList.remove("hidden");
+  lessonCard.classList.remove("hidden");
 }
 
 function analyzeText(){
@@ -160,47 +168,50 @@ function analyzeText(){
 function startLesson(){
   attempts = 1;
   startTime = Date.now();
-  const mins = parseInt(duration.value,10);
 
   prep.textContent =
-`📘 التحضير التنفيذي المبني على الصفحة:
+`📘 التحضير التنفيذي:
 
 نوع الدرس: ${lessonType}
 
-ما يقوله المعلم حرفيًا:
+ما يقوله المعلّم حرفيًا:
 "انظروا إلى الصفحة."
 ثم:
 «${coreQuestion}»
-صمت ٣٠ ثانية.
-محاولة طالب واحد فقط.
-توقّف عند الفهم.`;
-
-  sim.textContent =
-`🎬 المحاكاة الصفّية الواقعية:
-
-عرض المحتوى كما هو.
-سؤال من نفس النص.
 صمت.
 محاولة واحدة.
-تثبيت بجملة قصيرة.
+توقّف.`;
+
+  sim.textContent =
+`🎬 المحاكاة الصفّية:
+عرض المحتوى كما هو.
+سؤال واحد.
+صمت.
+تثبيت.
 إنهاء.`;
 
   expertBox.textContent =
-`🧠 الخبير التربوي:
+`🧠 توصية الخبير:
 لا تُضِف شيئًا خارج الصفحة.
-الصمت هنا يعمل.
-الإنهاء المبكر جودة تربوية.`;
+الإنهاء المبكر جودة.`;
 
   support.textContent =
-`📊 الدعم الكمي والنوعي والسلوكي:
+`📊 الدعم:
 عدد المحاولات: ${attempts}
 الزمن التقريبي: ${Math.round((Date.now()-startTime)/60000)} دقيقة
 
-الوصف النوعي:
-"محاولة واحدة مستقلة – أداء مناسب."
-
-التوصية السلوكية:
 جملة رحيمة واحدة ثم التوقّف.`;
+}
+
+function smartSilence(){
+  prep.textContent = "✅ الصف يعمل.";
+  sim.textContent = "";
+  expertBox.textContent = "";
+  support.textContent = "";
+}
+
+function enterClassMode(){
+  document.body.classList.toggle("class-mode");
 }
 </script>
 
