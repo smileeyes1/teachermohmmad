@@ -100,18 +100,17 @@ input,textarea{
   text-align:center;
 }
 
-/* ====== الطباعة ====== */
+/* ===== الطباعة ===== */
 @media print{
   body{background:#fff}
-  button,.actions,.footer{display:none!important}
+  .actions,button,.footer{display:none!important}
   .card{box-shadow:none}
 }
 
-/* ====== موبايل ====== */
+/* ===== الهاتف ===== */
 @media (max-width:600px){
   h1{font-size:1.4rem}
   h2{font-size:1.2rem}
-  button{min-height:56px}
 }
 </style>
 </head>
@@ -154,7 +153,7 @@ input,textarea{
 
   <div class="actions">
     <button class="btn-secondary" onclick="lockPrep()">اعتماد التحضير</button>
-    <button class="btn-ghost" onclick="printPrep()">طباعة</button>
+    <button class="btn-ghost" onclick="window.print()">طباعة</button>
   </div>
 
   <p id="prepMsg" class="hidden">✅ التحضير جاهز.</p>
@@ -203,10 +202,6 @@ function lockPrep(){
 function log(text){
   lessonLog.textContent=text;
   lessonLog.classList.remove("hidden");
-}
-
-function printPrep(){
-  window.print();
 }
 </script>
 
