@@ -6,7 +6,7 @@
 <title>الخبير التربوي المرافق — تنفيذ الحصّة</title>
 
 <!-- OCR -->
-https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <style>
 :root{
@@ -25,6 +25,7 @@ button:disabled{opacity:.5}
 .box{background:var(--soft);padding:16px;border-radius:14px;white-space:pre-wrap}
 .progress{height:10px;background:#ddd;border-radius:8px;overflow:hidden}
 .progress span{display:block;height:100%;width:0;background:var(--main)}
+.small{text-align:center;font-size:13.5px;color:#666}
 </style>
 </head>
 
@@ -33,33 +34,37 @@ button:disabled{opacity:.5}
 
 <div class="card">
 <h1>الخبير التربوي المرافق</h1>
+<p class="small">فكرة واحدة • صمت • محاولة • إغلاق</p>
 </div>
 
 <div class="card">
-<h3>اسم الدرس</h3>
-<input id="lessonName">
+<h3>📘 اسم الدرس</h3>
+<input id="lessonName" placeholder="مثال: الجمع حتى ١٠">
 <button id="confirmBtn" class="ok">تأكيد</button>
 </div>
 
 <div class="card hidden" id="uploadCard">
-<input type="file" id="fileInput" multiple accept=".pdf,image/*">
+<h3>📂 صفحات الدرس</h3>
+<input type="file" id="fileInput" multiple accept="image/*,.pdf">
+<p class="small">📌 يُفضَّل رفع صور الصفحات لضمان دقة القراءة</p>
 <div class="progress"><span id="bar"></span></div>
-<button id="startBtn" class="ok" disabled>ابدأ القراءة</button>
+<button id="startBtn" class="ok" disabled>ابدأ القراءة المركّزة</button>
 </div>
 
 <div class="card">
-<h3>النص المركّز</h3>
-<div id="rawText" class="box"></div>
+<h3>📝 النص المركّز</h3>
+<div id="rawText" class="box">— في الانتظار —</div>
 </div>
 
 <div class="card">
-<h3>التحضير</h3>
+<h3>🧭 التحضير التنفيذي</h3>
 <div id="prep" class="box"></div>
 <button id="buildBtn" class="ok" disabled>إنشاء التحضير</button>
+<button class="ok" onclick="copyText('prep')">📋 نسخ التحضير</button>
 </div>
 
 <div class="card">
-<h3>وضع الحصّة</h3>
+<h3>🚦 وضع الحصّة</h3>
 <button id="closeBtn" class="ok hidden">نُطقت الفكرة — أُغلقت الحصّة</button>
 <div id="log" class="box"></div>
 </div>
@@ -67,12 +72,13 @@ button:disabled{opacity:.5}
 </div>
 
 <script>
-let lesson="",text="";
+let lesson="",extractedText="";
 
 const lessonMap={
 "جمع":"كم أصبح لدينا؟",
 "طرح":"كم تبقّى؟",
-"حرف":"أين نسمع الحرف؟"
+"حرف":"أين نسمع هذا الحرف؟",
+"عدد":"كم نرى؟"
 };
 
 const confirmBtn=document.getElementById("confirmBtn");
@@ -95,27 +101,57 @@ confirmBtn.disabled=true;
 
 fileInput.onchange=()=>startBtn.disabled=!fileInput.files.length;
 
+function focusText(text,key){
+const keys=key.split(" ").filter(w=>w.length>٢);
+return text.split("\n").filter(line=>keys.some(k=>line.includes(k))).join("\n");
+}
+
 startBtn.onclick=async()=>{
-text="";
+extractedText="";
+bar.style.width="5%";
 for(let i=0;i<fileInput.files.length;i++){
+try{
 const r=await Tesseract.recognize(fileInput.files[i],"ara");
-text+=r.data.text;
+extractedText+=r.data.text+"\n";
+}catch{
+extractedText+="[تعذّر قراءة هذه الصفحة]\n";
+}
 bar.style.width=Math.round((i+1)/fileInput.files.length*100)+"%";
 }
-rawText.textContent=text.includes(lesson)?text:"⚠ لم يظهر نص واضح للدرس.";
+const focused=focusText(extractedText,lesson);
+rawText.textContent=focused||"⚠ لم يظهر نص واضح متعلق بالدرس.";
 buildBtn.disabled=false;
 };
 
 buildBtn.onclick=()=>{
-const q=Object.keys(lessonMap).find(k=>lesson.includes(k));
-prep.textContent=`درس: ${lesson}\nالسؤال: ${lessonMap[q]||"ماذا نلاحظ؟"}\nصمت واعٍ → محاولة → تثبيت → إغلاق`;
+const key=Object.keys(lessonMap).find(k=>lesson.includes(k));
+prep.textContent=
+`التحضير التنفيذي
+درس: ${lesson}
+
+السؤال المحوري:
+${lessonMap[key]||"ماذا نلاحظ؟"}
+
+التسلسل:
+١) عرض هادئ
+٢) صمت واعٍ
+٣) محاولة
+٤) تثبيت
+٥) إغلاق مهني`;
 closeBtn.classList.remove("hidden");
 };
 
 closeBtn.onclick=()=>{
 log.textContent="✅ نُطقت الفكرة — أُغلقت الحصّة\n⛔ يُمنع أي شرح إضافي";
+buildBtn.disabled=true;
+startBtn.disabled=true;
 closeBtn.disabled=true;
 };
+
+function copyText(id){
+const t=document.getElementById(id).innerText;
+navigator.clipboard.writeText(t);
+}
 </script>
 
 </body>
