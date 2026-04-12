@@ -3,20 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الخبير التربوي المرافق — المنهاج الفلسطيني</title>
+<title>الخبير التربوي المرافق — قراءة دقيقة + 3 صور</title>
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <style>
-:root{
-  --main:#0d47a1;
-  --ok:#2e7d32;
-  --warn:#455a64;
-  --bg:#f4f6f8;
-  --card:#ffffff;
-  --ink:#222;
-  --soft:#e3f2fd;
-}
+:root{--main:#0d47a1;--ok:#2e7d32;--warn:#455a64;--bg:#f4f6f8;--card:#ffffff;--ink:#222;--soft:#e3f2fd}
 *{box-sizing:border-box}
 body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.85}
 .app{max-width:1000px;margin:auto;padding:16px}
@@ -43,22 +35,22 @@ button:disabled{opacity:.6;cursor:not-allowed}
 <div class="header">
   <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
   <h1>الخبير التربوي المرافق</h1>
-  <p class="small">المنهاج الفلسطيني • الصف الأول والثاني • تحضير واقعي قابل للتنفيذ</p>
+  <p class="small">المنهاج الفلسطيني • قراءة دقيقة للصور • رفع/تصوير 3 صور معاً</p>
 </div>
 
 <div class="card">
-  <h3>📷 التصوير المباشر بالكاميرا</h3>
-  <button id="cameraBtn" class="ok">📸 افتح الكاميرا وصوّر الصفحة</button>
-  <button id="galleryBtn" class="ghost">📁 اختيار صورة من المعرض</button>
-  <input id="fileInput" type="file" accept="image/*" style="display:none">
+  <h3>📷 تصوير أو رفع حتى 3 صور</h3>
+  <button id="cameraBtn" class="ok">📸 افتح الكاميرا وصوّر (يمكن تكرار)</button>
+  <button id="galleryBtn" class="ghost">📁 رفع صور من المعرض (حتى 3)</button>
+  <input id="fileInput" type="file" accept="image/*" multiple style="display:none">
   
-  <p class="small">حد أقصى: ٣ صور — يتم ضغطها تلقائياً</p>
+  <p class="small">نصيحة لدقة عالية: صوّر في إضاءة جيدة، حافظ على استقامة الصفحة</p>
   
   <div class="badges" id="pages"></div>
   <div class="progress"><span id="bar"></span></div>
-  <div id="status" class="box">— بانتظار التصوير —</div>
+  <div id="status" class="box">— بانتظار الصور —</div>
   
-  <button id="startBtn" class="ok" disabled>ابدأ القراءة والتحليل المنهاجي</button>
+  <button id="startBtn" class="ok" disabled>ابدأ المعالجة الدقيقة والقراءة</button>
 </div>
 
 <div class="card">
@@ -66,7 +58,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
   <div id="idea" class="box">🔹 الفكرة ستظهر هنا</div>
   <div id="question" class="box">❓ السؤال سيظهر هنا</div>
   <div id="prep" class="box"></div>
-  <button id="buildBtn" class="ok" disabled>أنشئ التحضير الواقعي القابل للتنفيذ</button>
+  <button id="buildBtn" class="ok" disabled>أنشئ التحضير الواقعي العميق</button>
 </div>
 
 <div class="card">
@@ -98,7 +90,7 @@ let isClosed = false;
 let currentIdea = "";
 let currentQuestion = "";
 
-// ================== فتح الكاميرا ==================
+// ================== فتح الكاميرا (يمكن تكرار التصوير) ==================
 cameraBtn.onclick = () => {
   if (isClosed) return;
   const tempInput = document.createElement("input");
@@ -108,7 +100,7 @@ cameraBtn.onclick = () => {
   tempInput.style.display = "none";
   tempInput.onchange = e => {
     if (e.target.files.length > 0) {
-      images = Array.from(e.target.files).slice(0, 3);
+      images = images.concat(Array.from(e.target.files)).slice(0, 3); // الحفاظ على حد 3
       updateUI();
     }
   };
@@ -130,76 +122,93 @@ function updateUI() {
     span.textContent = `صورة ${i+1}`;
     pagesContainer.appendChild(span);
   });
-  statusBox.textContent = `✅ تم اختيار ${images.length} صورة`;
-  startBtn.disabled = false;
+  statusBox.textContent = `✅ تم اختيار ${images.length} صورة — جاهز للمعالجة الدقيقة`;
+  startBtn.disabled = images.length === 0;
 }
 
-// ================== ضغط + OCR ==================
-async function compressImage(file) {
+// ================== معالجة متقدمة لتحسين الدقة (Grayscale + Contrast + Binarization) ==================
+async function preprocessImage(file) {
   return new Promise(resolve => {
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement("canvas");
-      const scale = Math.min(1100 / img.width, 1);
+      const ctx = canvas.getContext("2d", {willReadFrequently: true});
+
+      // تصغير ذكي إلى حجم مثالي لـ OCR (حوالي 300-400 DPI فعال)
+      let scale = Math.min(1200 / Math.max(img.width, img.height), 1.3);
       canvas.width = img.width * scale;
       canvas.height = img.height * scale;
-      canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(b => resolve(b), "image/jpeg", 0.72);
+
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // معالجة متقدمة: Grayscale + زيادة التباين + Binarization
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        let gray = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+        gray = Math.min(255, Math.max(0, gray * 1.2 - 30)); // زيادة التباين
+        const binary = gray > 110 ? 255 : 0; // Binarization محسنة
+        data[i] = data[i+1] = data[i+2] = binary;
+      }
+      ctx.putImageData(imageData, 0, 0);
+
+      canvas.toBlob(blob => resolve(blob), "image/jpeg", 0.92);
     };
     img.src = URL.createObjectURL(file);
   });
 }
 
+// ================== تهيئة Tesseract ==================
 async function initWorker() {
   if (worker) return;
-  statusBox.textContent = "⏳ جارٍ تحميل محرك القراءة...";
-  worker = await Tesseract.createWorker('ara', 1);
+  statusBox.textContent = "⏳ جارٍ تحميل محرك القراءة الدقيق...";
+  worker = await Tesseract.createWorker('ara', 1, {
+    logger: m => {
+      if (m.status === 'recognizing text') {
+        bar.style.width = Math.round(m.progress * 100) + "%";
+      }
+    }
+  });
 }
 
 startBtn.onclick = async () => {
   if (images.length === 0 || isClosed) return;
   bar.style.width = "5%";
-  statusBox.textContent = "🔍 جارٍ قراءة الصور وتحليلها حسب المنهاج الفلسطيني...";
+  statusBox.textContent = "🔍 جارٍ تحسين الصور وقراءتها بدقة عالية...";
   startBtn.disabled = true;
 
   await initWorker();
   ocrText = "";
 
   for (let i = 0; i < images.length; i++) {
-    const blob = await compressImage(images[i]);
-    const result = await worker.recognize(blob);
-    ocrText += result.data.text + "\n\n";
+    const processedBlob = await preprocessImage(images[i]);
+    const result = await worker.recognize(processedBlob);
+    ocrText += (result.data.text || "") + "\n\n";
     bar.style.width = Math.round(((i+1)/images.length)*100) + "%";
   }
 
   bar.style.width = "100%";
-  statusBox.textContent = "✅ انتهت القراءة — اضغط أنشئ التحضير الواقعي";
+  statusBox.textContent = "✅ انتهت القراءة الدقيقة للـ 3 صور — النص مستخرج بنجاح";
   buildBtn.disabled = false;
-  analyzeRealisticLesson();
+  analyzeDeepRealistic();
 };
 
-// ================== تحليل واقعي عميق للمنهاج الفلسطيني ==================
-function analyzeRealisticLesson() {
+// ================== تحليل ذكي يعتمد على الصور ==================
+function analyzeDeepRealistic() {
   const text = ocrText.toLowerCase().trim();
-  let idea = "استكشاف المحتوى المرئي وتنمية الملاحظة";
-  let q = "ماذا ترى في الصورة أمامك؟";
+  let idea = "تنمية الملاحظة البصرية والتفاعل مع المحتوى";
+  let q = "ماذا تلاحظ في الصفحات أمامك؟";
 
-  // تحليل أعمق حسب محتوى الصورة
-  if (/عدد|واحد|اثنان|ثلاثة|جمع|طرح|احسب|مثلث|دائرة|مربع|شكل/.test(text)) {
-    idea = "تنمية مفهوم العد والجمع والأشكال الهندسية من خلال الملاحظة البصرية";
-    q = "كم عدد الأشياء التي تراها في الصورة؟ كيف نجمعها معاً؟";
-  } 
-  else if (/حرف|كلمة|الألف|الباء|قصة|لغتنا|جميلة/.test(text)) {
+  if (/جمع|طرح|احسب|عدد|مثلث|دائرة|مربع/.test(text)) {
+    idea = "ربط العمليات الحسابية والأشكال بالصور المرئية (منهاج الرياضيات الفلسطيني)";
+    q = "كم عدد العناصر التي تراها؟ كيف نجمعها أو نطرح منها؟";
+  } else if (/حرف|كلمة|قصة|لغتنا الجميلة/.test(text)) {
     idea = "تعلم الحروف والكلمات من خلال ربطها بالصور (كتاب لغتنا الجميلة)";
-    q = "ما الحرف الذي تراه؟ ما الكلمة التي تبدأ بهذا الحرف؟";
-  } 
-  else if (/نبات|حيوان|شجرة|ورد|فلسطين|وطن|علم|بيت/.test(text)) {
-    idea = "ربط الملاحظة بالبيئة الفلسطينية والتربية الوطنية والحياتية";
-    q = "كيف يساعد هذا النبات أو الحيوان في حياتنا في فلسطين؟";
-  } 
-  else {
-    idea = "تنمية مهارة الملاحظة والتفكير الناقد من خلال الصورة";
-    q = "ما الذي يلفت انتباهك أكثر في هذه الصورة ولماذا؟";
+    q = "ما الحرف أو الكلمة التي تراها في الصفحة؟ كيف نستخدمها؟";
+  } else if (/نبات|حيوان|فلسطين|وطن/.test(text)) {
+    idea = "ربط الملاحظة بالبيئة والتربية الوطنية الفلسطينية";
+    q = "كيف يرتبط ما نراه في الصور بحياتنا في فلسطين؟";
   }
 
   currentIdea = idea;
@@ -211,50 +220,33 @@ function analyzeRealisticLesson() {
 
 buildBtn.onclick = () => {
   if (isClosed) return;
-  
   const prepHTML = `
 <strong>التحضير التنفيذي الواقعي — المنهاج الفلسطيني</strong><br><br>
-
-<strong>الفكرة الرئيسية للحصة:</strong><br>
-${currentIdea}<br><br>
-
-<strong>السؤال التوجيهي الرئيسي:</strong><br>
-${currentQuestion}<br><br>
-
-<strong>أهداف الحصة (من المنهاج الفلسطيني):</strong><br>
-• تنمية مهارة الملاحظة البصرية.<br>
-• ربط المحتوى المرئي بالمفاهيم الدراسية.<br>
-• تشجيع التفاعل والمشاركة الإيجابية.<br>
-• تعزيز الثقة بالنفس من خلال التعبير عن الرأي.<br><br>
-
-<strong>سيناريو الحصة الواقعي (خطوة بخطوة):</strong><br>
-1. التحية والتركيز: "صباح الخير أيها الأطفال، اليوم سنكتشف معاً شيئاً جميلاً من خلال الصور."<br>
-2. عرض الصور: "انظروا جيداً إلى الصور أمامكم... ماذا ترون؟"<br>
-3. طرح السؤال الرئيسي: ${currentQuestion}<br>
-4. [ صمت واعٍ — ١٥ إلى ٢٥ ثانية ] — أترك الطلاب يفكرون بهدوء.<br>
-5. المشاركة: دع الطلاب يتحدثون واحداً تلو الآخر (محاولة واحدة لكل طالب).<br>
-6. التلخيص والإغلاق: "ممتاز! لقد اكتشفنا اليوم أن... (أعيد الفكرة بكلمات الطلاب). هذا ما تعلمناه اليوم."<br>
-7. الختام: "شكراً لكم على التركيز والمشاركة. انتهت الحصة."<br><br>
-
-<strong>نصائح تنفيذية عملية للمعلم:</strong><br>
-• استخدم نبرة صوت هادئة ومشجعة.<br>
-• ابتسم وانظر إلى أعين الطلاب.<br>
-• إذا سكت الطلاب، أعد السؤال بطريقة أبسط.<br>
-• لا تصحح الأخطاء بقسوة، ركز على الجهد والمشاركة.<br>
-• احرص على أن يشارك أكبر عدد ممكن من الطلاب خلال الـ ٣٠-٤٠ دقيقة.
+<strong>الفكرة المستخلصة من الصور:</strong><br>${currentIdea}<br><br>
+<strong>السؤال التوجيهي:</strong><br>${currentQuestion}<br><br>
+<strong>أهداف الحصة:</strong><br>
+• تنمية الملاحظة الدقيقة.<br>
+• ربط النص بالفهم.<br>
+• تشجيع المشاركة الإيجابية.<br><br>
+<strong>سيناريو الحصة (خطوة بخطوة):</strong><br>
+1. الافتتاح: تحية + عرض الصور.<br>
+2. طرح السؤال: ${currentQuestion}<br>
+3. [صمت واعٍ ١٥-٢٥ ثانية].<br>
+4. مشاركة الطلاب (محاولة واحدة لكل طالب).<br>
+5. تلخيص + إغلاق الحصة بهدوء.<br><br>
+<strong>نصائح عملية:</strong><br>
+• تحدث بهدوء وابتسم.<br>
+• شجع الطلاب الخجولين.<br>
+• ركز على الجهد لا على الكمال.
   `;
-
   document.getElementById("prep").innerHTML = prepHTML;
-  statusBox.textContent = "✅ تم إنشاء التحضير الواقعي العميق القابل للتنفيذ";
+  statusBox.textContent = "✅ تم إنشاء التحضير الواقعي";
 };
 
-function support(msg) { 
-  if (!isClosed) document.getElementById("support").textContent = msg; 
-}
-
+function support(msg) { if (!isClosed) document.getElementById("support").textContent = msg; }
 function closeSession() {
   isClosed = true;
-  statusBox.textContent = "✅ تم إغلاق الحصة — لا يمكن إضافة محتوى جديد";
+  statusBox.textContent = "✅ تم إغلاق الحصة";
   startBtn.disabled = buildBtn.disabled = true;
 }
 </script>
