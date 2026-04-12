@@ -8,7 +8,7 @@
 <!-- ✅ تحميل صحيح ومفحوص لـ Tesseract.js -->
 https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
-<!-- ✅ سياسة أمان مدروسة (CSP) -->
+<!-- ✅ سياسة أمان (CSP) متوافقة مع OCR -->
 <meta http-equiv="Content-Security-Policy"
 content="
 default-src 'self';
@@ -32,64 +32,26 @@ base-uri 'none';
   --soft:#e3f2fd;
 }
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Tahoma,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-  line-height:1.8;
-}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.8}
 .app{max-width:1200px;margin:auto;padding:16px}
-.header{
-  background:var(--card);
-  padding:18px;
-  border-radius:16px;
-  box-shadow:0 6px 20px rgba(0,0,0,.08);
-  margin-bottom:16px;
-  text-align:center;
-}
+.header{background:var(--card);padding:18px;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.08);margin-bottom:16px;text-align:center}
 .header p{margin:0}
 .header h1{margin:6px 0;color:var(--main);font-size:1.4em}
 
-.card{
-  background:var(--card);
-  padding:16px;
-  border-radius:14px;
-  box-shadow:0 6px 20px rgba(0,0,0,.08);
-  margin-bottom:16px;
-}
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
-}
+.card{background:var(--card);padding:16px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.08);margin-bottom:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:900px){.grid{grid-template-columns:1fr}}
 
-button,input,select,textarea{
-  width:100%;
-  padding:12px;
-  margin-top:8px;
-  border-radius:12px;
-  border:none;
-  font-size:15px;
-}
+button,input,select,textarea{width:100%;padding:12px;margin-top:8px;border-radius:12px;border:none;font-size:15px}
 button{background:var(--main);color:#fff;cursor:pointer}
 button.ok{background:var(--ok)}
 button.warn{background:var(--warn)}
 button.ghost{background:#eef2f7;color:#111}
 button:disabled{opacity:.6}
 
-.box{
-  background:var(--soft);
-  border-radius:12px;
-  padding:12px;
-  margin-top:10px;
-  white-space:pre-wrap;
-}
-
+.box{background:var(--soft);border-radius:12px;padding:12px;margin-top:10px;white-space:pre-wrap}
 .progress{height:8px;background:#e5e7eb;border-radius:8px;overflow:hidden}
 .progress span{display:block;height:100%;width:0%;background:var(--main);transition:width .2s}
-
 .small{font-size:13px;color:var(--muted)}
 
 @media print{
@@ -98,9 +60,7 @@ button:disabled{opacity:.6}
   .card{box-shadow:none}
 }
 
-body.class-mode{
-  background:#fff;
-}
+body.class-mode{background:#fff}
 body.class-mode .card:not(#liveCard){display:none}
 body.class-mode .header{display:none}
 </style>
@@ -116,7 +76,7 @@ body.class-mode .header{display:none}
 
   <div class="grid">
     <div class="card">
-      <h3>📷 إدخال صور الدرس</h3>
+      <h3>📷 إدخال صور الدرس (صور فقط — حدّ أقصى ٢ م.ب للصورة)</h3>
       <input type="file" id="fileInput" accept="image/*" multiple>
       <div class="progress"><span id="bar"></span></div>
       <div id="imgStatus" class="box">— بانتظار الصور —</div>
@@ -154,17 +114,15 @@ body.class-mode .header{display:none}
       <input id="studentName" placeholder="اسم الطالب">
       <button class="ok" id="addStudent">إضافة</button>
       <div id="students" class="box"></div>
-      <p class="small">
-        الرصد وصفي لحظي غير تشخيصي.
-      </p>
+      <p class="small">هذا الرصد وصفي لحظي غير تشخيصي.</p>
     </div>
 
     <div class="card" id="liveCard">
       <h3>🖨️ الدعم والطباعة</h3>
       <button class="ok" onclick="window.print()">طباعة</button>
-      <button class="warn" onclick="smartSilence()">صمت مهني</button>
-      <button class="ghost" onclick="closeIdea()">أُغلِقت الفكرة</button>
-      <button class="ghost" onclick="toggleClass()">وضع الصف</button>
+      <button class="warn" onclick="smartSilence()">🛑 صمت مهني</button>
+      <button class="ghost" onclick="closeIdea()">✅ أُغلِقت الفكرة</button>
+      <button class="ghost" onclick="toggleClass()">🎯 وضع الصف</button>
       <div id="support" class="box"></div>
     </div>
   </div>
@@ -172,45 +130,35 @@ body.class-mode .header{display:none}
 
 <script>
 const $=id=>document.getElementById(id);
-const fileInput=$("fileInput");
-const bar=$("bar");
-const imgStatus=$("imgStatus");
-const startOCR=$("startOCR");
-const retryOCR=$("retryOCR");
-const ocrStatus=$("ocrStatus");
-const prep=$("prep");
-const sim=$("sim");
-const studentsBox=$("students");
+const fileInput=$("fileInput"), bar=$("bar"), imgStatus=$("imgStatus");
+const startOCR=$("startOCR"), retryOCR=$("retryOCR"), ocrStatus=$("ocrStatus");
+const prep=$("prep"), sim=$("sim"), studentsBox=$("students");
 
 let images=[], text="";
 
 fileInput.onchange=()=>{
-  images=[...fileInput.files].filter(f=>f.type.startsWith("image/")&&f.size<=2*1024*1024);
+  images=[...fileInput.files].filter(f=>f.type.startsWith("image/") && f.size<=2*1024*1024);
   imgStatus.textContent=images.length?`✅ تم إدخال ${images.length} صورة.`:"⚠️ صور غير صالحة.";
   startOCR.disabled=!images.length;
 };
 
 async function runOCR(){
-  text="";
-  bar.style.width="5%";
+  text=""; bar.style.width="5%";
   for(let i=0;i<images.length;i++){
     try{
       const res=await Tesseract.recognize(images[i],"ara",{logger:m=>{
-        if(m.progress!=null){
-          bar.style.width=Math.round((i+m.progress)/images.length*90)+"%";
-        }
+        if(m.progress!=null){bar.style.width=Math.round((i+m.progress)/images.length*90)+"%";}
       }});
       text+=res.data.text+" ";
     }catch(e){}
   }
   bar.style.width="100%";
   text=text.trim();
-  ocrStatus.textContent=text? "✅ تمت القراءة." : "⚠️ تعذّر الاستخراج — العمل من الصورة.";
+  ocrStatus.textContent=text? "✅ تمت القراءة بنجاح." : "⚠️ تعذّر الاستخراج — سيُدار الدرس من الصورة.";
   $("buildPrep").disabled=false;
   retryOCR.disabled=false;
 }
-startOCR.onclick=runOCR;
-retryOCR.onclick=runOCR;
+startOCR.onclick=runOCR; retryOCR.onclick=runOCR;
 
 function analyze(t){
   if(/جمع|طرح|احسب/.test(t)) return ["رياضيات","كيف توصّلت للحل؟"];
@@ -220,34 +168,25 @@ function analyze(t){
 
 $("buildPrep").onclick=()=>{
   const [type,q]=analyze(text);
-  prep.textContent=
-`📘 نوع الدرس: ${type}
+  prep.textContent=`📘 نوع الدرس: ${type}
 النص الحرفي:
 "انظروا إلى الصفحة."
 «${q}»
 صمت.
 النمط: ${$("mode").value} | المدة: ${$("duration").value}`;
-  sim.textContent=
-`🎬 سيناريو واقعي:
-بداية → صمت → تردد → محاولة → نطق → إغلاق.`;
+  sim.textContent=`🎬 محاكاة واقعية:
+بداية → صمت → تردّد → محاولة → نطق → إغلاق.`;
 };
 
 $("addStudent").onclick=()=>{
-  const n=$("studentName").value.trim();
-  if(!n) return;
-  studentsBox.textContent+=`• ${n} : حاول □ | تردد □ | نطق □ | احتاج دعم □\n`;
+  const n=$("studentName").value.trim(); if(!n) return;
+  studentsBox.textContent+=`• ${n} : حاول □ | تردّد □ | نطق □ | احتاج دعم □\n`;
   $("studentName").value="";
 };
 
-function smartSilence(){
-  $("support").textContent="🛑 صمت مهني مُدار.";
-}
-function closeIdea(){
-  $("support").textContent="✅ نُطقت الفكرة — أُغلقت الحصة.";
-}
-function toggleClass(){
-  document.body.classList.toggle("class-mode");
-}
+function smartSilence(){ $("support").textContent="🛑 صمت مهني مُدار."; }
+function closeIdea(){ $("support").textContent="✅ نُطقت الفكرة — أُغلِقت الحصّة."; }
+function toggleClass(){ document.body.classList.toggle("class-mode"); }
 </script>
 </body>
 </html>
