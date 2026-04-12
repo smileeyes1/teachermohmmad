@@ -6,14 +6,16 @@
 <title>النظام السيادي الذكي الشامل لدعم المعلّم</title>
 
 <!-- ✅ تحميل صحيح ومحمي لـ Tesseract.js -->
-https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
+https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js</script>
 
-<!-- ✅ سياسة أمان مقتصدة -->
+<!-- ✅ سياسة أمان مقتصدة لكن صالحة لـ OCR -->
 <meta http-equiv="Content-Security-Policy"
       content="
         default-src 'self';
-        img-src 'self' data:;
-        script-src 'self' https://cdn.jsdelivr.net;
+        img-src 'self' data: blob:;
+        script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval';
+        worker-src 'self' blob: https://cdn.jsdelivr.net;
+        connect-src 'self' https://cdn.jsdelivr.net;
         style-src 'self' 'unsafe-inline';
         base-uri 'none';
       ">
@@ -86,14 +88,12 @@ button:disabled{opacity:.6;cursor:not-allowed}
 .expert{border-right:6px solid var(--expert)}
 .hidden{display:none}
 
-/* ✅ وضع الصف */
 body.class-mode{
   background:#fff;
 }
 body.class-mode .card:not(#lessonCard){display:none}
 body.class-mode h1{display:none}
 
-/* ✅ مؤشّر تقدّم صامت */
 .progress{
   height:8px;
   border-radius:8px;
@@ -112,7 +112,6 @@ body.class-mode h1{display:none}
 </head>
 
 <body>
-
 <div class="app">
 
 <h1>النظام السيادي الذكي الشامل</h1>
@@ -127,9 +126,9 @@ body.class-mode h1{display:none}
 <div class="card hidden" id="lessonCard">
   <label for="duration">مدة الحصّة</label>
   <select id="duration">
-    <option value="٣٠">٣٠ دقيقة</option>
-    <option value="٤٠">٤٠ دقيقة</option>
-    <option value="٤٥">٤٥ دقيقة</option>
+    <option value="30">٣٠ دقيقة</option>
+    <option value="40">٤٠ دقيقة</option>
+    <option value="45">٤٥ دقيقة</option>
   </select>
 
   <button class="ok" id="startBtn" disabled>▶ ابدأ الحصّة (أقل جهد)</button>
@@ -145,15 +144,11 @@ body.class-mode h1{display:none}
 </div>
 
 <script>
-/* ═══════════════════════════════
-   الحارس التشغيلي السيادي
-   ═══════════════════════════════ */
 window.addEventListener("error", ()=>{
   const s=document.getElementById("status");
   if(s) s.textContent="⚠️ حدث خلل غير مؤذٍ — استخدم الصفحة كما هي وسؤال واحد كافٍ.";
 });
 
-/* ✅ حارس الجاهزية */
 document.addEventListener("DOMContentLoaded", ()=>{
   const status=document.getElementById("status");
   if(typeof window.Tesseract==="undefined"){
@@ -161,16 +156,13 @@ document.addEventListener("DOMContentLoaded", ()=>{
   }
 });
 
-/* ═══════════════════════════════
-   المنطق التنفيذي
-   ═══════════════════════════════ */
 const $=id=>document.getElementById(id);
 const state={
   text:"",
   lessonType:"استكشاف",
   coreQuestion:"ماذا لاحظت؟",
-  attempts:٠,
-  startTime:٠
+  attempts:0,
+  startTime:0
 };
 
 const fileInput=$("fileInput"), status=$("status"), lessonCard=$("lessonCard");
@@ -185,18 +177,18 @@ function normalizeArabic(t){
 }
 
 function validImage(f){
-  return f && /^image\//.test(f.type) && f.size<=٥*١٠٢٤*١٠٢٤;
+  return f && /^image\//.test(f.type) && f.size <= 5 * 1024 * 1024;
 }
 
 async function handleImage(){
-  const file=fileInput.files[٠];
+  const file=fileInput.files[0];
   if(!validImage(file)){
     status.textContent="⚠️ ملف غير صالح — صورة فقط وبحجم آمن.";
     return;
   }
 
   status.textContent="🔍 جارٍ قراءة الصفحة…";
-  bar.style.width="١٠%";
+  bar.style.width="10%";
   startBtn.disabled=true;
 
   try{
@@ -204,7 +196,7 @@ async function handleImage(){
       file,"ara",
       {logger:m=>{
         if(m.progress!=null){
-          bar.style.width=Math.round(m.progress*٨٠+١٠)+"%";
+          bar.style.width=Math.round(m.progress*80+10)+"%";
         }
       }}
     );
@@ -216,7 +208,7 @@ async function handleImage(){
     state.text="";
     status.textContent="✅ تعذّر الاستخراج — سؤال واحد كافٍ.";
   }finally{
-    bar.style.width="١٠٠%";
+    bar.style.width="100%";
     analyzeText();
     lessonCard.classList.remove("hidden");
     startBtn.disabled=false;
@@ -244,7 +236,7 @@ function analyzeText(){
 
 function startLesson(){
   startBtn.disabled=true;
-  state.attempts=١;
+  state.attempts=1;
   state.startTime=Date.now();
 
   prep.textContent=
@@ -288,6 +280,5 @@ function enterClassMode(){
   document.body.classList.toggle("class-mode");
 }
 </script>
-
 </body>
 </html>
