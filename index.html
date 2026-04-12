@@ -1,34 +1,34 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>الخبير التربوي المرافق</title>
 
 <style>
 :root{
-  --bg:#f7f9fc;
+  --bg:#f5f7fb;
   --card:#ffffff;
-  --primary:#2563eb;
-  --secondary:#16a34a;
+  --main:#1d4ed8;
+  --soft:#e0e7ff;
+  --accent:#16a34a;
   --text:#1f2937;
   --muted:#6b7280;
-  --border:#e5e7eb;
   --radius:18px;
 }
 
+/* ===== أساسيات ===== */
 *{box-sizing:border-box}
-
 body{
   margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Tahoma,sans-serif;
   background:var(--bg);
+  font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
   color:var(--text);
   line-height:1.7;
 }
 
-.container{
-  max-width:960px;
+.wrapper{
+  max-width:900px;
   margin:auto;
   padding:1.2rem;
 }
@@ -38,40 +38,37 @@ body{
   border-radius:var(--radius);
   padding:1.5rem;
   margin-bottom:1.2rem;
-  box-shadow:0 12px 32px rgba(0,0,0,.06);
+  box-shadow:0 10px 28px rgba(0,0,0,.06);
 }
 
 h1,h2{
   margin:0 0 .6rem;
-  color:var(--primary);
+  color:var(--main);
 }
 
 p{
-  margin:.4rem 0;
+  margin:.3rem 0;
   color:var(--muted);
 }
 
 .actions{
   display:flex;
-  gap:.8rem;
+  gap:.7rem;
   flex-wrap:wrap;
 }
 
 button{
   flex:1;
-  min-height:56px;
+  min-height:54px;
   border:none;
   border-radius:14px;
   font-size:1rem;
   cursor:pointer;
-  transition:.15s ease;
 }
 
-.btn-primary{background:var(--primary);color:#fff}
-.btn-secondary{background:var(--secondary);color:#fff}
-.btn-ghost{background:#eef2ff;color:var(--primary)}
-
-button:active{transform:scale(.97)}
+.primary{background:var(--main);color:#fff}
+.secondary{background:var(--accent);color:#fff}
+.ghost{background:var(--soft);color:var(--main)}
 
 label{
   font-weight:600;
@@ -82,134 +79,151 @@ label{
 input,textarea{
   width:100%;
   margin-top:.4rem;
-  padding:.75rem .9rem;
+  padding:.7rem .9rem;
   border-radius:12px;
-  border:1px solid var(--border);
+  border:1px solid #e5e7eb;
   font-size:1rem;
 }
 
 .hidden{display:none}
 
-.lesson-buttons button{
-  margin-bottom:.6rem;
-}
-
+/* ===== سجل الحصّة ===== */
 .log{
-  margin-top:1.2rem;
+  margin-top:1.1rem;
+  padding:1rem;
+  background:#f0fdf4;
+  border-radius:12px;
   font-weight:700;
+  color:#166534;
   text-align:center;
-  font-size:1.1rem;
 }
 
-/* ===== الطباعة الرسمية ===== */
+/* ===== صفحة الميثاق (للطباعة فقط) ===== */
+.print-charter{
+  display:none;
+  page-break-after:always;
+}
+
+/* ===== الطباعة ===== */
 @media print{
   body{background:#fff}
-  button,.actions,.footer{display:none!important}
+  .wrapper > :not(.print-charter){display:none!important}
+  .print-charter{display:block}
   .card{box-shadow:none}
 }
 
-/* ===== الهواتف ===== */
-@media (max-width:600px){
+/* ===== الهاتف ===== */
+@media(max-width:600px){
   h1{font-size:1.5rem}
-  h2{font-size:1.25rem}
+  h2{font-size:1.2rem}
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="wrapper">
 
-<!-- العنوان -->
-<div class="card">
-  <h1>الخبير التربوي المرافق داخل الصف</h1>
-  <p>
-    نظام دعم تربوي صامت،  
-    يثبّت لحظة التعلّم ثم ينسحب.
-  </p>
-</div>
+  <!-- ===== صفحة الميثاق ===== -->
+  <div class="print-charter card">
+    <h1>ميثاق الخبير التربوي المرافق</h1>
+    <p><strong>الغرض:</strong> توثيق فلسفة الاستخدام وضمان الاستقرار التربوي.</p>
 
-<!-- اختيار الوضع -->
-<div class="card">
-  <h2>وضع التشغيل</h2>
-  <div class="actions">
-    <button class="btn-primary" onclick="openPrep()">وضع التحضير</button>
-    <button class="btn-ghost" onclick="openLesson()">وضع الحصّة</button>
-  </div>
-</div>
+    <h2>مبادئ ثابتة</h2>
+    <ul>
+      <li>الكتاب المدرسي هو المرجع الوحيد.</li>
+      <li>فكرة واحدة في كل حصّة.</li>
+      <li>الصمت أداة تربوية لا خللًا.</li>
+      <li>لا تقييم، لا مقارنة، لا درجات.</li>
+      <li>التقنية لا تتدخل داخل زمن الحصّة.</li>
+    </ul>
 
-<!-- وضع التحضير -->
-<div id="prep" class="card hidden">
-  <h2>تحضير الحصّة</h2>
+    <h2>ما لا نضيفه أبدًا</h2>
+    <ul>
+      <li>تنبيهات أو رسائل مفاجئة أثناء الحصّة.</li>
+      <li>خيارات جديدة تربك المعلّم.</li>
+      <li>تحليل أداء أو تتبّع.</li>
+      <li>تحميلات أو مكتبات خارجية.</li>
+    </ul>
 
-  <label>اسم المدرسة</label>
-  <input id="school" placeholder="اسم المدرسة الرسمي">
-
-  <label>اسم المعلّم/ة</label>
-  <input id="teacher" placeholder="الاسم كما يُعتمد رسميًا">
-
-  <label>اسم الدرس</label>
-  <input id="lesson" placeholder="مثال: الجمع حتى ١٠">
-
-  <label>الفكرة الواحدة من الكتاب</label>
-  <textarea id="idea" rows="3"></textarea>
-
-  <label>السؤال الواحد</label>
-  <textarea id="question" rows="2"></textarea>
-
-  <div class="actions">
-    <button class="btn-secondary" onclick="lockPrep()">اعتماد التحضير</button>
-    <button class="btn-ghost" onclick="window.print()">طباعة التحضير</button>
+    <p>
+      <strong>المعيار الوحيد للإضافة:</strong><br>
+      هل يجعل هذا المعلّم أكثر هدوءًا؟
+    </p>
   </div>
 
-  <p id="prepMsg" class="hidden">✅ التحضير مُعتمد وجاهز.</p>
-</div>
-
-<!-- وضع الحصّة -->
-<div id="lessonBox" class="card hidden">
-  <h2>الحصّة الصفيّة</h2>
-
-  <div class="lesson-buttons">
-    <button class="btn-primary" onclick="logAction('اطرح السؤال')">اطرح السؤال</button>
-    <button class="btn-ghost" onclick="logAction('صمت')">صمت</button>
-    <button class="btn-ghost" onclick="logAction('ارجع للسؤال')">ارجع للسؤال</button>
-    <button class="btn-secondary" onclick="logAction('نُطقت الفكرة — أُغلقت الحصّة')">
-      إغلاق الحصّة
-    </button>
+  <!-- ===== الواجهة العملية ===== -->
+  <div class="card">
+    <h1>الخبير التربوي المرافق داخل الصف</h1>
+    <p>نظام صامت يثبّت التعلّم ثم ينسحب في اللحظة الصحيحة.</p>
   </div>
 
-  <div id="lessonLog" class="log hidden"></div>
-</div>
+  <div class="card">
+    <h2>وضع العمل</h2>
+    <div class="actions">
+      <button class="primary" onclick="openPrep()">تحضير قبل الحصّة</button>
+      <button class="ghost" onclick="openSession()">مرافقة أثناء الحصّة</button>
+    </div>
+  </div>
 
-<div class="footer" style="text-align:center;color:var(--muted);font-size:.9rem">
-  نسخة مكتملة • مستقرة • آمنة صفّيًا
-</div>
+  <div id="prep" class="card hidden">
+    <h2>التحضير</h2>
+
+    <label>اسم الدرس</label>
+    <input id="lesson">
+
+    <label>الفكرة الواحدة</label>
+    <textarea id="idea" rows="3"></textarea>
+
+    <label>السؤال المحوري</label>
+    <textarea id="question" rows="2"></textarea>
+
+    <div class="actions">
+      <button class="secondary" onclick="lockPrep()">اعتماد التحضير</button>
+      <button class="ghost" onclick="window.print()">طباعة (تشمل الميثاق)</button>
+    </div>
+
+    <p id="prepMsg" class="hidden">✅ التحضير معتمد.</p>
+  </div>
+
+  <div id="session" class="card hidden">
+    <h2>المرافقة الصفّية</h2>
+
+    <div class="actions">
+      <button class="primary" onclick="logAction('اطرح السؤال')">اطرح السؤال</button>
+      <button class="ghost" onclick="logAction('صمت')">صمت</button>
+      <button class="ghost" onclick="logAction('ارجع للسؤال')">ارجع للسؤال</button>
+      <button class="secondary" onclick="logAction('نُطقت الفكرة — أُغلقت الحصّة')">إغلاق</button>
+    </div>
+
+    <div id="log" class="log hidden"></div>
+  </div>
 
 </div>
 
 <script>
-let ready=false;
+let prepared=false;
 
 function openPrep(){
   prep.classList.remove("hidden");
-  lessonBox.classList.add("hidden");
+  session.classList.add("hidden");
 }
 
-function openLesson(){
-  if(!ready) return;
-  lessonBox.classList.remove("hidden");
+function openSession(){
+  if(!prepared) return;
+  session.classList.remove("hidden");
   prep.classList.add("hidden");
 }
 
 function lockPrep(){
   if(!lesson.value || !idea.value || !question.value) return;
-  ready=true;
+  prepared=true;
   prepMsg.classList.remove("hidden");
 }
 
 function logAction(text){
-  lessonLog.textContent=text;
-  lessonLog.classList.remove("hidden");
+  log.textContent=text;
+  log.classList.remove("hidden");
 }
 </script>
 
