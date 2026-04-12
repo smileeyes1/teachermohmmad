@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>النظام السيادي الذكي الشامل لدعم المعلّم</title>
 
-<!-- ✅ تحميل Tesseract بشكل صحيح -->
+<!-- ✅ تحميل Tesseract.js بشكل صحيح -->
 https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
 <style>
@@ -74,10 +74,12 @@ button.warn{background:#777}
 .expert{border-right:6px solid var(--expert)}
 .hidden{display:none}
 
-/* وضع الصف */
-.class-mode .card:not(#lessonCard){display:none}
-.class-mode h1{display:none}
-.class-mode body{background:#fff}
+/* ✅ وضع الصف – تصحيح منطقي */
+body.class-mode{
+  background:#fff;
+}
+body.class-mode .card:not(#lessonCard){display:none}
+body.class-mode h1{display:none}
 </style>
 </head>
 
@@ -133,6 +135,14 @@ let startTime = 0;
 fileInput.addEventListener("change", handleImage);
 startBtn.addEventListener("click", startLesson);
 
+/* ✅ تطبيع عربي وقائي للـ OCR */
+function normalizeArabic(text){
+  return text
+    .replace(/[^\u0600-\u06FF\s]/g,"")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
 async function handleImage(){
   const file = fileInput.files[0];
   if(!file) return;
@@ -141,7 +151,7 @@ async function handleImage(){
 
   try{
     const result = await Tesseract.recognize(file,"ara");
-    extractedText = result.data.text || "";
+    extractedText = normalizeArabic(result.data.text || "");
     statusBox.textContent = "✅ تم استخراج النص من الصفحة";
   }catch(e){
     extractedText = "";
@@ -153,6 +163,12 @@ async function handleImage(){
 }
 
 function analyzeText(){
+  if(!extractedText){
+    lessonType = "استكشاف";
+    coreQuestion = "ماذا ترى في الصفحة؟";
+    return;
+  }
+
   if(/جمع|طرح|احسب|يساوي|عدد/.test(extractedText)){
     lessonType = "رياضيات";
     coreQuestion = "كيف توصلت إلى الناتج؟";
