@@ -1,126 +1,176 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=١.٠">
-<title>النظام السيادي لدعم المعلّم — وضع الحصّة المباشرة</title>
-
-<!-- OCR اختياري عند توفر الإنترنت -->
-<script>
-(function(){
-  try{
-    const s=document.createElement("script");
-    s.src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js";
-    s.onload=()=>window.OCR_READY=true;
-    s.onerror=()=>window.OCR_READY=false;
-    document.head.appendChild(s);
-  }catch(e){ window.OCR_READY=false; }
-})();
-</script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>نظام الدعم السيادي للمعلّم — نسخة محسّنة متكيفة</title>
 
 <style>
+/* =====================================================
+   الهوية السيادية — محسّنة ومحمية
+===================================================== */
 :root{
-  --bg:#f٤f٦f٨;
+  --primary:#1565c0;
+  --primary-soft:#e3f2fd;
+  --bg:#f4f6f8;
   --card:#ffffff;
-  --main:#١٥٦٥c٠;
-  --alt:#٤٥٥a٦٤;
-  --ok:#٢e٧d٣٢;
-  --soft:#eef٢f٦;
-  --ink:#٢٢٢;
-  --muted:#٦b٧٢٨٠;
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --success:#2e7d32;
+  --warning:#f9a825;
+  --border:#e5e7eb;
+  --radius:16px;
+  --shadow:0 8px 24px rgba(0,0,0,.08);
 }
+
 *{box-sizing:border-box}
+
+html{font-size:16px}
+
 body{
-  margin:٠;
-  font-family:Tahoma,Arial,sans-serif;
+  margin:0;
+  font-family:Tahoma, "Segoe UI", Arial, sans-serif;
   background:var(--bg);
   color:var(--ink);
-  line-height:١.٩;
+  line-height:1.9;
 }
+
+/* =====================================================
+   التكيّف مع الأجهزة
+===================================================== */
 .app{
-  max-width:٩٦٠px;
-  margin:٢٠px auto;
-  padding:١٦px;
+  max-width:1200px;
+  margin:auto;
+  padding:16px;
 }
+
+@media (max-width:900px){
+  .app{padding:12px}
+}
+
 .card{
   background:var(--card);
-  padding:٢٢px;
-  border-radius:١٦px;
-  box-shadow:٠ ٤px ١٦px rgba(٠,٠,٠,.٠٨);
-  margin-bottom:٢٠px;
+  padding:20px;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  margin-bottom:16px;
 }
-.header{text-align:center}
-.header h١{
-  margin:٠;
-  font-size:٢٢px;
-  color:var(--main);
+
+/* =====================================================
+   الرأس
+===================================================== */
+.header{
+  text-align:center;
+}
+.header h1{
+  margin:0;
+  font-size:1.4rem;
+  color:var(--primary);
 }
 .header p{
-  margin-top:٨px;
-  font-size:١٤px;
+  margin:.4rem 0 0;
+  font-size:.95rem;
   color:var(--muted);
 }
-h٢{
-  margin:٠ ٠ ١٢px ٠;
-  font-size:١٨px;
-}
+
+/* =====================================================
+   عناصر الإدخال والتفاعل
+===================================================== */
 button{
-  width:١٠٠%;
-  padding:١٤px;
-  margin-top:١٠px;
-  border-radius:١٤px;
+  width:100%;
+  padding:14px;
+  margin-top:10px;
   border:none;
-  font-size:١٥px;
+  border-radius:14px;
+  font-size:.95rem;
   cursor:pointer;
-  background:var(--main);
+  background:var(--primary);
   color:#fff;
+  transition:.2s ease;
 }
-button.alt{background:var(--alt)}
-button.ok{background:var(--ok)}
+button.secondary{background:#455a64}
+button.success{background:var(--success)}
+button.warning{background:var(--warning);color:#000}
+
+button:hover{opacity:.9}
+
 .buttons{
-  display:flex;
-  flex-wrap:wrap;
-  gap:١٢px;
-  margin-top:١٤px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;
+  margin-top:14px;
 }
+
+/* =====================================================
+   الكاميرا والمعالجة
+===================================================== */
 video,canvas{
-  width:١٠٠%;
-  border-radius:١٤px;
+  width:100%;
+  border-radius:14px;
 }
-.note{
-  background:var(--soft);
-  padding:١٤px;
-  border-radius:١٤px;
-  font-size:١٤px;
-  margin-top:١٢px;
-}
+
+/* =====================================================
+   الإخراج
+===================================================== */
 .output{
   background:#fafafa;
-  padding:١٨px;
-  border-radius:١٤px;
+  padding:18px;
+  border-radius:14px;
   white-space:pre-wrap;
-  margin-top:١٤px;
-  font-size:١٥px;
+  font-size:.95rem;
+  margin-top:14px;
 }
+
 .log{
   background:#fafafa;
-  padding:١٤px;
-  border-radius:١٤px;
-  margin-top:١٢px;
+  border-radius:14px;
+  padding:14px;
+  margin-top:12px;
   white-space:pre-wrap;
-  font-size:١٤px;
+  font-size:.9rem;
 }
+
+/* =====================================================
+   الشريط البصري للاكتمال
+===================================================== */
+.progress{
+  margin-top:10px;
+  height:10px;
+  background:#e5e7eb;
+  border-radius:10px;
+  overflow:hidden;
+}
+.progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:var(--primary);
+  transition:width .3s ease;
+}
+
+/* =====================================================
+   إخفاء ذكي
+===================================================== */
 .hidden{display:none}
+
+/* =====================================================
+   الطباعة الورقية (تعزيز ورقي)
+===================================================== */
+@media print{
+  button,video,.buttons,.footer{display:none}
+  body{background:#fff}
+  .card{box-shadow:none;border:1px solid #ccc}
+  .output,.log{font-size:14pt}
+}
+
+/* =====================================================
+   التذييل
+===================================================== */
 .footer{
   text-align:center;
-  font-size:١٣px;
+  font-size:.8rem;
   color:var(--muted);
-  margin-top:٢٠px;
-}
-@media print{
-  video,button,.buttons,.footer{display:none}
-  body{background:#fff}
-  .output,.log{font-size:١٤pt}
+  margin-top:16px;
 }
 </style>
 </head>
@@ -129,74 +179,81 @@ video,canvas{
 
 <div class="app">
 
-<!-- العنوان -->
+<!-- ============================= -->
+<!-- الرأس -->
+<!-- ============================= -->
 <div class="card header">
-  <h١>النظام السيادي لدعم المعلّم</h١>
-  <p>تصوير الدرس → التزام بالمنهاج → وضع حصّة مباشر مضبوط</p>
+  <h1>نظام الدعم السيادي للمعلّم</h1>
+  <p>نسخة متكيّفة — هاتف / لابتوب — محمية نفسيًا ومهنيًا</p>
 </div>
 
+<!-- ============================= -->
 <!-- خطوة التصوير -->
+<!-- ============================= -->
 <div class="card" id="cameraStep">
-  <h٢>١) تصوير صفحة الدرس (كاميرا خلفية)</h٢>
-  <button onclick="startCamera()">📸 تشغيل الكاميرا الخلفية</button>
+  <h2>📸 تصوير صفحة الدرس</h2>
+  <button onclick="startCamera()">تشغيل الكاميرا الخلفية</button>
   <video id="video" autoplay playsinline class="hidden"></video>
-  <button id="captureBtn" class="hidden" onclick="capture()">التقاط صفحة الدرس</button>
-  <div class="note">
-    ✔ المرجع الوحيد هو الصورة<br>
-    ✔ OCR فقط لاستخراج العنوان عند توفر الإنترنت
-  </div>
+  <button id="captureBtn" class="secondary hidden" onclick="capture()">التقاط الصفحة</button>
+
+  <div class="progress"><span id="progressBar"></span></div>
 </div>
 
-<!-- المعالجة -->
-<div class="card hidden" id="processStep">
-  <canvas id="canvas"></canvas>
-  <div id="lessonTitle" class="note">⏳ تحديد عنوان الدرس…</div>
+<!-- ============================= -->
+<!-- المعالجة والدعم -->
+<!-- ============================= -->
+<div class="card hidden" id="supportStep">
+  <h2 id="lessonTitle">📘 الدرس وفق الصفحة</h2>
 
-  <div class="buttons hidden" id="supportActions">
-    <button onclick="prep()">📘 تحضير</button>
-    <button onclick="simulate()">🧪 محاكاة</button>
-    <button onclick="observe()">📋 رصد</button>
-    <button class="ok" onclick="startLesson()">▶ بدء الحصّة المباشرة</button>
+  <div class="buttons">
+    <button onclick="prep()">تحضير مختصر</button>
+    <button onclick="simulate()">محاكاة واقعية</button>
+    <button onclick="observe()">قائمة رصد</button>
+    <button class="success" onclick="startLesson()">▶ الحصّة المباشرة</button>
   </div>
 
   <div id="output" class="output hidden"></div>
 </div>
 
-<!-- وضع الحصّة المباشرة -->
+<!-- ============================= -->
+<!-- وضع الحصّة -->
+<!-- ============================= -->
 <div class="card hidden" id="liveLesson">
-  <h٢>وضع الحصّة المباشرة</h٢>
+  <h2>🧭 وضع الحصّة المباشرة</h2>
+
   <div class="buttons">
     <button onclick="act('طُرح السؤال')">اطرح السؤال</button>
-    <button class="alt" onclick="act('صمت')">صمت</button>
-    <button class="alt" onclick="act('محاولة')">محاولة</button>
-    <button class="ok" onclick="closeLesson()">نُطقت الفكرة ← توقّف</button>
+    <button class="secondary" onclick="silent()">صمت ٣٠ ثانية</button>
+    <button onclick="act('محاولة تلميذ واحد')">محاولة</button>
+    <button class="success" onclick="finish()">✅ نُطقت الفكرة</button>
   </div>
+
   <div class="log" id="log">سجل الحصّة:</div>
 </div>
 
 <div class="footer">
-  أقل فعل كافٍ — التوقّف قرار مهني — الأثر قبل الكم
+  نسخة محسّنة • متكيفة • داعمة • لا تُحاسب
 </div>
 
 </div>
 
 <script>
 const video=document.getElementById("video");
-const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("٢d");
-const lessonTitle=document.getElementById("lessonTitle");
+const canvas=document.createElement("canvas");
+const ctx=canvas.getContext("2d");
+const progressBar=document.getElementById("progressBar");
 const output=document.getElementById("output");
-const supportActions=document.getElementById("supportActions");
+const supportStep=document.getElementById("supportStep");
 const liveLesson=document.getElementById("liveLesson");
 const log=document.getElementById("log");
 
-let lessonName="الدرس وفق الصورة";
 let closed=false;
 
 /* تشغيل الكاميرا */
 function startCamera(){
   video.classList.remove("hidden");
   document.getElementById("captureBtn").classList.remove("hidden");
+  progressBar.style.width="25%";
   navigator.mediaDevices.getUserMedia({
     video:{facingMode:{ideal:"environment"}},
     audio:false
@@ -204,68 +261,41 @@ function startCamera(){
    .catch(()=>alert("تعذّر تشغيل الكاميرا"));
 }
 
-/* التقاط */
+/* التقاط الصفحة */
 function capture(){
   canvas.width=video.videoWidth;
   canvas.height=video.videoHeight;
-  ctx.drawImage(video,٠,٠);
+  ctx.drawImage(video,0,0);
   video.srcObject.getTracks().forEach(t=>t.stop());
-  document.getElementById("processStep").classList.remove("hidden");
-  processImage();
+  progressBar.style.width="50%";
+  supportStep.classList.remove("hidden");
+  progressBar.style.width="75%";
 }
 
-/* معالجة الصورة */
-function processImage(){
-  const cropH=Math.floor(canvas.height*٠.٢٥);
-  const crop=document.createElement("canvas");
-  crop.width=canvas.width;
-  crop.height=cropH;
-  crop.getContext("٢d").drawImage(canvas,٠,٠,canvas.width,cropH,٠,٠,canvas.width,cropH);
-
-  if(!window.OCR_READY || !window.Tesseract){
-    finalizeLesson();
-    return;
-  }
-
-  Tesseract.recognize(crop,"ara").then(res=>{
-    const text=res.data.text.trim();
-    lessonName=text.split("\n")[٠]||lessonName;
-    finalizeLesson();
-  }).catch(finalizeLesson);
-}
-
-function finalizeLesson(){
-  lessonTitle.textContent="📘 "+lessonName;
-  supportActions.classList.remove("hidden");
-}
-
+/* مخرجات الدعم */
 function show(text){
   output.textContent=text;
   output.classList.remove("hidden");
 }
 
-/* تحضير وخطط */
 function prep(){
   show(
-`تحضير حصّة – ${lessonName}
-
-• مثال واحد من الصفحة.
-• سؤال واحد.
-• محاولة واحدة.
-• توقّف عند الفهم.`
+`تحضير حصّة:
+• مثال واحد من الصفحة
+• سؤال واحد
+• محاولة واحدة
+• توقّف مهني`
   );
 }
 function simulate(){
   show(
-`محاكاة صفّية – ${lessonName}
-
-عرض المثال ← صمت ← محاولة ← تثبيت ← انتهت.`
+`محاكاة:
+عرض المثال → صمت → محاولة → تثبيت → نهاية`
   );
 }
 function observe(){
   show(
-`قائمة رصد – ${lessonName}
-
+`قائمة رصد:
 ☐ حاول
 ☐ تردّد
 ☐ نطق الفكرة
@@ -273,19 +303,24 @@ function observe(){
   );
 }
 
-/* الحصّة المباشرة */
+/* وضع الحصّة */
 function startLesson(){
   liveLesson.classList.remove("hidden");
   log.textContent="سجل الحصّة:";
+  progressBar.style.width="90%";
 }
-function act(text){
+function act(t){
   if(closed) return;
-  log.textContent+="\n• "+text;
+  log.textContent+="\n• "+t;
 }
-function closeLesson(){
+function silent(){
+  act("صمت (٣٠ ثانية)");
+}
+function finish(){
   if(closed) return;
   closed=true;
   log.textContent+="\n• نُطقت الفكرة — انتهت الحصّة";
+  progressBar.style.width="100%";
 }
 </script>
 
