@@ -3,12 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تحضير ذكي من الكتاب — فكرة واحدة</title>
+<title>تحضير من الكتاب → PDF</title>
 
 <!-- OCR -->
 https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.jsscript>
 
 <style>
+@media print {
+  body { background:#fff; }
+  .no-print { display:none; }
+  .card { box-shadow:none; border:1px solid #ddd; }
+}
 body{
   font-family:Tahoma,Arial,sans-serif;
   background:#f4f6f8;
@@ -23,133 +28,117 @@ body{
   box-shadow:0 8px 20px rgba(0,0,0,.08);
   margin-bottom:20px;
 }
-h1,h3{
-  color:#0d47a1;
-  text-align:center;
-  margin:0 0 12px;
-}
+h1,h3{ color:#0d47a1; text-align:center; margin:0 0 12px }
 input,button{
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  font-size:16px;
+  width:100%; padding:14px; margin-top:10px; font-size:16px;
 }
-button{
-  background:#2e7d32;
-  color:#fff;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-}
+button{ background:#2e7d32; color:#fff; border:none; border-radius:10px; cursor:pointer }
 .box{
-  background:#e3f2fd;
-  padding:16px;
-  border-radius:12px;
-  white-space:pre-wrap;
+  background:#e3f2fd; padding:16px; border-radius:12px; white-space:pre-wrap;
 }
-.small{
-  font-size:13px;
-  color:#555;
-  text-align:center;
+.small{ font-size:13px; color:#555; text-align:center }
+.progress{ height:10px; background:#ddd; border-radius:8px; overflow:hidden; margin-top:10px }
+.progress span{ display:block; height:100%; width:0; background:#0d47a1 }
+.header{
+  display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;
+  font-size:13px; color:#333
 }
-.progress{
-  height:10px;background:#ddd;border-radius:8px;overflow:hidden;margin-top:10px
-}
-.progress span{display:block;height:100%;width:0;background:#0d47a1}
+hr{ border:none; border-top:1px solid #e5e7eb; margin:12px 0 }
 </style>
 </head>
 
 <body>
 
 <div class="card">
-<h1>تحضير ذكي من الكتاب</h1>
-<p class="small">فكرة واحدة حقيقية • بلا افتراض • بلا عبء</p>
+  <h1>تحضير الدرس (مبني على الكتاب)</h1>
+  <p class="small">تحضير واقعي • فكرة واحدة • إغلاق مهني</p>
+</div>
+
+<div class="card no-print">
+  <h3>اسم الدرس</h3>
+  <input id="lessonName" placeholder="مثال: الجمع حتى ١٠">
+</div>
+
+<div class="card no-print">
+  <h3>ارفع صفحة الدرس (صورة أفضل)</h3>
+  <input type="file" id="pageFile" accept="image/*,.pdf">
+  <div class="progress"><span id="bar"></span></div>
+  <button onclick="readPage()">أنشئ التحضير من الكتاب</button>
+  <p class="small">📌 للحصول على أدق نتيجة: صورة صفحة واحدة واضحة</p>
 </div>
 
 <div class="card">
-<h3>اسم الدرس</h3>
-<input id="lessonName" placeholder="مثال: الجمع حتى ١٠">
+  <div class="header">
+    <div>المادة/الدرس: <strong id="hdrLesson">—</strong></div>
+    <div>التاريخ: <strong id="hdrDate">—</strong></div>
+  </div>
+  <hr>
+  <h3>النص المستخرج من الكتاب</h3>
+  <div id="extracted" class="box">—</div>
 </div>
 
-<div class="card">
-<h3>صفحة الدرس (صورة أو PDF صفحة واحدة)</h3>
-<input type="file" id="pageFile" accept="image/*,.pdf">
-<div class="progress"><span id="bar"></span></div>
-<button onclick="readPage()">أنشئ التحضير من الكتاب</button>
-<p class="small">📌 لنتائج أدق: ارفع صورة الصفحة</p>
+<div class="card" id="prepCard">
+  <h3>التحضير التنفيذي</h3>
+  <div id="prep" class="box">—</div>
 </div>
 
-<div class="card">
-<h3>النص المستخرج</h3>
-<div id="extracted" class="box">—</div>
-</div>
-
-<div class="card">
-<h3>التحضير الناتج</h3>
-<div id="prep" class="box">—</div>
-<button onclick="copyPrep()">📋 نسخ التحضير</button>
+<div class="card no-print">
+  <button onclick="window.print()">🖨️ تصدير PDF / طباعة التحضير</button>
 </div>
 
 <script>
-const teachingVerbs = [
-  "نعد","نقرأ","نكتب","نلاحظ","نقارن","نحسب","نرتب",
-  "نستخرج","نميّز","نحدّد","نحل"
-];
+const teachingVerbs = ["نعد","نقرأ","نكتب","نلاحظ","نقارن","نحسب","نرتب","نميّز","نحدّد","نحل"];
+
+function todayArabic(){
+  const d=new Date();
+  const map=n=>String(n).replace(/\d/g,x=>"٠١٢٣٤٥٦٧٨٩"[x]);
+  return `${map(d.getDate())}/${map(d.getMonth()+1)}/${map(d.getFullYear())}`;
+}
 
 async function readPage(){
-  const file = document.getElementById("pageFile").files[0];
-  if(!file){ return; }
-
+  const file=document.getElementById("pageFile").files[0];
+  if(!file) return;
   bar.style.width="5%";
-  extracted.innerText = "جارٍ قراءة الصفحة...";
-  try{
-    const result = await Tesseract.recognize(file,"ara");
-    bar.style.width="100%";
-    const text = (result.data.text||"").trim();
-    extracted.innerText = text || "لم يُستخرج نص واضح.";
-    buildPrepSmart(text);
-  }catch(e){
-    extracted.innerText = "تعذّر قراءة الصفحة.";
-    bar.style.width="0%";
-    prep.innerText = "لا يمكن بناء تحضير موثوق من هذه الصفحة.";
-  }
+  extracted.innerText="جارٍ القراءة…";
+
+  const res=await Tesseract.recognize(file,"ara");
+  bar.style.width="100%";
+  const text=(res.data.text||"").trim();
+  extracted.innerText=text||"لم يُستخرج نص واضح.";
+
+  buildPrepSmart(text);
 }
 
-// استخراج فكرة واحدة أدق
 function extractIdea(text){
-  if(!text || text.length < 30) return "";
-
-  const lines = text.split("\n").map(l=>l.trim()).filter(l=>l.length>6);
-  // أولوية: سطر يحوي فعلًا تعليميًا
-  for(let v of teachingVerbs){
-    const hit = lines.find(l => l.includes(v));
+  if(!text || text.length<30) return "";
+  const lines=text.split("\n").map(l=>l.trim()).filter(l=>l.length>6);
+  for(const v of teachingVerbs){
+    const hit=lines.find(l=>l.includes(v));
     if(hit) return hit;
   }
-  // بديل: أقصر سطر إجرائي واضح
-  return lines.sort((a,b)=>a.length-b.length)[0] || "";
+  return lines.sort((a,b)=>a.length-b.length)[0]||"";
 }
 
-// بناء التحضير الذكي
 function buildPrepSmart(text){
-  const ideaLine = extractIdea(text);
+  const ideaLine=extractIdea(text);
+  const lesson=lessonName.value||"—";
+  hdrLesson.textContent=lesson;
+  hdrDate.textContent=todayArabic();
+
   if(!ideaLine){
-    prep.innerText =
-"تعذّر تحديد فكرة واحدة موثوقة من الصفحة.\nيرجى اختيار صفحة أوضح.";
+    prep.innerText="تعذّر تحديد فكرة تعليمية موثوقة من الصفحة.\nيرجى اختيار صفحة أوضح.";
     return;
   }
 
-  const question =
-    ideaLine.includes("نعد") ? "كم نعدّ في هذا المثال؟" :
-    ideaLine.includes("نقرأ") ? "ماذا نقرأ هنا؟" :
-    ideaLine.includes("نكتب") ? "ماذا سنكتب بعد الملاحظة؟" :
-    "ماذا نلاحظ في هذا المثال؟";
+  let question="ماذا نلاحظ في هذا المثال؟";
+  if(ideaLine.includes("نعد")) question="كم نعدّ في هذا المثال؟";
+  else if(ideaLine.includes("نقرأ")) question="ماذا نقرأ هنا؟";
+  else if(ideaLine.includes("نكتب")) question="ماذا سنكتب بعد الملاحظة؟";
 
   prep.innerText =
-`التحضير التنفيذي (مبني على الكتاب)
+`الدرس: ${lesson}
 
-الدرس: ${lessonName.value || "—"}
-
-الفكرة المستخلصة حرفيًا من الصفحة:
+الفكرة (مستخلصة حرفيًا من الصفحة):
 ${ideaLine}
 
 السؤال المحوري:
@@ -157,14 +146,10 @@ ${question}
 
 خطوات التنفيذ:
 ١) عرض صفحة الكتاب فقط
-٢) صمت واعٍ (لا شرح)
+٢) صمت واعٍ (دون شرح)
 ٣) محاولة من الطلبة
 ٤) تثبيت الفكرة عند النطق
 ٥) إغلاق الحصة فورًا دون إضافة`;
-}
-
-function copyPrep(){
-  navigator.clipboard.writeText(prep.innerText);
 }
 </script>
 
