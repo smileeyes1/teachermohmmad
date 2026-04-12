@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الخبير التربوي المرافق — قراءة دقيقة + 3 صور</title>
+<title>الخبير التربوي المرافق — قراءة دقيقة 2026</title>
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
@@ -27,6 +27,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
 .badges{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
 .badges span{background:#eef2f7;border-radius:999px;padding:8px 14px;font-size:14px}
 .small{font-size:13.5px;color:#6b7280;text-align:center}
+.reset-btn{background:#d32f2f;color:#fff;margin-top:8px}
 </style>
 </head>
 <body>
@@ -35,7 +36,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
 <div class="header">
   <p>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
   <h1>الخبير التربوي المرافق</h1>
-  <p class="small">المنهاج الفلسطيني • قراءة دقيقة للصور • رفع/تصوير 3 صور معاً</p>
+  <p class="small">المنهاج الفلسطيني • قراءة دقيقة متقدمة • حتى 3 صور</p>
 </div>
 
 <div class="card">
@@ -43,8 +44,9 @@ button:disabled{opacity:.6;cursor:not-allowed}
   <button id="cameraBtn" class="ok">📸 افتح الكاميرا وصوّر (يمكن تكرار)</button>
   <button id="galleryBtn" class="ghost">📁 رفع صور من المعرض (حتى 3)</button>
   <input id="fileInput" type="file" accept="image/*" multiple style="display:none">
+  <button id="resetBtn" class="reset-btn">إعادة تعيين الصور</button>
   
-  <p class="small">نصيحة لدقة عالية: صوّر في إضاءة جيدة، حافظ على استقامة الصفحة</p>
+  <p class="small">نصيحة: صوّر في إضاءة جيدة واستقامة جيدة لدقة أعلى</p>
   
   <div class="badges" id="pages"></div>
   <div class="progress"><span id="bar"></span></div>
@@ -77,6 +79,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
 const cameraBtn = document.getElementById("cameraBtn");
 const galleryBtn = document.getElementById("galleryBtn");
 const fileInput = document.getElementById("fileInput");
+const resetBtn = document.getElementById("resetBtn");
 const bar = document.getElementById("bar");
 const statusBox = document.getElementById("status");
 const pagesContainer = document.getElementById("pages");
@@ -90,9 +93,9 @@ let isClosed = false;
 let currentIdea = "";
 let currentQuestion = "";
 
-// ================== فتح الكاميرا (يمكن تكرار التصوير) ==================
+// ================== فتح الكاميرا + دعم الإضافة ==================
 cameraBtn.onclick = () => {
-  if (isClosed) return;
+  if (isClosed || images.length >= 3) return;
   const tempInput = document.createElement("input");
   tempInput.type = "file";
   tempInput.accept = "image/*";
@@ -100,7 +103,7 @@ cameraBtn.onclick = () => {
   tempInput.style.display = "none";
   tempInput.onchange = e => {
     if (e.target.files.length > 0) {
-      images = images.concat(Array.from(e.target.files)).slice(0, 3); // الحفاظ على حد 3
+      images = images.concat(Array.from(e.target.files)).slice(0, 3);
       updateUI();
     }
   };
@@ -115,6 +118,15 @@ fileInput.onchange = () => {
   }
 };
 
+resetBtn.onclick = () => {
+  images = [];
+  ocrText = "";
+  updateUI();
+  statusBox.textContent = "— تم إعادة التعيين —";
+  startBtn.disabled = true;
+  buildBtn.disabled = true;
+};
+
 function updateUI() {
   pagesContainer.innerHTML = "";
   images.forEach((_, i) => {
@@ -122,11 +134,11 @@ function updateUI() {
     span.textContent = `صورة ${i+1}`;
     pagesContainer.appendChild(span);
   });
-  statusBox.textContent = `✅ تم اختيار ${images.length} صورة — جاهز للمعالجة الدقيقة`;
+  statusBox.textContent = `✅ تم اختيار ${images.length}/3 صور — جاهز للمعالجة الدقيقة`;
   startBtn.disabled = images.length === 0;
 }
 
-// ================== معالجة متقدمة لتحسين الدقة (Grayscale + Contrast + Binarization) ==================
+// ================== معالجة متقدمة للصور (ترقية 2026) ==================
 async function preprocessImage(file) {
   return new Promise(resolve => {
     const img = new Image();
@@ -134,26 +146,25 @@ async function preprocessImage(file) {
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d", {willReadFrequently: true});
 
-      // تصغير ذكي إلى حجم مثالي لـ OCR (حوالي 300-400 DPI فعال)
-      let scale = Math.min(1200 / Math.max(img.width, img.height), 1.3);
+      // تصغير ذكي
+      let scale = Math.min(1300 / Math.max(img.width, img.height), 1.4);
       canvas.width = img.width * scale;
       canvas.height = img.height * scale;
 
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      // معالجة متقدمة: Grayscale + زيادة التباين + Binarization
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imageData.data;
 
       for (let i = 0; i < data.length; i += 4) {
         let gray = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
-        gray = Math.min(255, Math.max(0, gray * 1.2 - 30)); // زيادة التباين
-        const binary = gray > 110 ? 255 : 0; // Binarization محسنة
+        gray = Math.min(255, Math.max(0, gray * 1.25 - 35)); // تباين أقوى
+        const binary = gray > 105 ? 255 : 0; // Binarization محسنة للعربية
         data[i] = data[i+1] = data[i+2] = binary;
       }
       ctx.putImageData(imageData, 0, 0);
 
-      canvas.toBlob(blob => resolve(blob), "image/jpeg", 0.92);
+      canvas.toBlob(blob => resolve(blob), "image/jpeg", 0.93);
     };
     img.src = URL.createObjectURL(file);
   });
@@ -162,12 +173,10 @@ async function preprocessImage(file) {
 // ================== تهيئة Tesseract ==================
 async function initWorker() {
   if (worker) return;
-  statusBox.textContent = "⏳ جارٍ تحميل محرك القراءة الدقيق...";
+  statusBox.textContent = "⏳ جارٍ تحميل محرك القراءة المتقدم...";
   worker = await Tesseract.createWorker('ara', 1, {
     logger: m => {
-      if (m.status === 'recognizing text') {
-        bar.style.width = Math.round(m.progress * 100) + "%";
-      }
+      if (m.status === 'recognizing text') bar.style.width = Math.round(m.progress * 100) + "%";
     }
   });
 }
@@ -189,24 +198,24 @@ startBtn.onclick = async () => {
   }
 
   bar.style.width = "100%";
-  statusBox.textContent = "✅ انتهت القراءة الدقيقة للـ 3 صور — النص مستخرج بنجاح";
+  statusBox.textContent = "✅ انتهت القراءة الدقيقة للصور الثلاث — النص مستخرج بنجاح";
   buildBtn.disabled = false;
   analyzeDeepRealistic();
 };
 
-// ================== تحليل ذكي يعتمد على الصور ==================
+// ================== تحليل ذكي محسن ==================
 function analyzeDeepRealistic() {
   const text = ocrText.toLowerCase().trim();
-  let idea = "تنمية الملاحظة البصرية والتفاعل مع المحتوى";
+  let idea = "تنمية الملاحظة البصرية والتفاعل مع المحتوى المطبوع";
   let q = "ماذا تلاحظ في الصفحات أمامك؟";
 
   if (/جمع|طرح|احسب|عدد|مثلث|دائرة|مربع/.test(text)) {
-    idea = "ربط العمليات الحسابية والأشكال بالصور المرئية (منهاج الرياضيات الفلسطيني)";
+    idea = "ربط العمليات الحسابية والأشكال الهندسية بالصور (منهاج الرياضيات)";
     q = "كم عدد العناصر التي تراها؟ كيف نجمعها أو نطرح منها؟";
   } else if (/حرف|كلمة|قصة|لغتنا الجميلة/.test(text)) {
     idea = "تعلم الحروف والكلمات من خلال ربطها بالصور (كتاب لغتنا الجميلة)";
-    q = "ما الحرف أو الكلمة التي تراها في الصفحة؟ كيف نستخدمها؟";
-  } else if (/نبات|حيوان|فلسطين|وطن/.test(text)) {
+    q = "ما الحرف أو الكلمة التي تراها؟ كيف نستخدمها في جملة؟";
+  } else if (/نبات|حيوان|فلسطين|وطن|علم/.test(text)) {
     idea = "ربط الملاحظة بالبيئة والتربية الوطنية الفلسطينية";
     q = "كيف يرتبط ما نراه في الصور بحياتنا في فلسطين؟";
   }
@@ -226,21 +235,21 @@ buildBtn.onclick = () => {
 <strong>السؤال التوجيهي:</strong><br>${currentQuestion}<br><br>
 <strong>أهداف الحصة:</strong><br>
 • تنمية الملاحظة الدقيقة.<br>
-• ربط النص بالفهم.<br>
-• تشجيع المشاركة الإيجابية.<br><br>
-<strong>سيناريو الحصة (خطوة بخطوة):</strong><br>
-1. الافتتاح: تحية + عرض الصور.<br>
-2. طرح السؤال: ${currentQuestion}<br>
-3. [صمت واعٍ ١٥-٢٥ ثانية].<br>
-4. مشاركة الطلاب (محاولة واحدة لكل طالب).<br>
-5. تلخيص + إغلاق الحصة بهدوء.<br><br>
-<strong>نصائح عملية:</strong><br>
-• تحدث بهدوء وابتسم.<br>
-• شجع الطلاب الخجولين.<br>
-• ركز على الجهد لا على الكمال.
+• ربط النص بالفهم والتعبير.<br>
+• بناء الثقة من خلال المشاركة.<br><br>
+<strong>سيناريو الحصة (٣٠-٤٠ دقيقة):</strong><br>
+1. الافتتاح (٣ دق): تحية + عرض الصور.<br>
+2. طرح السؤال (١ دق): ${currentQuestion}<br>
+3. صمت واعٍ (١٥-٢٥ ثانية).<br>
+4. مشاركة الطلاب (١٥-٢٠ دق) — محاولة واحدة لكل طالب.<br>
+5. التلخيص والإغلاق (٤ دق): أعد صياغة أفضل الإجابات ثم أغلق الحصة بهدوء.<br><br>
+<strong>نصائح عملية للمعلم:</strong><br>
+• استخدم نبرة هادئة وابتسم.<br>
+• شجع الطلاب الخجولين بلطف.<br>
+• ركز على الجهد والمشاركة لا على الصواب المطلق.
   `;
   document.getElementById("prep").innerHTML = prepHTML;
-  statusBox.textContent = "✅ تم إنشاء التحضير الواقعي";
+  statusBox.textContent = "✅ تم إنشاء التحضير الواقعي العميق";
 };
 
 function support(msg) { if (!isClosed) document.getElementById("support").textContent = msg; }
