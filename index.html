@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الخبير التربوي المرافق — سريع ومضمون (النسخة المصححة)</title>
+<title>الخبير التربوي المرافق — النسخة المصححة</title>
 
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mammoth@1.7.2/mammoth.browser.min.js"></script>
@@ -45,7 +45,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
   <h3>📄 رفع الملفات (حتى 3 ملفات)</h3>
   <button id="uploadBtn" class="ok">📤 رفع ملف (PDF • DOCX • PPTX • صور)</button>
   <input id="fileInput" type="file" accept=".pdf,.docx,.pptx,image/*" multiple style="display:none">
-  <button id="resetBtn" class="reset">إعادة تعيين جميع الملفات</button>
+  <button id="resetBtn" class="reset">إعادة تعيين</button>
   
   <div class="badges" id="filesList"></div>
   <div class="progress"><span id="bar"></span></div>
@@ -56,7 +56,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
 </div>
 
 <div class="card">
-  <h3>🧭 التحضير التنفيذي العميق (المنهاج الفلسطيني)</h3>
+  <h3>🧭 التحضير التنفيذي العميق</h3>
   <div id="idea" class="box">🔹 الفكرة ستظهر هنا</div>
   <div id="question" class="box">❓ السؤال سيظهر هنا</div>
   <div id="prep" class="box"></div>
@@ -75,10 +75,9 @@ button:disabled{opacity:.6;cursor:not-allowed}
 </div>
 
 <script>
-// ================== تهيئة pdf.js worker (مهم جداً لتجنب الأخطاء) ==================
+// تهيئة pdf.js
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.js';
 
-// ================== متغيرات ==================
 const uploadBtn = document.getElementById("uploadBtn");
 const fileInput = document.getElementById("fileInput");
 const resetBtn = document.getElementById("resetBtn");
@@ -93,73 +92,59 @@ let files = [];
 let fullText = "";
 let worker = null;
 let isClosed = false;
-let currentIdea = "";
-let currentQuestion = "";
 
-// ================== رفع الملفات ==================
+// رفع الملفات
 uploadBtn.onclick = () => fileInput.click();
 
 fileInput.onchange = () => {
   if (fileInput.files.length > 0) {
     files = Array.from(fileInput.files).slice(0, 3);
-    updateUI();
+    updateFilesList();
   }
 };
 
-resetBtn.onclick = () => {
-  files = [];
-  fullText = "";
-  updateUI();
-  statusBox.textContent = "— تم إعادة التعيين —";
-  startBtn.disabled = true;
-  buildBtn.disabled = true;
-  showTextBtn.style.display = "none";
-};
-
-function updateUI() {
+function updateFilesList() {
   filesList.innerHTML = "";
-  files.forEach((f, i) => {
+  files.forEach(f => {
+    const sizeMB = (f.size / 1024 / 1024).toFixed(1);
     const span = document.createElement("span");
-    span.textContent = `\( {f.name} ( \){(f.size/1024/1024).toFixed(1)} MB)`;
+    span.textContent = `\( {f.name} ( \){sizeMB} MB)`;
     filesList.appendChild(span);
   });
   statusBox.textContent = `✅ تم اختيار ${files.length}/3 ملفات`;
   startBtn.disabled = files.length === 0;
 }
 
-// ================== بدء القراءة السريعة مع حماية ==================
+resetBtn.onclick = () => {
+  files = [];
+  fullText = "";
+  filesList.innerHTML = "";
+  statusBox.textContent = "— تم إعادة التعيين —";
+  startBtn.disabled = true;
+  buildBtn.disabled = true;
+  showTextBtn.style.display = "none";
+};
+
+// ================== باقي الكود (القراءة) ==================
 startBtn.onclick = async () => {
-  if (files.length === 0 || isClosed) return;
-
-  // حماية حجم الملف
-  const MAX_SIZE = 30 * 1024 * 1024; // 30 ميجا
-  if (files.some(f => f.size > MAX_SIZE)) {
-    statusBox.textContent = "⚠️ أحد الملفات كبير جداً (أكثر من 30 ميجا). يرجى تقليل الحجم.";
-    return;
-  }
-
+  if (files.length === 0) return;
   bar.style.width = "5%";
-  statusBox.textContent = "🔍 جارٍ استخراج النص بسرعة وأمان...";
+  statusBox.textContent = "🔍 جارٍ استخراج النص...";
   startBtn.disabled = true;
   fullText = "";
-
-  const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), ms));
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const ext = file.name.split('.').pop().toLowerCase();
-    let extracted = "لم يتم استخراج نص.";
+    let extracted = "";
 
     try {
-      const promise = (ext === "pdf") ? extractFromPDFFast(file) :
-                      (ext === "docx") ? extractFromDOCX(file) :
-                      (file.type.startsWith("image/")) ? extractFromImageFast(file) : 
-                      Promise.resolve("نوع الملف غير مدعوم.");
-
-      extracted = await Promise.race([promise, timeout(45000)]); // timeout 45 ثانية
+      if (ext === "pdf") extracted = await extractPDF(file);
+      else if (ext === "docx") extracted = await extractDOCX(file);
+      else if (file.type.startsWith("image/")) extracted = await extractImage(file);
+      else extracted = "نوع الملف غير مدعوم";
     } catch (e) {
-      extracted = `خطأ في معالجة ${file.name} — تم تخطيه.`;
-      console.error(e);
+      extracted = "خطأ في معالجة الملف";
     }
 
     fullText += `--- \( {file.name} ---\n \){extracted}\n\n`;
@@ -167,85 +152,54 @@ startBtn.onclick = async () => {
   }
 
   bar.style.width = "100%";
-  statusBox.textContent = "✅ تم استخراج النص بنجاح وبدون أخطاء";
+  statusBox.textContent = "✅ تم استخراج النص بنجاح";
   showTextBtn.style.display = "block";
   buildBtn.disabled = false;
-  analyzeContent();
 };
 
-// ================== الدوال المحسنة ==================
-async function extractFromPDFFast(file) {
+async function extractPDF(file) {
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
   let text = "";
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    text += content.items.map(item => item.str).join(" ") + "\n\n";
+    text += content.items.map(item => item.str).join(" ") + "\n";
   }
-  return text || "لم يتم استخراج نص من PDF.";
+  return text;
 }
 
-async function extractFromDOCX(file) {
+async function extractDOCX(file) {
   const arrayBuffer = await file.arrayBuffer();
   const result = await mammoth.extractRawText({arrayBuffer});
-  return result.value || "لم يتم استخراج نص من Word.";
+  return result.value || "";
 }
 
-async function extractFromImageFast(file) {
-  if (!worker) {
-    worker = await Tesseract.createWorker('ara', 1, {
-      logger: m => { if (m.status === 'recognizing text') console.log(m.progress); }
-    });
-  }
+async function extractImage(file) {
+  if (!worker) worker = await Tesseract.createWorker('ara', 1);
   const result = await worker.recognize(file);
-  return result.data.text || "لم يتم التعرف على نص في الصورة.";
-}
-
-function analyzeContent() {
-  const text = fullText.toLowerCase();
-  let idea = "استكشاف محتوى الملف المرفوع";
-  let q = "ماذا يتحدث عنه هذا الدرس في الكتاب؟";
-
-  if (/جمع|طرح|احسب|عدد|مثلث|دائرة/.test(text)) {
-    idea = "ربط العمليات الحسابية والأشكال بالمحتوى";
-    q = "كيف نحل المسألة باستخدام ما في الصفحة؟";
-  } else if (/حرف|كلمة|قصة|لغتنا الجميلة/.test(text)) {
-    idea = "تعلم الحروف والكلمات من نصوص الكتاب";
-    q = "ما الفكرة الرئيسية في النص؟";
-  }
-
-  currentIdea = idea;
-  currentQuestion = q;
-
-  document.getElementById("idea").textContent = `🔹 الفكرة: ${idea}`;
-  document.getElementById("question").textContent = `❓ السؤال: ${q}`;
+  return result.data.text || "";
 }
 
 buildBtn.onclick = () => {
-  if (isClosed) return;
-  const prepHTML = `
-<strong>التحضير التنفيذي العميق — المنهاج الفلسطيني</strong><br><br>
-<strong>الفكرة:</strong> ${currentIdea}<br><br>
-<strong>السؤال:</strong> ${currentQuestion}<br><br>
-<strong>سيناريو الحصة:</strong><br>
-1. عرض المحتوى من الملف.<br>
-2. طرح السؤال.<br>
-3. صمت واعٍ (١٥-٢٥ ثانية).<br>
-4. مشاركة الطلاب (محاولة واحدة).<br>
-5. تلخيص وإغلاق الحصة بهدوء.
+  const idea = "استكشاف محتوى الملف المرفوع";
+  const q = "ماذا يتحدث عنه هذا الدرس؟";
+  document.getElementById("idea").textContent = `🔹 الفكرة: ${idea}`;
+  document.getElementById("question").textContent = `❓ السؤال: ${q}`;
+  document.getElementById("prep").innerHTML = `
+    <strong>سيناريو الحصة:</strong><br>
+    1. عرض المحتوى من الملف<br>
+    2. طرح السؤال<br>
+    3. صمت واعٍ<br>
+    4. مشاركة الطلاب<br>
+    5. تلخيص وإغلاق الحصة
   `;
-  document.getElementById("prep").innerHTML = prepHTML;
 };
 
 showTextBtn.onclick = () => alert("النص الكامل المستخرج:\n\n" + fullText);
 
-function support(msg) { if (!isClosed) document.getElementById("support").textContent = msg; }
-function closeSession() {
-  isClosed = true;
-  statusBox.textContent = "✅ تم إغلاق الحصة";
-  startBtn.disabled = buildBtn.disabled = true;
-}
+function support(msg) { document.getElementById("support").textContent = msg; }
+function closeSession() { isClosed = true; }
 </script>
 </body>
 </html>
