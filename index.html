@@ -1,237 +1,211 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=١" />
-<title>الخبير التربوي المرافق — Classroom Companion</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الخبير التربوي المرافق</title>
 
 <style>
-:root {
-  --bg: #f٥f٦f٨;
-  --card: #ffffff;
-  --primary: #١f٤faa;
-  --secondary: #٢e٧d٣٢;
-  --muted: #٦b٧٢٨٠;
-  --border: #e٥e٧eb;
+:root{
+  --bg:#f7f9fc;
+  --card:#ffffff;
+  --primary:#2563eb;
+  --secondary:#16a34a;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --radius:16px;
 }
 
-body {
-  margin: ٠;
-  font-family: "Tahoma", "Segoe UI", Arial, sans-serif;
-  background: var(--bg);
-  color: #١f٢٩٣٧;
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Tahoma,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
 }
 
-.container {
-  max-width: ٨٠٠px;
-  margin: ٢rem auto;
-  padding: ٠ ١rem;
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:1.2rem;
 }
 
-.card {
-  background: var(--card);
-  border-radius: ١٢px;
-  padding: ١.٥rem;
-  margin-bottom: ١.٢rem;
-  box-shadow: ٠ ٨px ٢٤px rgba(٠,٠,٠,٠.٠٦);
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:1.4rem;
+  margin-bottom:1rem;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
 }
 
-h١, h٢ {
-  margin: ٠ ٠ ٠.٥rem ٠;
-  color: var(--primary);
+h1,h2{
+  margin:0 0 .6rem;
+  color:var(--primary);
 }
 
-p {
-  margin: ٠.٥rem ٠;
-  color: var(--muted);
-  line-height: ١.٦;
+p{
+  margin:.4rem 0;
+  color:var(--muted);
 }
 
-label {
-  display: block;
-  margin-top: ١rem;
-  font-weight: bold;
+.actions{
+  display:flex;
+  gap:.8rem;
+  flex-wrap:wrap;
 }
 
-input, textarea {
-  width: ١٠٠٪;
-  padding: ٠.٦rem;
-  margin-top: ٠.٣rem;
-  border-radius: ٨px;
-  border: ١px solid var(--border);
-  font-size: ١rem;
+button{
+  flex:1;
+  min-height:52px;
+  border:none;
+  border-radius:12px;
+  font-size:1rem;
+  cursor:pointer;
+  transition:.15s ease;
 }
 
-button {
-  margin-top: ١rem;
-  padding: ٠.٧rem ١.٢rem;
-  border: none;
-  border-radius: ١٠px;
-  font-size: ١rem;
-  cursor: pointer;
+.btn-primary{background:var(--primary);color:#fff}
+.btn-secondary{background:var(--secondary);color:#fff}
+.btn-ghost{background:#eef2ff;color:var(--primary)}
+
+button:active{transform:scale(.98)}
+
+label{
+  font-weight:600;
+  margin-top:1rem;
+  display:block;
 }
 
-.btn-primary { background: var(--primary); color: #ffffff; }
-.btn-secondary { background: var(--secondary); color: #ffffff; }
-.btn-ghost { background: transparent; color: var(--primary); }
-
-.hidden { display: none; }
-
-.footer {
-  text-align: center;
-  font-size: ٠.٩rem;
-  color: var(--muted);
-  margin-top: ٢rem;
+input,textarea{
+  width:100%;
+  margin-top:.4rem;
+  padding:.7rem .8rem;
+  border-radius:10px;
+  border:1px solid var(--border);
+  font-size:1rem;
 }
 
-/* ===== الطباعة الرسمية ===== */
-@media print {
-  body {
-    background: #ffffff;
-    color: #000000;
-  }
-  .container {
-    max-width: ١٠٠٪;
-    margin: ٠;
-    padding: ٠;
-  }
-  .card {
-    box-shadow: none;
-    border-radius: ٠;
-    page-break-inside: avoid;
-  }
-  button, .footer {
-    display: none !important;
-  }
-  h١, h٢ {
-    color: #000000;
-  }
-  input, textarea {
-    border: none;
-    padding: ٠;
-  }
-  .print-stamp {
-    display: block;
-  }
+.hidden{display:none}
+
+.lesson-buttons button{
+  margin-bottom:.6rem;
 }
 
-/* ===== ختم الطباعة ===== */
-.print-stamp {
-  display: none;
-  border-bottom: ٢px solid #000000;
-  margin-bottom: ١rem;
-  padding-bottom: ٠.٥rem;
+.log{
+  margin-top:1rem;
+  font-weight:700;
+  text-align:center;
 }
-.print-stamp h٣ {
-  margin: ٠;
-  font-size: ١.١rem;
+
+/* ====== الطباعة ====== */
+@media print{
+  body{background:#fff}
+  button,.actions,.footer{display:none!important}
+  .card{box-shadow:none}
 }
-.print-stamp p {
-  margin: ٠.٢rem ٠ ٠;
-  font-size: ٠.٩rem;
+
+/* ====== موبايل ====== */
+@media (max-width:600px){
+  h1{font-size:1.4rem}
+  h2{font-size:1.2rem}
+  button{min-height:56px}
 }
 </style>
 </head>
 
 <body>
+
 <div class="container">
 
-  <div class="card">
-    <h١>الخبير التربوي المرافق داخل الصف</h١>
-    <p>نظام صامت — يثبّت لحظة التعلّم ثم ينسحب.</p>
+<div class="card">
+  <h1>الخبير التربوي المرافق</h1>
+  <p>واجهة هادئة تثبّت التعلّم ثم تنسحب.</p>
+</div>
+
+<div class="card">
+  <h2>وضع التشغيل</h2>
+  <div class="actions">
+    <button class="btn-primary" onclick="openPrep()">وضع التحضير</button>
+    <button class="btn-ghost" onclick="openLesson()">وضع الحصّة</button>
   </div>
+</div>
 
-  <div class="card">
-    <h٢>وضع التشغيل</h٢>
-    <button class="btn-primary" onclick="activatePrep()">وضع التحضير</button>
-    <button class="btn-ghost" onclick="activateLesson()">وضع الحصّة</button>
-  </div>
+<!-- التحضير -->
+<div id="prep" class="card hidden">
+  <h2>تحضير الحصّة</h2>
 
-  <!-- وضع التحضير -->
-  <div id="prepMode" class="card hidden">
+  <label>اسم المدرسة</label>
+  <input id="school">
 
-    <div class="print-stamp">
-      <h٣ id="schoolPrint">—</h٣>
-      <p>
-        المعلّم/ة: <span id="teacherPrint">—</span> |
-        التاريخ: <span id="datePrint">—</span>
-      </p>
-    </div>
+  <label>اسم المعلّم/ة</label>
+  <input id="teacher">
 
-    <h٢>تحضير الحصّة</h٢>
+  <label>اسم الدرس</label>
+  <input id="lesson">
 
-    <label>اسم المدرسة (للطباعة)</label>
-    <input id="schoolInput" placeholder="اسم المدرسة الرسمي" />
+  <label>الفكرة الواحدة</label>
+  <textarea id="idea" rows="3"></textarea>
 
-    <label>اسم المعلّم/ة (للطباعة)</label>
-    <input id="teacherInput" placeholder="الاسم كما يُعتمد رسميًا" />
+  <label>السؤال الواحد</label>
+  <textarea id="question" rows="2"></textarea>
 
-    <label>اسم الدرس</label>
-    <input id="lessonName" placeholder="مثال: الجمع حتى ١٠" />
-
-    <label>الفكرة الواحدة من الكتاب</label>
-    <textarea id="idea" rows="٣"></textarea>
-
-    <label>السؤال الواحد</label>
-    <textarea id="question" rows="٢"></textarea>
-
+  <div class="actions">
     <button class="btn-secondary" onclick="lockPrep()">اعتماد التحضير</button>
-    <button class="btn-ghost" onclick="preparePrint()">طباعة التحضير الرسمي</button>
-
-    <p id="prepDone" class="hidden">✅ تم اعتماد التحضير.</p>
+    <button class="btn-ghost" onclick="printPrep()">طباعة</button>
   </div>
 
-  <!-- وضع الحصّة -->
-  <div id="lessonMode" class="card hidden">
-    <h٢>الحصّة الصفيّة</h٢>
+  <p id="prepMsg" class="hidden">✅ التحضير جاهز.</p>
+</div>
 
-    <button class="btn-primary" onclick="announce('اطرح السؤال')">اطرح السؤال</button>
-    <button class="btn-ghost" onclick="announce('صمت')">صمت</button>
-    <button class="btn-ghost" onclick="announce('ارجع للسؤال')">ارجع للسؤال</button>
-    <button class="btn-secondary" onclick="closeLesson()">نُطقت الفكرة — أُغلقت الحصّة</button>
+<!-- الحصّة -->
+<div id="lessonBox" class="card hidden">
+  <h2>الحصّة الصفيّة</h2>
 
-    <p id="lessonLog" class="hidden"></p>
+  <div class="lesson-buttons">
+    <button class="btn-primary" onclick="log('اطرح السؤال')">اطرح السؤال</button>
+    <button class="btn-ghost" onclick="log('صمت')">صمت</button>
+    <button class="btn-ghost" onclick="log('ارجع للسؤال')">ارجع للسؤال</button>
+    <button class="btn-secondary" onclick="log('نُطقت الفكرة — أُغلقت الحصّة')">إغلاق</button>
   </div>
 
-  <div class="footer">
-    نسخة مكتملة • الاستقرار قبل التوسّع
-  </div>
+  <div id="lessonLog" class="log hidden"></div>
+</div>
+
+<div class="footer" style="text-align:center;color:var(--muted);font-size:.9rem">
+نسخة مكتملة • مريحة • صديقة للمعلّم
+</div>
 
 </div>
 
 <script>
-let prepLocked = false;
+let ready=false;
 
-function activatePrep() {
-  document.getElementById('prepMode').classList.remove('hidden');
-  document.getElementById('lessonMode').classList.add('hidden');
+function openPrep(){
+  prep.classList.remove("hidden");
+  lessonBox.classList.add("hidden");
 }
 
-function activateLesson() {
-  if (!prepLocked) return;
-  document.getElementById('lessonMode').classList.remove('hidden');
-  document.getElementById('prepMode').classList.add('hidden');
+function openLesson(){
+  if(!ready) return;
+  lessonBox.classList.remove("hidden");
+  prep.classList.add("hidden");
 }
 
-function lockPrep() {
-  if (!lessonName.value || !idea.value || !question.value) return;
-  prepLocked = true;
-  prepDone.classList.remove('hidden');
+function lockPrep(){
+  if(!lesson.value || !idea.value || !question.value) return;
+  ready=true;
+  prepMsg.classList.remove("hidden");
 }
 
-function announce(text) {
-  lessonLog.textContent = text;
-  lessonLog.classList.remove('hidden');
+function log(text){
+  lessonLog.textContent=text;
+  lessonLog.classList.remove("hidden");
 }
 
-function closeLesson() {
-  lessonLog.textContent = '✅ تم الإغلاق المهني. يُمنع الاستمرار.';
-}
-
-function preparePrint() {
-  schoolPrint.textContent = schoolInput.value || '—';
-  teacherPrint.textContent = teacherInput.value || '—';
-  datePrint.textContent = new Date().toLocaleDateString('ar');
+function printPrep(){
   window.print();
 }
 </script>
