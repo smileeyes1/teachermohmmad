@@ -1,114 +1,21 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html dir="rtl" lang="ar">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>الخبير التربوي المرافق — الكتاب هو المنهاج</title>
-
-<style>
-:root{
-  --bg:#f7f9fc; --card:#fff; --main:#1d4ed8; --accent:#16a34a;
-  --soft:#eef2ff; --text:#1f2937; --muted:#6b7280; --radius:18px;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);
-  font-family:Tahoma,Arial,sans-serif;line-height:1.7}
-.wrapper{max-width:980px;margin:auto;padding:20px}
-.card{background:var(--card);border-radius:16px;padding:24px;
-  margin-bottom:20px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
-h1,h2,h3{color:var(--main);margin-top:0}
-.notice{background:#f8fafc;border-right:5px solid var(--accent);
-  padding:14px;border-radius:10px;margin:10px 0}
-button{width:100%;height:54px;border:none;border-radius:14px;
-  background:#eef2ff;color:#1d4ed8;font-size:16px;cursor:pointer;margin-top:10px}
-button.primary{background:var(--main);color:white}
-button.disabled{opacity:.4;pointer-events:none}
-.hidden{display:none}
-.step{margin-top:8px;padding:12px;border-radius:10px;background:#f0fdf4}
-</style>
+    <meta charset="UTF-8">
+    <title>تطبيق رُتـب - v∞</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f4f8; text-align: center; color: #2c3e50; }
+        .card { background: white; margin: 20px auto; padding: 20px; border-radius: 15px; width: 80%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-top: 5px solid #27ae60; }
+        h1 { color: #27ae60; }
+        .digit { font-size: 2em; font-weight: bold; color: #e67e22; }
+    </style>
 </head>
-
 <body>
-<div class="wrapper">
-
-<!-- الهوية -->
-<div class="card">
-<h1>الخبير التربوي المرافق</h1>
-<p>
-نظام إرشادي ضابط يعمل حرفيًا من الكتاب المدرسي،  
-يحترم تسلسله، ويعامل كل درس كحالة خاصة،  
-ويرفع العبء عن المعلّم دون طلب أي تعبئة.
-</p>
-</div>
-
-<!-- اعتماد الكتاب -->
-<div class="card">
-<h2>اعتماد الكتاب (مرجع حاكم)</h2>
-<div class="notice">
-افتح الكتاب أمامك.  
-النظام لا يقرأ المحتوى، بل يسير داخل تسلسله كما هو.
-</div>
-<button class="primary" onclick="showStructure()">تم اعتماد الكتاب</button>
-</div>
-
-<!-- تسلسل الكتاب -->
-<div id="structure" class="card hidden">
-<h2>تسلسل الكتاب (قراءة فقط)</h2>
-<div class="notice">الوحدات والدروس كما في الكتاب دون تعديل.</div>
-
-<button onclick="openLesson('L1')">الوحدة ١ – الدرس ١</button>
-<button onclick="openLesson('L2')">الوحدة ١ – الدرس ٢</button>
-<button onclick="openLesson('L3')">الوحدة ٢ – الدرس ١</button>
-</div>
-
-<!-- درس ١ -->
-<div id="L1" class="card hidden">
-<h2>الدرس الحالي: مفهوم بسيط</h2>
-<div class="notice">
-تحصين الدرس: منع الإطالة – السماح بالإغلاق المبكر.
-</div>
-<button>طرح سؤال مباشر</button>
-<button>صمت قصير</button>
-<button class="primary">إغلاق عند أول نطق صحيح</button>
-</div>
-
-<!-- درس ٢ -->
-<div id="L2" class="card hidden">
-<h2>الدرس الحالي: مفهوم متراكب</h2>
-<div class="notice">
-تحصين الدرس: منع الشرح المطوّل – إبطاء الإيقاع.
-</div>
-<button>سؤال جزئي</button>
-<button>العودة للنص</button>
-<button>صمت أطول (موصى به)</button>
-<button class="disabled">إغلاق (غير ناضج بعد)</button>
-</div>
-
-<!-- درس ٣ -->
-<div id="L3" class="card hidden">
-<h2>الدرس الحالي: نص / قراءة</h2>
-<div class="notice">
-تحصين الدرس: منع الاستنتاج المبكر – دعم الصمت.
-</div>
-<button>قراءة صامتة</button>
-<button>سؤال واحد عن المعنى</button>
-<button class="primary">إغلاق بدون شرح</button>
-</div>
-
-</div>
-
-<script>
-function showStructure(){
-  document.getElementById('structure').classList.remove('hidden');
-}
-function openLesson(id){
-  ['L1','L2','L3'].forEach(x=>{
-    const el=document.getElementById(x);
-    if(el) el.classList.add('hidden');
-  });
-  document.getElementById(id).classList.remove('hidden');
-}
-</script>
-
+    <div class="card">
+        <h1>تطبيق رُتـب (Rotab)</h1>
+        <p>مرحباً بك يا سيد (أبو الوجيه) في نظام السيادة المشرقية</p>
+        <div class="digit">٠١٢٣٤٥٦٧٨٩</div>
+        <p>الحالة: متصل بنظام v∞</p>
+    </div>
 </body>
 </html>
