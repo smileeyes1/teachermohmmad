@@ -2,20 +2,89 @@
 <html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>تطبيق رُتـب - v∞</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رُتـب السيادية - v∞</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f0f4f8; text-align: center; color: #2c3e50; }
-        .card { background: white; margin: 20px auto; padding: 20px; border-radius: 15px; width: 80%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-top: 5px solid #27ae60; }
-        h1 { color: #27ae60; }
-        .digit { font-size: 2em; font-weight: bold; color: #e67e22; }
+        :root { --p: #27ae60; --s: #e67e22; --d: #2c3e50; --l: #f4f7f6; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--l); margin: 0; padding: 0; }
+        header { background: var(--p); color: white; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .container { max-width: 600px; margin: 20px auto; padding: 15px; }
+        .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border-right: 8px solid var(--s); }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        button { background: var(--d); color: white; border: none; padding: 15px; border-radius: 10px; font-size: 16px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        button:hover { filter: brightness(1.2); }
+        .score { font-size: 45px; color: var(--p); font-weight: bold; margin: 10px 0; }
+        .log-box { background: #333; color: #0f0; padding: 15px; border-radius: 10px; height: 150px; overflow-y: auto; font-family: monospace; text-align: right; font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        input { width: 90%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
+
+<header>
+    <h1>رُتـب (Rotab) | السيادة v∞</h1>
+    <p>القائد الميداني: أبو الوجيه 👑</p>
+</header>
+
+<div class="container">
     <div class="card">
-        <h1>تطبيق رُتـب (Rotab)</h1>
-        <p>مرحباً بك يا سيد (أبو الوجيه) في نظام السيادة المشرقية</p>
-        <div class="digit">٠١٢٣٤٥٦٧٨٩</div>
-        <p>الحالة: متصل بنظام v∞</p>
+        <h3>رصيد الرتب السيادي</h3>
+        <div class="score" id="mainScore">٠٠٠٠</div>
+        <p>إجمالي نقاط الارتقاء الممنوحة</p>
     </div>
+
+    <div class="card">
+        <h3>المعلم البديل - إدارة الصف</h3>
+        <input type="text" id="stdName" placeholder="اسم الطالب...">
+        <div class="btn-grid">
+            <button onclick="action('ترقية', ١٠)">⭐ منح ١٠ نقاط</button>
+            <button onclick="action('تنبيه', ٠)" style="background: #c0392b;">⚠️ تنبيه سلوكي</button>
+            <button onclick="action('هدوء', ٠)">🤫 وضع الهدوء</button>
+            <button onclick="action('تحدي', ٥)">🔢 تحدي الحساب</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>سجل العمليات اللحظي (v∞)</h3>
+        <div class="log-box" id="sysLog">النظام جاهز للسيطرة... الأرقام المشرقية نشطة.</div>
+    </div>
+
+    <div class="card">
+        <h3>قائمة التميز (عاطوف / رقي)</h3>
+        <table id="rankTable">
+            <tr><th>الطالب</th><th>الرتبة</th><th>النقاط</th></tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    let pts = 0;
+    const mash = "٠١٢٣٤٥٦٧٨٩";
+    function toM(n) { return n.toString().replace(/\d/g, d => mash[d]); }
+    
+    function action(type, val) {
+        const name = document.getElementById('stdName').value || "طالب مجهول";
+        pts += val;
+        document.getElementById('mainScore').innerText = toM(pts);
+        log(`تم تنفيذ [${type}] لـ (${name}) بقيمة ${toM(val)}`);
+        if(val > 0) updateTable(name, val);
+    }
+
+    function log(m) {
+        const lb = document.getElementById('sysLog');
+        const t = new Date().toLocaleTimeString('ar-EG');
+        lb.innerHTML = `> [${t}] ${m}<br>` + lb.innerHTML;
+    }
+
+    function updateTable(n, v) {
+        const tbl = document.getElementById('rankTable');
+        const row = tbl.insertRow(1);
+        row.insertCell(0).innerText = n;
+        row.insertCell(1).innerText = "مرتقي";
+        row.insertCell(2).innerText = toM(v);
+    }
+</script>
+
 </body>
 </html>
