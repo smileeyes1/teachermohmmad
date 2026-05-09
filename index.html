@@ -3,88 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رُتـب السيادية - v∞</title>
+    <title>رُتـب v∞ | المعلم البديل الناطق</title>
     <style>
-        :root { --p: #27ae60; --s: #e67e22; --d: #2c3e50; --l: #f4f7f6; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--l); margin: 0; padding: 0; }
-        header { background: var(--p); color: white; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .container { max-width: 600px; margin: 20px auto; padding: 15px; }
-        .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border-right: 8px solid var(--s); }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        button { background: var(--d); color: white; border: none; padding: 15px; border-radius: 10px; font-size: 16px; cursor: pointer; transition: 0.3s; font-weight: bold; }
-        button:hover { filter: brightness(1.2); }
-        .score { font-size: 45px; color: var(--p); font-weight: bold; margin: 10px 0; }
-        .log-box { background: #333; color: #0f0; padding: 15px; border-radius: 10px; height: 150px; overflow-y: auto; font-family: monospace; text-align: right; font-size: 13px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        input { width: 90%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc; }
+        :root { --p: #27ae60; --s: #e67e22; --d: #2c3e50; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 15px; }
+        .card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-bottom: 20px; border-right: 10px solid var(--s); }
+        .btn { background: var(--d); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; transition: 0.3s; }
+        .btn-p { background: var(--p); }
+        .mashriqi { font-size: 30px; color: var(--p); font-weight: 900; }
+        input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #ddd; box-sizing: border-box; }
+        .std-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px; border-radius: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
-
-<header>
-    <h1>رُتـب (Rotab) | السيادة v∞</h1>
-    <p>القائد الميداني: أبو الوجيه 👑</p>
-</header>
-
-<div class="container">
     <div class="card">
-        <h3>رصيد الرتب السيادي</h3>
-        <div class="score" id="mainScore">٠٠٠٠</div>
-        <p>إجمالي نقاط الارتقاء الممنوحة</p>
+        <h2>نظام المعلم البديل (أبو الوجيه)</h2>
+        <input type="text" id="n" placeholder="اسم الطالب الجديد...">
+        <button class="btn btn-p" onclick="add()">➕ إضافة طالب + نطق ترحيبي</button>
+        <button class="btn" style="background:#c0392b" onclick="emergency()">🚨 تفعيل نداء الطوارئ</button>
     </div>
 
-    <div class="card">
-        <h3>المعلم البديل - إدارة الصف</h3>
-        <input type="text" id="stdName" placeholder="اسم الطالب...">
-        <div class="btn-grid">
-            <button onclick="action('ترقية', ١٠)">⭐ منح ١٠ نقاط</button>
-            <button onclick="action('تنبيه', ٠)" style="background: #c0392b;">⚠️ تنبيه سلوكي</button>
-            <button onclick="action('هدوء', ٠)">🤫 وضع الهدوء</button>
-            <button onclick="action('تحدي', ٥)">🔢 تحدي الحساب</button>
-        </div>
-    </div>
+    <div id="list"></div>
 
-    <div class="card">
-        <h3>سجل العمليات اللحظي (v∞)</h3>
-        <div class="log-box" id="sysLog">النظام جاهز للسيطرة... الأرقام المشرقية نشطة.</div>
-    </div>
+    <script>
+        const m = "٠١٢٣٤٥٦٧٨٩";
+        const conv = n => n.toString().replace(/\d/g, d => m[d]);
+        let data = JSON.parse(localStorage.getItem('rotab_full')) || [];
 
-    <div class="card">
-        <h3>قائمة التميز (عاطوف / رقي)</h3>
-        <table id="rankTable">
-            <tr><th>الطالب</th><th>الرتبة</th><th>النقاط</th></tr>
-        </table>
-    </div>
-</div>
+        function speak(t) {
+            let s = new SpeechSynthesisUtterance(t);
+            s.lang = 'ar-SA'; s.rate = 0.9;
+            window.speechSynthesis.speak(s);
+        }
 
-<script>
-    let pts = 0;
-    const mash = "٠١٢٣٤٥٦٧٨٩";
-    function toM(n) { return n.toString().replace(/\d/g, d => mash[d]); }
-    
-    function action(type, val) {
-        const name = document.getElementById('stdName').value || "طالب مجهول";
-        pts += val;
-        document.getElementById('mainScore').innerText = toM(pts);
-        log(`تم تنفيذ [${type}] لـ (${name}) بقيمة ${toM(val)}`);
-        if(val > 0) updateTable(name, val);
-    }
+        function save() { localStorage.setItem('rotab_full', JSON.stringify(data)); render(); }
 
-    function log(m) {
-        const lb = document.getElementById('sysLog');
-        const t = new Date().toLocaleTimeString('ar-EG');
-        lb.innerHTML = `> [${t}] ${m}<br>` + lb.innerHTML;
-    }
+        function add() {
+            let name = document.getElementById('n').value;
+            if(name) {
+                data.push({name: name, pts: 0});
+                speak("تم إضافة الطالب " + name + " لنظام رتب السيادي");
+                document.getElementById('n').value=''; save();
+            }
+        }
 
-    function updateTable(n, v) {
-        const tbl = document.getElementById('rankTable');
-        const row = tbl.insertRow(1);
-        row.insertCell(0).innerText = n;
-        row.insertCell(1).innerText = "مرتقي";
-        row.insertCell(2).innerText = toM(v);
-    }
-</script>
+        function up(i) {
+            data[i].pts += 10;
+            speak("عشر نقاط ارتقاء للطالب " + data[i].name);
+            save();
+        }
 
+        function emergency() {
+            speak("انتباه يا طلاب مدرسة عاطوف، المعلم أبو الوجيه يراقبكم، التزموا الهدوء وابدأوا بحل التمارين فوراً");
+        }
+
+        function render() {
+            document.getElementById('list').innerHTML = data.map((s, i) => `
+                <div class="std-item">
+                    <div><b>${s.name}</b></div>
+                    <div class="mashriqi">${conv(s.pts)}</div>
+                    <button class="btn" style="width:auto" onclick="up(${i})">⭐ +١٠</button>
+                </div>
+            `).join('');
+        }
+        render();
+    </script>
 </body>
 </html>
