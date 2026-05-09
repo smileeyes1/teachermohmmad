@@ -1,72 +1,16 @@
-<!DOCTYPE html>
-<html dir="rtl" lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رُتـب v∞ | المعلم البديل الناطق</title>
-    <style>
-        :root { --p: #27ae60; --s: #e67e22; --d: #2c3e50; --bg: #f4f7f6; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 15px; }
-        .card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-bottom: 20px; border-right: 10px solid var(--s); }
-        .btn { background: var(--d); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; transition: 0.3s; }
-        .btn-p { background: var(--p); }
-        .mashriqi { font-size: 30px; color: var(--p); font-weight: 900; }
-        input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #ddd; box-sizing: border-box; }
-        .std-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px; border-radius: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <h2>نظام المعلم البديل (أبو الوجيه)</h2>
-        <input type="text" id="n" placeholder="اسم الطالب الجديد...">
-        <button class="btn btn-p" onclick="add()">➕ إضافة طالب + نطق ترحيبي</button>
-        <button class="btn" style="background:#c0392b" onclick="emergency()">🚨 تفعيل نداء الطوارئ</button>
-    </div>
+console.log("AI SYSTEM STARTED ✔");
 
-    <div id="list"></div>
+// اختبار بسيط للتأكد أن النظام يعمل
+function runSystem(input) {
 
-    <script>
-        const m = "٠١٢٣٤٥٦٧٨٩";
-        const conv = n => n.toString().replace(/\d/g, d => m[d]);
-        let data = JSON.parse(localStorage.getItem('rotab_full')) || [];
+  console.log("INPUT:", input);
 
-        function speak(t) {
-            let s = new SpeechSynthesisUtterance(t);
-            s.lang = 'ar-SA'; s.rate = 0.9;
-            window.speechSynthesis.speak(s);
-        }
+  let output = "تم استلام الطلب: " + input;
 
-        function save() { localStorage.setItem('rotab_full', JSON.stringify(data)); render(); }
+  console.log("OUTPUT:", output);
 
-        function add() {
-            let name = document.getElementById('n').value;
-            if(name) {
-                data.push({name: name, pts: 0});
-                speak("تم إضافة الطالب " + name + " لنظام رتب السيادي");
-                document.getElementById('n').value=''; save();
-            }
-        }
+  return output;
+}
 
-        function up(i) {
-            data[i].pts += 10;
-            speak("عشر نقاط ارتقاء للطالب " + data[i].name);
-            save();
-        }
-
-        function emergency() {
-            speak("انتباه يا طلاب مدرسة عاطوف، المعلم أبو الوجيه يراقبكم، التزموا الهدوء وابدأوا بحل التمارين فوراً");
-        }
-
-        function render() {
-            document.getElementById('list').innerHTML = data.map((s, i) => `
-                <div class="std-item">
-                    <div><b>${s.name}</b></div>
-                    <div class="mashriqi">${conv(s.pts)}</div>
-                    <button class="btn" style="width:auto" onclick="up(${i})">⭐ +١٠</button>
-                </div>
-            `).join('');
-        }
-        render();
-    </script>
-</body>
-</html>
+// تشغيل تجريبي
+runSystem("ابدأ النظام");
