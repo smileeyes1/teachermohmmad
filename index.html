@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autonomous Educational Intelligence Compiler (AEIC)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- خلفية تفاعلية جمالية مبدعة -->
+    <div class="ambient-glow no-print"></div>
+
+    <div class="app-container no-print">
+        <!-- الترويسة المدمجة الذكية بتنسيق فليكس بوكس إبداعي -->
+        <header class="app-header-creative">
+            <div class="header-identity">
+                <div class="logo-pulse">⚡</div>
+                <div class="title-block">
+                    <h1>Autonomous Educational Intelligence Compiler</h1>
+                    <p class="subtitle">النظام السيادي الموحد لإنتاج التخطيط المعرفي وهندسة المخرجات التربوية المتقدمة</p>
+                </div>
+            </div>
+            <div class="system-badge-container">
+                <span class="badge-core neon-glow">الإصدار v٣.٥</span>
+                <span class="badge-status-dot" id="globalStatusIndicator">جاهز للتحليل</span>
+            </div>
+        </header>
+
+        <!-- لوحة التحكم الإدارية والهندسية الحية -->
+        <main class="compiler-workspace">
+            <!-- بوابات الربط والتحكم بالمفاتيح ونماذج الذكاء -->
+            <section class="glass-panel gateway-configuration">
+                <div class="panel-header-creative">
+                    <h3><span class="icon-span">🔌</span> بوابات الاتصال الهجينة والذكاء الحقيقي</h3>
+                    <p class="panel-desc">تحكم بمسار المعالجة بين المنطق المحلي ومحرك الإدراك الفوري الفائق</p>
+                </div>
+
+                <div class="api-key-container">
+                    <label for="geminiApiKey" class="floating-label">رمز الوصول السري لنموذج (Google Gemini API Key):</label>
+                    <div class="input-with-icon">
+                        <input type="password" id="geminiApiKey" placeholder="أدخل رمز الـ API الفعلي هنا للربط المباشر بالذكاء التوليدي الحقيقي..." autocomplete="new-password">
+                        <button type="button" id="toggleKeyVisibility" class="btn-icon-toggle" title="إظهار/إخفاء المفتاح">👁️</button>
+                    </div>
+                    <p class="input-tip">💡 في حال عدم إدخال مفتاح، سينشط تلقائياً <strong>محرك القواعد الديناميكي المحلي المحكم</strong> لضمان استقرار الإنتاج.</p>
+                </div>
+
+                <div class="engine-selector-grid">
+                    <div class="engine-status-card active" id="cardLocalEngine">
+                        <div class="card-indicator"></div>
+                        <div class="card-body">
+                            <h5>Dynamic Rule Logic</h5>
+                            <p>المعالج الرياضي المحلي</p>
+                        </div>
+                        <span class="mini-status">نشط افتراضي</span>
+                    </div>
+                    
+                    <div class="engine-status-card" id="cardGeminiEngine">
+                        <div class="card-indicator"></div>
+                        <div class="card-body">
+                            <h5>Gemini-2.5-Flash Core</h5>
+                            <p>الإدراك المعرفي التوليدي الحقيقي</p>
+                        </div>
+                        <span class="mini-status" id="geminiStatusText">غير متصل</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- طبقة مدخلات المعلم المعرفية -->
+            <section class="glass-panel inputs-configuration">
+                <div class="panel-header-creative">
+                    <h3><span class="icon-span">📥</span> طبقة مدخلات البنية المعرفية / Input Layer</h3>
+                    <p class="panel-desc">تحديد المحاور الجوهرية لتفكيك المحتوى وبناء المسار التعليمي المتدرج</p>
+                </div>
+
+                <div class="inputs-grid-creative">
+                    <div class="input-field-group">
+                        <label for="subjectInput">المادة الدراسية المستهدفة:</label>
+                        <input type="text" id="subjectInput" placeholder="مثال: الرياضيات، العلوم الحياتية، اللغة العربية...">
+                    </div>
+
+                    <div class="input-field-group">
+                        <label for="gradeInput">الصف والمستوى الإدراكي:</label>
+                        <select id="gradeInput">
+                            <option value="١">الصف الأول الابتدائي (التأسيس الحسي البصري)</option>
+                            <option value="٢">الصف الثاني الابتدائي (التأسيس الحسي البصري)</option>
+                            <option value="٣">الصف الثالث الابتدائي (التأسيس الحسي البصري)</option>
+                            <option value="٤">الصف الرابع الابتدائي (النمو المفاهيمي والسياقي)</option>
+                            <option value="٥">الصف الخامس الابتدائي (النمو المفاهيمي والسياقي)</option>
+                            <option value="٦">الصف السادس الابتدائي (النمو المفاهيمي والسياقي)</option>
+                            <option value="٧">الصف السابع الأساسي (التحليل والاستنتاج التجريدي)</option>
+                            <option value="٨">الصف الثامن الأساسي (التحليل والاستنتاج التجريدي)</option>
+                            <option value="٩">الصف التاسع الأساسي (التحليل والاستنتاج التجريدي)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-field-group">
+                    <label for="topicInput">الموضوع المعرفي المراد صياغته (عنوان الدرس وجوهره):</label>
+                    <input type="text" id="topicInput" placeholder="مثال: خصائص المغناطيس، الجملة الفعلية، ضرب الأعداد الكسرية...">
+                </div>
+
+                <!-- زر التشغيل المبتكر مع مؤشر المعالجة -->
+                <div class="action-trigger-zone">
+                    <button id="compileBtn" class="btn-compile-neon">
+                        <span class="btn-text">⚡ تشغيل المجمع البرمجي وبناء الوثيقة الأكاديمية</span>
+                        <div class="btn-loader hidden" id="btnLoader"></div>
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- واجهة التحميل والتفكير ثلاثية الأبعاد المؤتمتة -->
+        <div class="loading-overlay-creative hidden" id="loadingOverlay">
+            <div class="spinner-cube-box">
+                <div class="cube-spinner">
+                    <div class="face front">AEIC</div>
+                    <div class="face back">AI</div>
+                    <div class="face right">CORE</div>
+                    <div class="face left">DATA</div>
+                    <div class="face top">PRINT</div>
+                    <div class="face bottom">RTL</div>
+                </div>
+                <h4 id="loadingStepText">جاري استدعاء عقل المعالجة الإدراكية وتفكيك المدخلات المعرفية...</h4>
+                <p>يتم الآن صياغة الأهداف والأنشطة المتدرجة وضبط الأرقام المشرقية</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- طبقة مخرجات مستند الـ A4 الاحترافي الصارم المخصص للطباعة المادية وعزل عناصر الويب -->
+    <div id="outputPrintArea" class="output-sheet-wrapper hidden">
+        <div class="print-control-bar no-print">
+            <button id="printBtn" class="btn-action-success">🖨️ طباعة المستند الفورية المباشرة (A4)</button>
+            <button id="backBtn" class="btn-action-neutral">🔄 العودة وتعديل المدخلات السياقية</button>
+        </div>
+
+        <!-- وثيقة التحضير الرسمية النظيفة والأكاديمية التامة للطلاب والمشرفين -->
+        <article class="a4-academic-document" id="printableDocumentBody">
+            <header class="academic-header">
+                <div class="institution-meta">
+                    <p class="strong-text">وزارة التربية والتعليم</p>
+                    <p>منصة التوليد والاستقصاء المعرفي التكيفي (AEIC)</p>
+                </div>
+                <div class="document-main-title">
+                    <h2>وثيقة تخطيط وتحضير الدروس المتكاملة المستدامة</h2>
+                    <p class="document-subtitle">مسار تعليمي متدرج من المحسوس إلى المجرد هندسة بنائية كاملة</p>
+                </div>
+                <div class="document-crypto-meta">
+                    <p class="strong-text" id="docDateDisplay">التاريخ المرجعي: ٢٠٢٦/٠٥/١٨</p>
+                    <p id="docSystemId">معرف النظام: AEIC-ـ</p>
+                </div>
+            </header>
+
+            <hr class="academic-double-line">
+
+            <!-- طبقة البيانات الوصفية والسياقية المتولدة آلياً -->
+            <table class="academic-meta-table">
+                <tr>
+                    <th>المادة الدراسية</th>
+                    <td id="docSubject">ـ</td>
+                    <th>الصف والتربة الإدراكية</th>
+                    <td id="docGrade">ـ</td>
+                </tr>
+                <tr>
+                    <th>موضوع وعنوان الدرس</th>
+                    <td id="docTopic" colspan="3">ـ</td>
+                </tr>
+                <tr>
+                    <th>طبيعة وسياق المحتوى</th>
+                    <td id="docContextType">ـ</td>
+                    <th>درجة التعقيد التربوي</th>
+                    <td id="docComplexity">ـ</td>
+                </tr>
+            </table>
+
+            <!-- المحتوى المعرفي المتولد من عقل الذكاء أو محرك القواعد -->
+            <section class="academic-section">
+                <h4>١. الأهداف السلوكية الإجرائية صياغة ذكية (SMART Objectives)</h4>
+                <ul id="docObjectives" class="academic-list"></ul>
+            </section>
+
+            <section class="academic-section">
+                <h4>٢. التمهيد والربط بالسياق الحياتي واليومي (Contextual Induction)</h4>
+                <p id="docInduction" class="academic-text-paragraph"></p>
+            </section>
+
+            <section class="academic-section">
+                <h4>٣. مسار التعليم المتدرج الهرمي البنائي (Scaffolded Learning Path)</h4>
+                <div id="docScaffolding" class="scaffolding-block-wrapper"></div>
+            </section>
+
+            <section class="academic-section">
+                <h4>٤. مصفوفة الأنشطة التنفيذية المتمايزة (Pedagogical Activities Matrix)</h4>
+                <div id="docActivities" class="activities-grid-box"></div>
+            </section>
+
+            <section class="academic-section">
+                <h4>٥. منظومة التقويم التشخيصي والختامي متعدد المستويات (Differentiated Evaluation)</h4>
+                <div id="docEvaluation" class="evaluation-grid-box"></div>
+            </section>
+
+            <section class="academic-section">
+                <h4>٦. الامتداد المعرفي التكيفي والواجب المنزلي الإجرائي (Cognitive Homework)</h4>
+                <p id="docHomework" class="academic-text-paragraph"></p>
+            </section>
+
+            <footer class="academic-footer">
+                <p>تم التدقيق، التوليد، وبناء المعمارية التعليمية والمحتوى آلياً بالكامل عبر نظام AEIC السيادي الموحد - متوافق توافقاً تاماً مع معايير المنهاج الفلسطيني والطباعة الرسمية.</p>
+            </footer>
+        </article>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

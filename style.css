@@ -1,0 +1,598 @@
+/* إعدادات المتغيرات اللونية والهندسة البصرية المتطورة للواجهة */
+:root {
+    --primary-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    --accent-glow-color: rgba(37, 99, 235, 0.15);
+    --neon-blue: #3b82f6;
+    --neon-green: #10b981;
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+    --panel-bg: rgba(255, 255, 255, 0.85);
+    --panel-border: rgba(203, 213, 225, 0.6);
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f8fafc;
+    color: #334155;
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+    text-align: right;
+    overflow-x: hidden;
+}
+
+/* وهج خلفي جمالي ومبتكر لإعطاء واجهة برمجية فائقة التطور */
+.ambient-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--accent-glow-color) 0%, rgba(255,255,255,0) 70%);
+    top: -200px;
+    right: -200px;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.app-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+/* ترويسة أفقية متطورة ومدمجة Flexbox */
+.app-header-creative {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--primary-gradient);
+    padding: 24px 32px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.header-identity {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo-pulse {
+    background: rgba(255, 255, 255, 0.1);
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    animation: pulseGlow 2s infinite alternate;
+}
+
+@keyframes pulseGlow {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+    100% { transform: scale(1.05); box-shadow: 0 0 15px 5px rgba(59, 130, 246, 0.2); }
+}
+
+.title-block h1 {
+    color: #ffffff;
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.title-block .subtitle {
+    color: #94a3b8;
+    margin: 6px 0 0 0;
+    font-size: 13.5px;
+}
+
+.system-badge-container {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.badge-core {
+    background: #2563eb;
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.badge-core.neon-glow {
+    box-shadow: 0 0 12px rgba(37, 99, 235, 0.6);
+}
+
+.badge-status-dot {
+    background: rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.badge-status-dot::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 50%;
+}
+
+.badge-status-dot.active-live::before {
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+}
+
+/* بيئة العمل المقسمة والموزعة بدقة Software Engineering Architecture */
+.compiler-workspace {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 24px;
+}
+
+@media (max-width: 960px) {
+    .compiler-workspace { grid-template-columns: 1fr; }
+}
+
+/* لوحات الزجاج الكريستالية المبتكرة Glassmorphism */
+.glass-panel {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-panel:hover {
+    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.08);
+}
+
+.panel-header-creative {
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+}
+
+.panel-header-creative h3 {
+    margin: 0;
+    font-size: 16.5px;
+    color: var(--text-dark);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.panel-desc {
+    margin: 4px 0 0 0;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* تصميم حقل المفتاح السري والإدخال الفائق المبتكر */
+.api-key-container {
+    background: #f1f5f9;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 20px;
+}
+
+.floating-label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon input {
+    width: 100%;
+    padding: 12px 14px 12px 44px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 13.5px;
+    background: #ffffff;
+    color: #0f172a;
+    box-sizing: border-box;
+    transition: all 0.2s;
+}
+
+.input-with-icon input:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.btn-icon-toggle {
+    position: absolute;
+    left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    color: #64748b;
+}
+
+.input-tip {
+    margin: 8px 0 0 0;
+    font-size: 11.5px;
+    color: #475569;
+}
+
+/* شبكة محركات المعالجة */
+.engine-selector-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.engine-status-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.engine-status-card .card-indicator {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #cbd5e1;
+}
+
+.engine-status-card.active {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+
+.engine-status-card.active .card-indicator {
+    background: #2563eb;
+    box-shadow: 0 0 6px #2563eb;
+}
+
+.engine-status-card.live-api {
+    border-color: #10b981;
+    background: #ecfdf5;
+}
+
+.engine-status-card.live-api .card-indicator {
+    background: #10b981;
+    box-shadow: 0 0 6px #10b981;
+}
+
+.engine-status-card h5 {
+    margin: 0;
+    font-size: 13.5px;
+    color: #1e293b;
+}
+
+.engine-status-card p {
+    margin: 4px 0 0 0;
+    font-size: 11px;
+    color: #64748b;
+}
+
+.mini-status {
+    margin-top: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+}
+
+/* حقول طبقة مدخلات المعلم */
+.inputs-grid-creative {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+    .inputs-grid-creative { grid-template-columns: 1fr; }
+}
+
+.input-field-group {
+    margin-bottom: 16px;
+}
+
+.input-field-group label {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 6px;
+}
+
+.input-field-group input, .input-field-group select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #ffffff;
+    color: #0f172a;
+    box-sizing: border-box;
+    transition: all 0.2s;
+}
+
+.input-field-group input:focus, .input-field-group select:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* تصميم زر النيون الفائق والتشغيل الحركي */
+.action-trigger-zone {
+    margin-top: 24px;
+}
+
+.btn-compile-neon {
+    background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    color: #ffffff;
+    border: none;
+    padding: 16px 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    transition: all 0.2s ease;
+}
+
+.btn-compile-neon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    background: linear-gradient(90deg, #1d4ed8, #1e40af);
+}
+
+/* شاشة الانتظار المعمارية ثلاثية الأبعاد المكعبة */
+.loading-overlay-creative {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.9);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(8px);
+}
+
+.spinner-cube-box {
+    text-align: center;
+    color: #ffffff;
+}
+
+.cube-spinner {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 30px auto;
+    transform-style: preserve-3d;
+    animation: rotateCube 3s infinite linear;
+}
+
+.face {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: rgba(37, 99, 235, 0.8);
+    border: 2px solid #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 11px;
+    color: white;
+}
+
+.front  { transform: translateZ(30px); }
+.back   { transform: rotateY(180deg) translateZ(30px); }
+.right  { transform: rotateY(90deg) translateZ(30px); }
+.left   { transform: rotateY(-90deg) translateZ(30px); }
+.top    { transform: rotateX(90deg) translateZ(30px); }
+.bottom { transform: rotateX(-90deg) translateZ(30px); }
+
+@keyframes rotateCube {
+    0% { transform: rotateX(0deg) rotateY(0deg); }
+    100% { transform: rotateX(360deg) rotateY(360deg); }
+}
+
+.hidden { display: none !important; }
+
+/* ------------------------------------------------------------- */
+/* هندسة مستند الطباعة الأكاديمي الصارم (ENTERPRISE A4 ENGINE)    */
+/* ------------------------------------------------------------- */
+.output-sheet-wrapper {
+    max-width: 860px;
+    margin: 40px auto;
+}
+
+.print-control-bar {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.btn-action-success {
+    background-color: #10b981;
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.btn-action-neutral {
+    background-color: #475569;
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* الهيكل الفيزيائي الصارم لمقاس الـ A4 المعتمد */
+.a4-academic-document {
+    background: #ffffff;
+    color: #000000;
+    padding: 20mm;
+    min-height: 297mm;
+    box-sizing: border-box;
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.academic-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+    line-height: 1.6;
+}
+
+.institution-meta { text-align: right; width: 30%; }
+.document-main-title { text-align: center; width: 40%; }
+.document-crypto-meta { text-align: left; width: 30%; }
+
+.document-main-title h2 { margin: 0; font-size: 16px; font-weight: bold; color: #000000; }
+.document-subtitle { margin: 4px 0 0 0; font-size: 11.5px; color: #334155; }
+.strong-text { font-weight: bold; }
+
+.academic-double-line {
+    border: none;
+    border-top: 3px double #000000;
+    margin: 16px 0;
+}
+
+/* جداول البيانات الرسمية المدمجة */
+.academic-meta-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+}
+
+.academic-meta-table th, .academic-meta-table td {
+    border: 1px solid #000000;
+    padding: 8px 12px;
+    font-size: 13px;
+    text-align: right;
+}
+
+.academic-meta-table th {
+    background-color: #f1f5f9;
+    font-weight: bold;
+    width: 22%;
+}
+
+/* الأقسام والمحتويات التعليمية المتسلسلة */
+.academic-section {
+    margin-bottom: 22px;
+    page-break-inside: avoid;
+}
+
+.academic-section h4 {
+    margin: 0 0 10px 0;
+    font-size: 13.5px;
+    font-weight: bold;
+    background-color: #f8fafc;
+    padding: 6px 12px;
+    border-right: 4px solid #0f172a;
+}
+
+.academic-text-paragraph {
+    font-size: 13px;
+    line-height: 1.7;
+    text-align: justify;
+    margin: 0;
+}
+
+.academic-list {
+    margin: 0;
+    padding-right: 20px;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* تنسيق كتل ومصفوفات الأنشطة والتقويم والتعليم المتدرج */
+.scaffolding-block-wrapper, .activities-grid-box, .evaluation-grid-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.scaffold-card-node, .activity-card-node, .evaluation-card-node {
+    border: 1px dashed #475569;
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1.6;
+    background: #ffffff;
+}
+
+.scaffold-card-node strong, .activity-card-node strong, .evaluation-card-node strong {
+    color: #000000;
+}
+
+.academic-footer {
+    margin-top: 36px;
+    border-top: 1px dashed #000000;
+    padding-top: 14px;
+    text-align: center;
+    font-size: 11px;
+    color: #475569;
+}
+
+/* ------------------------------------------------------------- */
+/* محرك التجريد الحاسم للطباعة الفيزيائية الرسمية وعزل الواجهات   */
+/* ------------------------------------------------------------- */
+@media print {
+    .no-print { display: none !important; }
+    body { background: #ffffff; padding: 0; margin: 0; }
+    .output-sheet-wrapper { max-width: 100%; margin: 0; padding: 0; }
+    .a4-academic-document { border: none; box-shadow: none; padding: 0; margin: 0; width: 100%; min-height: auto; }
+    .academic-section h4 { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .academic-meta-table th { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
